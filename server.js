@@ -3,13 +3,19 @@ const mongoose = require('mongoose');
 const app = express();
 
 app.use(express.json());
-app.use(express.static('public')); // Serve os arquivos da pasta 'public'
+app.use(express.static('public')); // Serve os arquivos da pasta 'public' (index.html, criar.html, etc.)
 
-// Conexão com o MongoDB (Local ou Nuvem via Variável de Ambiente)
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/convites_db';
-mongoose.connect(MONGODB_URI)
+// Ajuste Preventivo: Captura a variável de ambiente do Render
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+    console.log("?? AVISO: MONGODB_URI não detectada. Rodando com banco de dados local para testes.");
+}
+
+// Conexão com o MongoDB (Usa o Atlas no Render ou o banco local no seu PC)
+mongoose.connect(MONGODB_URI || 'mongodb://127.0.0.1:27017/convites_db')
     .then(() => console.log('Conectado ao MongoDB com sucesso! ??'))
-    .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+    .catch(err => console.error('Erro crítico ao conectar ao MongoDB:', err));
 
 // Definição do Modelo (Schema) do Convite para o Banco de Dados
 const ConviteSchema = new mongoose.Schema({
@@ -38,7 +44,7 @@ app.post('/api/criar-convite', async (req, res) => {
             return res.status(400).json({ sucesso: false, erro: "Dados incompletos." });
         }
 
-        // Salva um novo documento no MongoDB (o ID é gerado automaticamente como _id)
+        // Salva um novo documento no MongoDB Atlas
         const novoConvite = new Convite({
             nomeCriador,
             whatsappCriador,
@@ -47,9 +53,10 @@ app.post('/api/criar-convite', async (req, res) => {
 
         await novoConvite.save();
 
-        // Retorna o ID gerado pelo MongoDB (.id mapeia o _id para string)
+        // Retorna o ID gerado pelo MongoDB (.id já converte o _id para formato de texto amigável)
         res.json({ sucesso: true, id: novoConvite.id });
     } catch (err) {
+        console.error("Erro na rota /api/criar-convite:", err);
         res.status(500).json({ sucesso: false, erro: "Erro interno ao criar convite." });
     }
 });
@@ -57,7 +64,7 @@ app.post('/api/criar-convite', async (req, res) => {
 // Rota para carregar os dados do convite na tela do Convidado (index.html)
 app.get('/api/convite/:id', async (req, res) => {
     try {
-        // Busca o convite pelo ID do MongoDB
+        // Busca o convite pelo ID correspondente no Atlas
         const convite = await Convite.findById(req.params.id);
         if (!convite) return res.status(404).json({ erro: "Não encontrado" });
         
@@ -66,7 +73,7 @@ app.get('/api/convite/:id', async (req, res) => {
             ocasiao: convite.ocasiao || 'date'
         });
     } catch (err) {
-        res.status(404).json({ erro: "Formato de ID inválido ou não encontrado." });
+        res.status(404).json({ erro: "Formato de ID inválido ou registro não encontrado." });
     }
 });
 
@@ -76,7 +83,7 @@ app.post('/api/salvar-date/:id', async (req, res) => {
         const id = req.params.id;
         const { date, time, food, activity } = req.body;
 
-        // Atualiza as respostas do convite correspondente no banco de dados
+        // Atualiza o documento adicionando o bloco de respostas do convidado
         const conviteAtualizado = await Convite.findByIdAndUpdate(
             id,
             {
@@ -88,7 +95,7 @@ app.post('/api/salvar-date/:id', async (req, res) => {
                     respondidoEm: new Date()
                 }
             },
-            { new: true } // Retorna o documento já modificado
+            { new: true } // Garante que trará as informações modificadas no retorno
         );
 
         if (!conviteAtualizado) {
@@ -101,11 +108,12 @@ app.post('/api/salvar-date/:id', async (req, res) => {
             whatsappCriador: conviteAtualizado.whatsappCriador
         });
     } catch (err) {
+        console.error("Erro na rota /api/salvar-date:", err);
         res.status(500).json({ sucesso: false, erro: "Erro ao salvar respostas." });
     }
 });
 
-// Definição da porta dinâmica para o Render ou local
+// Definição da porta dinâmica para o Render ou ambiente local
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando com sucesso na porta ${PORT}! ??`);
