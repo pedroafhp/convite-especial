@@ -341,12 +341,12 @@
         <div class="screen" id="screen-4">
             <div class="card">
                 <h2 id="titulo-tela4">O que está afim? 🤔</h2>
-                <p style="margin-bottom: 10px;">Escolha primeiro 👇</p>
+                <p style="margin-bottom: 10px;">Pode escolher mais de uma opção 👇</p>
                 
                 <div class="options-grid" id="grid-comida"></div>
 
                 <div id="campo-outros-comida" style="display: none; margin-bottom: 12px; text-align: left;">
-                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">O que você sugere? 📝</label>
+                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">O que mais você sugere? 📝</label>
                     <input type="text" id="comida-outros-input" class="input-field" placeholder="Escreva sua ideia...">
                 </div>
 
@@ -357,12 +357,12 @@
         <div class="screen" id="screen-5">
             <div class="card">
                 <h2 id="titulo-tela5">Qual é a vibe? ✨</h2>
-                <p style="margin-bottom: 10px;">Escolha a atividade ideal 👇</p>
+                <p style="margin-bottom: 10px;">Pode escolher mais de uma opção 👇</p>
                 
                 <div class="options-grid" id="grid-atividade"></div>
 
                 <div id="campo-outros-vibe" style="display: none; margin-bottom: 12px; text-align: left;">
-                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">Qual é a sua ideia de rolê? 🗺️</label>
+                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">Qual é a sua outra ideia de rolê? 🗺️</label>
                     <input type="text" id="vibe-outros-input" class="input-field" placeholder="Escreva sua sugestão...">
                 </div>
 
@@ -374,7 +374,7 @@
             <div class="card">
                 <h2 style="font-size: 24px; margin-bottom: 5px;" id="emoji-final">🐧🕶️🌹</h2>
                 <h2 id="titulo-final">Tô contigo, gatinha. 💙</h2>
-                <p style="margin-bottom: 12px;" id="subtitulo-final">Fica pronta que eu vou te buscar 🚗</p>
+                <p style="margin-bottom: 12px;" id="subtitulo-final">Dá uma olhada no resumo abaixo antes de enviar</p>
                 
                 <div class="summary-list">
                     <div class="summary-item"><span>📅</span> <span id="sum-date">--/--/----</span></div>
@@ -383,11 +383,15 @@
                     <div class="summary-item"><span id="sum-icon-activity">✨</span> <span id="sum-activity">Não selecionado</span></div>
                 </div>
 
-                <button class="btn" id="btn-agenda" onclick="criarEventoAgenda()" style="width: 100%; margin-bottom: 15px; background: #31133d; border: 1px solid #ff2a6d; font-size: 12px; padding: 10px; box-shadow: none;">
-                    🗓️ Salvar no Calendário do Celular
+                <button class="btn" id="btn-agenda" onclick="criarEventoAgenda()" style="width: 100%; margin-bottom: 12px; background: #31133d; border: 1px solid #ff2a6d; font-size: 11px; padding: 10px; box-shadow: none;">
+                    🗓️ Salvar Lembrete na Agenda do Celular
+                </button>
+
+                <button class="btn btn-next" onclick="enviarDadosBackend()" style="margin-top: 0; margin-bottom: 5px;">
+                    Confirmar e Enviar via WhatsApp 🚀
                 </button>
                 
-                <div class="status-envio" id="status-texto">Processando confirmação...</div>
+                <div class="status-envio" id="status-texto">Pronto para confirmar!</div>
             </div>
         </div>
 
@@ -395,6 +399,9 @@
     </div>
 
     <script>
+        // Agora armazenamos arrays para suportar multiplas escolhas
+        let selectedFoods = [];
+        let selectedActivities = [];
         let dateSelections = { date: '', time: '', food: '', activity: '' };
         let tipoOcasiao = 'date'; 
         let nomeDonoDoLink = 'Alguém';
@@ -465,7 +472,7 @@
                     {icon: '🍽️', label: 'Restaurante'}, {icon: '🍿', label: 'Besteiras/Lanches'}, {icon: '🍽️❓', label: 'Outros'}
                 ],
                 atividades: [
-                    {icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍️', label: 'Shopping'}, {icon: '🎳', label: 'Jogar Boliche'},
+                    {icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍', label: 'Shopping'}, {icon: '🎳', label: 'Jogar Boliche'},
                     {icon: '☕', label: 'Passar num Café'}, {icon: '🏠', label: 'Rolê Caseiro'}, {icon: '✨❓', label: 'Outros'}
                 ]
             }
@@ -520,7 +527,7 @@
             items.forEach(item => {
                 const box = document.createElement('div');
                 box.className = 'option-box';
-                box.onclick = function() { selectOption(this, type, item.label); };
+                box.onclick = function() { toggleOption(this, type, item.label); };
                 
                 box.innerHTML = `<span class="icon">${item.icon}</span><span class="label">${item.label}</span>`;
                 grid.appendChild(box);
@@ -554,15 +561,19 @@
             btnNao.style.transform = `translate(${randomX}px, ${randomY}px)`;
         }
 
-        function selectOption(element, type, value) {
-            const parent = element.parentElement;
-            parent.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
-            element.classList.add('selected');
-            dateSelections[type] = value;
-
+        // Alterna entre selecionar e remover (Suporta múltipla escolha)
+        function toggleOption(element, type, value) {
             if (type === 'food') {
+                if (selectedFoods.includes(value)) {
+                    selectedFoods = selectedFoods.filter(item => item !== value);
+                    element.classList.remove('selected');
+                } else {
+                    selectedFoods.push(value);
+                    element.classList.add('selected');
+                }
+                
                 const campoOutrosComida = document.getElementById('campo-outros-comida');
-                if (value === 'Outros') {
+                if (selectedFoods.includes('Outros')) {
                     campoOutrosComida.style.display = 'block';
                 } else {
                     campoOutrosComida.style.display = 'none';
@@ -571,8 +582,16 @@
             }
 
             if (type === 'activity') {
+                if (selectedActivities.includes(value)) {
+                    selectedActivities = selectedActivities.filter(item => item !== value);
+                    element.classList.remove('selected');
+                } else {
+                    selectedActivities.push(value);
+                    element.classList.add('selected');
+                }
+
                 const campoOutrosVibe = document.getElementById('campo-outros-vibe');
-                if (value === 'Outros') {
+                if (selectedActivities.includes('Outros')) {
                     campoOutrosVibe.style.display = 'block';
                 } else {
                     campoOutrosVibe.style.display = 'none';
@@ -596,24 +615,31 @@
         }
 
         function validateScreen4() {
-            if (!dateSelections.food) { alert('Escolha uma das opções primeiro! 😋'); return; }
+            if (selectedFoods.length === 0) { alert('Escolha pelo menos uma opção! 😋'); return; }
             
-            if (dateSelections.food === 'Outros') {
+            let comidasFormatadas = [...selectedFoods];
+            if (comidasFormatadas.includes('Outros')) {
                 const textoDigitado = document.getElementById('comida-outros-input').value.trim();
-                if (!textoDigitado) { alert('Preencha o campo de texto! ✍️'); return; }
-                dateSelections.food = "Outros: " + textoDigitado;
+                if (!textoDigitado) { alert('Preencha o campo de texto da sua sugestão! ✍️'); return; }
+                // Substitui "Outros" pela resposta do input personalizado
+                comidasFormatadas = comidasFormatadas.map(item => item === 'Outros' ? `Outros (${textoDigitado})` : item);
             }
+            
+            dateSelections.food = comidasFormatadas.join(', ');
             nextScreen(5);
         }
 
         function validateScreen5() {
-            if (!dateSelections.activity) { alert('Escolha uma atividade ideal! ✨'); return; }
+            if (selectedActivities.length === 0) { alert('Escolha pelo menos uma atividade ideal! ✨'); return; }
             
-            if (dateSelections.activity === 'Outros') {
+            let atividadesFormatadas = [...selectedActivities];
+            if (atividadesFormatadas.includes('Outros')) {
                 const textoDigitado = document.getElementById('vibe-outros-input').value.trim();
-                if (!textoDigitado) { alert('Preencha o campo de texto! ✍️'); return; }
-                dateSelections.activity = "Outros: " + textoDigitado;
+                if (!textoDigitado) { alert('Preencha o campo de texto da sua sugestão! ✍️'); return; }
+                atividadesFormatadas = atividadesFormatadas.map(item => item === 'Outros' ? `Outros (${textoDigitado})` : item);
             }
+            
+            dateSelections.activity = atividadesFormatadas.join(', ');
             
             if (tipoOcasiao === 'resenha') {
                 document.getElementById('sum-icon-food').innerText = '🍺';
@@ -632,11 +658,12 @@
             document.getElementById('sum-activity').innerText = dateSelections.activity;
             
             nextScreen(6);
-            enviarDadosBackend();
         }
 
         function enviarDadosBackend() {
             const statusTexto = document.getElementById('status-texto');
+            statusTexto.innerText = "Processando confirmação...";
+            
             const URL_DA_SUA_API = `/api/salvar-date/${idConvite}`;
 
             fetch(URL_DA_SUA_API, {
@@ -658,17 +685,17 @@
                         `Oi ${data.nomeCriador}! 🥰 ${config.textoWhats}\n\n` +
                         `📅 Data: ${dateSelections.date}\n` +
                         `⏰ Horário: ${dateSelections.time}h\n` +
-                        `${tipoOcasiao === 'resenha' ? '🍻 Consumo:' : '🍽️ Opção:'} ${dateSelections.food}\n` +
-                        `${tipoOcasiao === 'resenha' ? '🎲 Programação:' : '✨ Rolê:'} ${dateSelections.activity}\n\n` +
-                        `Tudo confirmado! 🚀`
+                        `${tipoOcasiao === 'resenha' ? '🍻 Opções de Consumo:' : '🍽️ Opções de Comida:'} ${dateSelections.food}\n` +
+                        `${tipoOcasiao === 'resenha' ? '🎲 Atividades/Vibe:' : '✨ Vibe do Rolê:'} ${dateSelections.activity}\n\n` +
+                        `Tudo combinado! 🚀`
                     );
 
                     setTimeout(() => {
                         window.location.href = `https://api.whatsapp.com/send?phone=${numCriadorLimpo}&text=${msg}`;
-                    }, 1500);
+                    }, 1200);
 
                 } else {
-                    statusTexto.innerText = "Erro ao processar as escolhas no servidor.";
+                    statusTexto.innerText = "Erro ao processar no servidor.";
                 }
             })
             .catch(error => {
@@ -699,7 +726,7 @@
             const tituloLimpo = config.textoWhats.replace(/[!.,]/g, '');
             const tituloEvento = `${tituloLimpo} c/ ${nomeDonoDoLink}`;
             
-            const descricaoEvento = `Opção/Consumo: ${dateSelections.food}\\nProgramação/Vibe: ${dateSelections.activity}\\n\\nConfirmado via convite interativo! 🚀`;
+            const descricaoEvento = `Opções: ${dateSelections.food}\\nAtividades: ${dateSelections.activity}\\n\\nConfirmado via convite interativo! 🚀`;
 
             const icsMecanismo = [
                 'BEGIN:VCALENDAR',
