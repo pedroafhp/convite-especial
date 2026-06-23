@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.2",
+    "msnodesqlv8": "^5.2.0",
+    "mssql": "^12.5.5",
+    "nodemailer": "^9.0.1",
+    "uuid": "^14.0.1"
+  }
+}

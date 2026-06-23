@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convite Especial</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0d0614;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            color: #ffffff;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        /* Mockup de Telefone Celular */
+        .phone-container {
+            width: 100%;
+            max-width: 390px;
+            height: 85vh;
+            height: 85dvh;
+            max-height: 780px;
+            min-height: 550px;
+            background: linear-gradient(135deg, #250c31 0%, #0c0410 100%);
+            border-radius: 36px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8);
+            border: 8px solid #1a1a1a;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 450px) {
+            body { padding: 0; }
+            .phone-container {
+                max-width: 100%;
+                height: 100vh;
+                height: 100dvh;
+                max-height: none;
+                border-radius: 0;
+                border: none;
+            }
+            .notch { display: none; }
+        }
+
+        .notch {
+            width: 110px;
+            height: 25px;
+            background-color: #1a1a1a;
+            border-radius: 20px;
+            margin: 12px auto 0 auto;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .hearts-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart-icon {
+            position: absolute;
+            color: rgba(255, 42, 109, 0.15);
+            font-size: 24px;
+            animation: floatUp 7s infinite linear;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-800px) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .emoji-container {
+            font-size: 65px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 15px rgba(255, 42, 109, 0.4));
+            animation: pulse 2s infinite ease-in-out;
+            line-height: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+
+        .card {
+            background-color: rgba(25, 12, 36, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px 16px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+            color: #FFF;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: #d1c1d9;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            height: 50px;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: #ff2a6d;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%);
+        }
+
+        #btn-nao {
+            background-color: #31133d;
+            border: 1px solid rgba(255, 42, 109, 0.3);
+            box-shadow: none;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #b59cb8;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 42, 109, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #ff2a6d;
+            box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            max-height: 190px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+
+        .option-box {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+            border-radius: 12px;
+            padding: 10px 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .option-box .icon { font-size: 22px; line-height: 1; }
+        .option-box .label { font-size: 10px; color: #ccb9d1; }
+
+        .option-box.selected {
+            background-color: rgba(255, 42, 109, 0.2);
+            border-color: #ff2a6d;
+            box-shadow: 0 0 12px rgba(255, 42, 109, 0.4);
+            transform: translateY(-2px);
+        }
+        .option-box.selected .label { color: white; font-weight: bold; }
+
+        .summary-list {
+            text-align: left;
+            background-color: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .summary-item:last-child { margin-bottom: 0; }
+
+        .status-envio {
+            font-size: 11.5px;
+            color: #ff2a6d;
+            margin-top: 5px;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .footer-note {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.25);
+            margin-bottom: 15px;
+            text-align: center;
+            z-index: 5;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <div class="notch"></div>
+        <div class="hearts-bg" id="hearts-bg"></div>
+
+        <div class="screen active" id="screen-1">
+            <div class="emoji-container">🥺</div>
+            <div class="card">
+                <h2 id="titulo-dinamico">Você aceitaria ir a um date comigo?</h2>
+                <div class="btn-container">
+                    <button class="btn" onclick="nextScreen(2)">Sim</button>
+                    <button class="btn" id="btn-nao" onmouseover="fugirBotao()" onclick="fugirBotao()">Não</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-2">
+            <div class="emoji-container">😏🌹</div>
+            <div class="card">
+                <h2>Você disse sim? 🥺</h2>
+                <p>Eu estava esperando você dizer não kkkk</p>
+                <button class="btn btn-next" onclick="nextScreen(3)">Próximo 💙</button>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-3">
+            <div class="card">
+                <h2>📅 Quando você está livre?</h2>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Escolha a data</label>
+                    <input type="date" id="date-input" class="input-field">
+                </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Escolha o horário</label>
+                    <input type="time" id="time-input" class="input-field" value="19:00">
+                </div>
+                
+                <button class="btn btn-next" onclick="validateScreen3()">Selecionar a Data 💙</button>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-4">
+            <div class="card">
+                <h2>O que está afim? 🤔</h2>
+                <p style="margin-bottom: 10px;">Escolha primeiro 👇</p>
+                <div class="options-grid">
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Hambúrguer')">
+                        <span class="icon">🍔</span><span class="label">Hambúrguer</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Sushi')">
+                        <span class="icon">🍣</span><span class="label">Sushi</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Massas')">
+                        <span class="icon">🍝</span><span class="label">Massas</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Pizza')">
+                        <span class="icon">🍕</span><span class="label">Pizza</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Drinks')">
+                        <span class="icon">🍸</span><span class="label">Drinks</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'food', 'Outros')">
+                        <span class="icon">🍽️❓</span><span class="label">Outros</span>
+                    </div>
+                </div>
+
+                <div id="campo-outros-comida" style="display: none; margin-bottom: 12px; text-align: left;">
+                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">O que você sugere? 📝</label>
+                    <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Rodízio de Pastel, Piquenique...">
+                </div>
+
+                <button class="btn btn-next" onclick="validateScreen4()">Avançar ➡️</button>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-5">
+            <div class="card">
+                <h2>Qual é a vibe? ✨</h2>
+                <p style="margin-bottom: 10px;">Escolha a atividade ideal 👇</p>
+                <div class="options-grid">
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Barzinho')">
+                        <span class="icon">🍻</span><span class="label">Barzinho</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Cinema')">
+                        <span class="icon">🎬</span><span class="label">Cinema</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Café/Doceria')">
+                        <span class="icon">☕🍰</span><span class="label">Café/Doceria</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Show/Stand-up')">
+                        <span class="icon">🎸🎭</span><span class="label">Show/Stand-up</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Jantar')">
+                        <span class="icon">🕯️🍷</span><span class="label">Jantar</span>
+                    </div>
+                    <div class="option-box" onclick="selectOption(this, 'activity', 'Outros')">
+                        <span class="icon">✨❓</span><span class="label">Outros</span>
+                    </div>
+                </div>
+
+                <div id="campo-outros-vibe" style="display: none; margin-bottom: 12px; text-align: left;">
+                    <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">Qual é a sua ideia de rolê? 🗺️</label>
+                    <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Jogar boliche, Ver o pôr do sol...">
+                </div>
+
+                <button class="btn btn-next" onclick="validateScreen5()">Ver Confirmados ➡️</button>
+            </div>
+        </div>
+
+        <div class="screen" id="screen-6">
+            <div class="card">
+                <h2 style="font-size: 24px; margin-bottom: 5px;">🐧🕶️🌹</h2>
+                <h2>Tô contigo, gatinha. 💙</h2>
+                <p style="margin-bottom: 12px;">Fica pronta que eu vou te buscar 🚗</p>
+                <div class="summary-list">
+                    <div class="summary-item"><span>📅</span> <span id="sum-date">--/--/----</span></div>
+                    <div class="summary-item"><span>⏰</span> <span id="sum-time">--:--</span></div>
+                    <div class="summary-item"><span>🍽️</span> <span id="sum-food">Não selecionado</span></div>
+                    <div class="summary-item"><span>✨</span> <span id="sum-activity">Não selecionado</span></div>
+                </div>
+                <div class="status-envio" id="status-texto">Processando confirmação...</div>
+            </div>
+        </div>
+
+        <div class="footer-note">Interaja para avançar</div>
+    </div>
+
+    <script>
+        // Removido notifyChannel e contactInfo daqui, pois agora pertencem ao criador
+        let dateSelections = { date: '', time: '', food: '', activity: '' };
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const idConvite = urlParams.get('id');
+
+        if (idConvite) {
+            fetch(`/api/convite/${idConvite}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.nomeCriador) {
+                        document.getElementById('titulo-dinamico').innerText = `${data.nomeCriador} te chamou para um date! Você aceitaria?`;
+                    }
+                });
+        }
+
+        const bg = document.getElementById('hearts-bg');
+        const heartIcons = ['🖤', '❤️', '💕', '💖'];
+        for (let i = 0; i < 12; i++) {
+            let heart = document.createElement('div');
+            heart.className = 'heart-icon';
+            heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.fontSize = (Math.random() * 12 + 16) + 'px';
+            bg.appendChild(heart);
+        }
+
+        function nextScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenNum).classList.add('active');
+        }
+
+        function fugirBotao() {
+            const btnNao = document.getElementById('btn-nao');
+            const maxX = 60;
+            const maxY = 30;
+            const randomX = (Math.random() - 0.5) * maxX * 2;
+            const randomY = (Math.random() - 0.5) * maxY * 2;
+            btnNao.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+
+        function selectOption(element, type, value) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.option-box').forEach(box => box.classList.remove('selected'));
+            element.classList.add('selected');
+            dateSelections[type] = value;
+
+            if (type === 'food') {
+                const campoOutrosComida = document.getElementById('campo-outros-comida');
+                if (value === 'Outros') {
+                    campoOutrosComida.style.display = 'block';
+                } else {
+                    campoOutrosComida.style.display = 'none';
+                    document.getElementById('comida-outros-input').value = '';
+                }
+            }
+
+            if (type === 'activity') {
+                const campoOutrosVibe = document.getElementById('campo-outros-vibe');
+                if (value === 'Outros') {
+                    campoOutrosVibe.style.display = 'block';
+                } else {
+                    campoOutrosVibe.style.display = 'none';
+                    document.getElementById('vibe-outros-input').value = '';
+                }
+            }
+        }
+
+        function validateScreen3() {
+            const dateVal = document.getElementById('date-input').value;
+            const timeVal = document.getElementById('time-input').value;
+            
+            if (!dateVal) { alert('Por favor, selecione uma data especial!'); return; }
+            
+            const dateObj = new Date(dateVal + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
+            
+            dateSelections.date = formattedDate;
+            dateSelections.time = timeVal;
+            nextScreen(4);
+        }
+
+        function validateScreen4() {
+            if (!dateSelections.food) { alert('Escolha uma das opções primeiro! 😋'); return; }
+            
+            if (dateSelections.food === 'Outros') {
+                const textoDigitado = document.getElementById('comida-outros-input').value.trim();
+                if (!textoDigitado) { alert('Digite o que você gostaria de comer! ✍️'); return; }
+                dateSelections.food = "Outros: " + textoDigitado;
+            }
+            nextScreen(5);
+        }
+
+        function validateScreen5() {
+            if (!dateSelections.activity) { alert('Escolha uma atividade ideal! ✨'); return; }
+            
+            if (dateSelections.activity === 'Outros') {
+                const textoDigitado = document.getElementById('vibe-outros-input').value.trim();
+                if (!textoDigitado) { alert('Digite qual é a sua ideia de rolê! ✍️'); return; }
+                dateSelections.activity = "Outros: " + textoDigitado;
+            }
+            
+            document.getElementById('sum-date').innerText = dateSelections.date;
+            document.getElementById('sum-time').innerText = dateSelections.time + 'h';
+            document.getElementById('sum-food').innerText = dateSelections.food;
+            document.getElementById('sum-activity').innerText = dateSelections.activity;
+            
+            nextScreen(6);
+            enviarDadosBackend();
+        }
+
+        function enviarDadosBackend() {
+            const statusTexto = document.getElementById('status-texto');
+            const URL_DA_SUA_API = `/api/salvar-date/${idConvite}`;
+
+            fetch(URL_DA_SUA_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dateSelections)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    statusTexto.innerText = "Convite confirmado! Redirecionando para o WhatsApp... 🚀";
+                    
+                    let numCriadorLimpo = data.whatsappCriador.replace(/\D/g, '');
+                    if (numCriadorLimpo.length <= 11) numCriadorLimpo = '55' + numCriadorLimpo;
+
+                    // Montando o texto para enviar pro criador do link
+                    const msg = encodeURIComponent(
+                        `Oi ${data.nomeCriador}! 🥰 Aceitei o seu convite de date!\n\n` +
+                        `📅 Data: ${dateSelections.date}\n` +
+                        `⏰ Horário: ${dateSelections.time}h\n` +
+                        `🍽️ Prato: ${dateSelections.food}\n` +
+                        `✨ Rolê: ${dateSelections.activity}\n\n` +
+                        `Tudo confirmado, nos vemos lá! 💙`
+                    );
+
+                    setTimeout(() => {
+                        window.location.href = `https://api.whatsapp.com/send?phone=${numCriadorLimpo}&text=${msg}`;
+                    }, 1500);
+
+                } else {
+                    statusTexto.innerText = "Erro ao processar as escolhas do date no servidor.";
+                }
+            })
+            .catch(error => {
+                statusTexto.innerText = "Erro ao enviar respostas para o servidor.";
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>

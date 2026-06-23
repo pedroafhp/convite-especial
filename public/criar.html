@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Criar Convite Especial</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0d0614;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(135deg, #250c31 0%, #0c0410 100%);
+            border-radius: 30px;
+            padding: 30px 20px;
+            box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 42, 109, 0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ff2a6d, #9b00e8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #ccb9d1;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .card {
+            background-color: rgba(25, 12, 36, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 16px;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #b59cb8;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 42, 109, 0.2);
+            padding: 14px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #ff2a6d;
+            box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
+        }
+
+        .btn-gerar {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%);
+            color: white;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4);
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-gerar:active {
+            transform: scale(0.98);
+        }
+
+        /* Bloco do Link Gerado */
+        .resultado-container {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .link-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px dashed #ff2a6d;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #ff2a6d;
+            word-break: break-all;
+            margin-bottom: 10px;
+            user-select: all;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .link-box:hover {
+            background-color: rgba(255, 42, 109, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Gerador de Dates 💖</h1>
+            <p>Crie um link personalizado e descubra se o sim vem acompanhado de sushi ou hambúrguer!</p>
+        </div>
+
+        <div class="card">
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="nome-criador" class="input-field" placeholder="Ex: Lucas">
+            </div>
+
+            <div class="input-group">
+                <label>Seu WhatsApp (para receber o aviso do SIM)</label>
+                <input type="text" id="contato-criador" class="input-field" placeholder="Ex: 11999999999">
+            </div>
+
+            <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
+        </div>
+
+        <div class="resultado-container" id="resultado">
+            <div class="header" style="margin-top: 15px;">
+                <h1 style="font-size: 18px;">Seu Link está Pronto! ✨</h1>
+                <p style="font-size: 12px; margin-bottom: 10px;">Copie e envie para a pessoa especial:</p>
+            </div>
+            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
+            <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
+        </div>
+    </div>
+
+    <script>
+        function gerarLink() {
+            const nome = document.getElementById('nome-criador').value.trim();
+            let contato = document.getElementById('contato-criador').value.trim();
+
+            if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
+            if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
+
+            // Remove parênteses, traços e espaços do WhatsApp para evitar quebras de link no final
+            contato = contato.replace(/\D/g, '');
+
+            // Envia a configuração para o Backend em memória salvar
+            fetch('/api/criar-convite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nomeCriador: nome,
+                    whatsappCriador: contato
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // CORREÇÃO AQUI: Mudamos de data.idConvite para data.id para bater com o server.js
+                if (data.sucesso && data.id) {
+                    const baseURl = window.location.origin;
+                    const linkFinal = `${baseURl}/index.html?id=${data.id}`;
+                    
+                    document.getElementById('link-gerado').innerText = linkFinal;
+                    document.getElementById('resultado').style.display = 'block';
+                    
+                    // Reseta texto de feedback
+                    document.getElementById('feedback-copiar').innerText = "Toque no link acima para copiar";
+                    document.getElementById('feedback-copiar').style.color = "#b59cb8";
+                } else {
+                    alert('Erro ao gerar o convite no servidor: ' + (data.erro || 'Desconhecido'));
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão com o servidor do app.');
+                console.error(err);
+            });
+        }
+
+        function copiarLink() {
+            const linkText = document.getElementById('link-gerado').innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                const feedback = document.getElementById('feedback-copiar');
+                feedback.innerText = "✓ Link copiado com sucesso!";
+                feedback.style.color = "#00ff88";
+            }).catch(err => {
+                console.error('Erro ao copiar o link: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
