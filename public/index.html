@@ -303,7 +303,7 @@
         <div class="hearts-bg" id="hearts-bg"></div>
 
         <div class="screen active" id="screen-1">
-            <div class="emoji-container">🥺</div>
+            <div class="emoji-container" id="emoji-tela1">🥺</div>
             <div class="card">
                 <h2 id="titulo-dinamico">Você aceitaria ir a um date comigo?</h2>
                 <div class="btn-container">
@@ -314,10 +314,10 @@
         </div>
 
         <div class="screen" id="screen-2">
-            <div class="emoji-container">😏🌹</div>
+            <div class="emoji-container" id="emoji-tela2">😏🌹</div>
             <div class="card">
-                <h2>Você disse sim? 🥺</h2>
-                <p>Eu estava esperando você dizer não kkkk</p>
+                <h2 id="titulo-tela2">Você disse sim? 🥺</h2>
+                <p id="subtitulo-tela2">Eu estava esperando você dizer não kkkk</p>
                 <button class="btn btn-next" onclick="nextScreen(3)">Próximo 💙</button>
             </div>
         </div>
@@ -340,32 +340,14 @@
 
         <div class="screen" id="screen-4">
             <div class="card">
-                <h2>O que está afim? 🤔</h2>
+                <h2 id="titulo-tela4">O que está afim? 🤔</h2>
                 <p style="margin-bottom: 10px;">Escolha primeiro 👇</p>
-                <div class="options-grid">
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Hambúrguer')">
-                        <span class="icon">🍔</span><span class="label">Hambúrguer</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Sushi')">
-                        <span class="icon">🍣</span><span class="label">Sushi</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Massas')">
-                        <span class="icon">🍝</span><span class="label">Massas</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Pizza')">
-                        <span class="icon">🍕</span><span class="label">Pizza</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Drinks')">
-                        <span class="icon">🍸</span><span class="label">Drinks</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'food', 'Outros')">
-                        <span class="icon">🍽️❓</span><span class="label">Outros</span>
-                    </div>
-                </div>
+                
+                <div class="options-grid" id="grid-comida"></div>
 
                 <div id="campo-outros-comida" style="display: none; margin-bottom: 12px; text-align: left;">
                     <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">O que você sugere? 📝</label>
-                    <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Rodízio de Pastel, Piquenique...">
+                    <input type="text" id="comida-outros-input" class="input-field" placeholder="Escreva sua ideia...">
                 </div>
 
                 <button class="btn btn-next" onclick="validateScreen4()">Avançar ➡️</button>
@@ -374,32 +356,14 @@
 
         <div class="screen" id="screen-5">
             <div class="card">
-                <h2>Qual é a vibe? ✨</h2>
+                <h2 id="titulo-tela5">Qual é a vibe? ✨</h2>
                 <p style="margin-bottom: 10px;">Escolha a atividade ideal 👇</p>
-                <div class="options-grid">
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Barzinho')">
-                        <span class="icon">🍻</span><span class="label">Barzinho</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Cinema')">
-                        <span class="icon">🎬</span><span class="label">Cinema</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Café/Doceria')">
-                        <span class="icon">☕🍰</span><span class="label">Café/Doceria</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Show/Stand-up')">
-                        <span class="icon">🎸🎭</span><span class="label">Show/Stand-up</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Jantar')">
-                        <span class="icon">🕯️🍷</span><span class="label">Jantar</span>
-                    </div>
-                    <div class="option-box" onclick="selectOption(this, 'activity', 'Outros')">
-                        <span class="icon">✨❓</span><span class="label">Outros</span>
-                    </div>
-                </div>
+                
+                <div class="options-grid" id="grid-atividade"></div>
 
                 <div id="campo-outros-vibe" style="display: none; margin-bottom: 12px; text-align: left;">
                     <label style="display: block; font-size: 11px; color: #b59cb8; margin-bottom: 5px; text-transform: uppercase; font-weight: 600;">Qual é a sua ideia de rolê? 🗺️</label>
-                    <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Jogar boliche, Ver o pôr do sol...">
+                    <input type="text" id="vibe-outros-input" class="input-field" placeholder="Escreva sua sugestão...">
                 </div>
 
                 <button class="btn btn-next" onclick="validateScreen5()">Ver Confirmados ➡️</button>
@@ -408,14 +372,14 @@
 
         <div class="screen" id="screen-6">
             <div class="card">
-                <h2 style="font-size: 24px; margin-bottom: 5px;">🐧🕶️🌹</h2>
-                <h2>Tô contigo, gatinha. 💙</h2>
-                <p style="margin-bottom: 12px;">Fica pronta que eu vou te buscar 🚗</p>
+                <h2 style="font-size: 24px; margin-bottom: 5px;" id="emoji-final">🐧🕶️🌹</h2>
+                <h2 id="titulo-final">Tô contigo, gatinha. 💙</h2>
+                <p style="margin-bottom: 12px;" id="subtitulo-final">Fica pronta que eu vou te buscar 🚗</p>
                 <div class="summary-list">
                     <div class="summary-item"><span>📅</span> <span id="sum-date">--/--/----</span></div>
                     <div class="summary-item"><span>⏰</span> <span id="sum-time">--:--</span></div>
-                    <div class="summary-item"><span>🍽️</span> <span id="sum-food">Não selecionado</span></div>
-                    <div class="summary-item"><span>✨</span> <span id="sum-activity">Não selecionado</span></div>
+                    <div class="summary-item"><span id="sum-icon-food">🍽️</span> <span id="sum-food">Não selecionado</span></div>
+                    <div class="summary-item"><span id="sum-icon-activity">✨</span> <span id="sum-activity">Não selecionado</span></div>
                 </div>
                 <div class="status-envio" id="status-texto">Processando confirmação...</div>
             </div>
@@ -425,9 +389,82 @@
     </div>
 
     <script>
-        // Removido notifyChannel e contactInfo daqui, pois agora pertencem ao criador
         let dateSelections = { date: '', time: '', food: '', activity: '' };
-        
+        let tipoOcasiao = 'date'; // Variável global para guardar o tipo do convite
+        let nomeDonoDoLink = 'Alguém';
+
+        // Definição dos blocos de textos e opções por Ocasião
+        const configuracoesOcasiao = {
+            'date': {
+                tituloTela1: "te chamou para um date! Você aceitaria?",
+                emojiTela1: "🥺", emojiTela2: "😏🌹",
+                tituloTela2: "Você disse sim? 🥺", subtituloTela2: "Eu estava esperando você dizer não kkkk",
+                tituloTela4: "O que está afim de comer? 🤔",
+                tituloTela5: "Qual é a vibe do encontro? ✨",
+                emojiFinal: "🐧🕶️🌹", tituloFinal: "Tô contigo! 💙", subtituloFinal: "Prepara a roupa que eu passo aí 🚗",
+                textoWhats: "Aceitei o seu convite de date!",
+                comidas: [
+                    {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍣', label: 'Sushi'}, {icon: '🍝', label: 'Massas'},
+                    {icon: '🍕', label: 'Pizza'}, {icon: '🍸', label: 'Drinks'}, {icon: '🍽️❓', label: 'Outros'}
+                ],
+                atividades: [
+                    {icon: '🍻', label: 'Barzinho'}, {icon: '🎬', label: 'Cinema'}, {icon: '☕🍰', label: 'Café/Doceria'},
+                    {icon: '🎸🎭', label: 'Show/Stand-up'}, {icon: '🕯️🍷', label: 'Jantar'}, {icon: '✨❓', label: 'Outros'}
+                ]
+            },
+            'resenha': {
+                tituloTela1: "está armando uma resenha! Bora encostar?",
+                emojiTela1: "😎🔥", emojiTela2: "🍻🔥",
+                tituloTela2: "Aeeee, confirmado! 🚀", subtituloTela2: "Avisa no grupo que o rolê vai acontecer!",
+                tituloTela4: "O que vamos comer/beber? 🍻",
+                tituloTela5: "Qual vai ser a programação? 🎲",
+                emojiFinal: "⚡🎸🤠", tituloFinal: "Rolê Confirmadíssimo! 🔥", subtituloFinal: "Garante o seu consumo e bora!",
+                textoWhats: "Confirmei minha presença na resenha!",
+                comidas: [
+                    {icon: '🥩', label: 'Churrasco'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍻', label: 'Cerveja/Drinks'},
+                    {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍿', label: 'Petiscos'}, {icon: '🍽️❓', label: 'Outros'}
+                ],
+                atividades: [
+                    {icon: '🔊', label: 'Ouvir Som'}, {icon: '🎮', label: 'Jogar Videogame'}, {icon: '🃏', label: 'Jogos de Cartas'},
+                    {icon: '⚽', label: 'Assistir Jogo'}, {icon: '🗣️', label: 'Só Fofocar'}, {icon: '✨❓', label: 'Outros'}
+                ]
+            },
+            'girls-night': {
+                tituloTela1: "te chamou para a Noite das Meninas! Vamos?",
+                emojiTela1: "💅✨", emojiTela2: "🍿💖",
+                tituloTela2: "Gostamos assim! ✨👭", subtituloTela2: "Prepara a fofoca porque a noite vai ser longa!",
+                tituloTela4: "Qual vai ser o cardápio? 🍫",
+                tituloTela5: "Qual vai ser a nossa vibe? 💆‍♀️",
+                emojiFinal: "💅🥂👑", tituloFinal: "Noite das Garotas! 💖", subtituloFinal: "Vem de pijama ou look babado!",
+                textoWhats: "Presença confirmadíssima na Noite das Meninas! 💅",
+                comidas: [
+                    {icon: '🍕', label: 'Pizza'}, {icon: '🍫🍭', label: 'Doces/Chocolates'}, {icon: '🍣', label: 'Sushi'},
+                    {icon: '🥂', label: 'Vinho/Drinks'}, {icon: '🍿', label: 'Pipoca'}, {icon: '🍽️❓', label: 'Outros'}
+                ],
+                atividades: [
+                    {icon: '🗣️💬', label: 'Fofocar Muito'}, {icon: '🎬🍿', label: 'Filme/Série'}, {icon: '💆‍♀️💄', label: 'Skin Care/Make'},
+                    {icon: '📸', label: 'Sessão de Fotos'}, {icon: '🎤', label: 'Caratocê em Casa'}, {icon: '✨❓', label: 'Outros'}
+                ]
+            },
+            'outros': {
+                tituloTela1: "te enviou um convite para um rolê especial! Topa?",
+                emojiTela1: "🚀✨", emojiTela2: "✌️😎",
+                tituloTela2: "Aí sim! Rolê aceito. 🙌", subtituloTela2: "Agora vamos decidir os detalhes abaixo!",
+                tituloTela4: "O que seria bom comer? 😋",
+                tituloTela5: "Qual é o plano principal? 🗺️",
+                emojiFinal: "🌟🚀🎯", tituloFinal: "Tudo Certo! 🗺️", subtituloFinal: "Combinado, nos vemos em breve!",
+                textoWhats: "Aceitei seu convite para o rolê!",
+                comidas: [
+                    {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍦', label: 'Sorvete/Açaí'},
+                    {icon: '🍽️', label: 'Restaurante'}, {icon: '🍿', label: 'Bolinhas/Lanches'}, {icon: '🍽️❓', label: 'Outros'}
+                ],
+                atividades: [
+                    {icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍️', label: 'Shopping'}, {icon: '🎳', label: 'Jogar Boliche'},
+                    {icon: '☕', label: 'Passar num Café'}, {icon: '🏠', label: 'Rolê Caseiro'}, {icon: '✨❓', label: 'Outros'}
+                ]
+            }
+        };
+
         const urlParams = new URLSearchParams(window.location.search);
         const idConvite = urlParams.get('id');
 
@@ -436,11 +473,58 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.nomeCriador) {
-                        document.getElementById('titulo-dinamico').innerText = `${data.nomeCriador} te chamou para um date! Você aceitaria?`;
+                        nomeDonoDoLink = data.nomeCriador;
+                        tipoOcasiao = data.ocasiao || 'date'; // Seta o tipo dinâmico do banco
+                        
+                        // Aplica as regras visuais baseadas na ocasião carregada
+                        aplicarConfiguracaoOcasiao(tipoOcasiao);
                     }
-                });
+                }).catch(err => console.error("Erro ao carregar dados do convite:", err));
+        } else {
+            // Fallback caso abra o index sem ID (testes locais)
+            aplicarConfiguracaoOcasiao('date');
         }
 
+        function aplicarConfiguracaoOcasiao(ocasiao) {
+            const config = configuracoesOcasiao[ocasiao] || configuracoesOcasiao['date'];
+
+            // Tela 1
+            document.getElementById('titulo-dinamico').innerText = `${nomeDonoDoLink} ${config.tituloTela1}`;
+            document.getElementById('emoji-tela1').innerText = config.emojiTela1;
+
+            // Tela 2
+            document.getElementById('emoji-tela2').innerText = config.emojiTela2;
+            document.getElementById('titulo-tela2').innerText = config.tituloTela2;
+            document.getElementById('subtitulo-tela2').innerText = config.subtituloTela2;
+
+            // Tela 4 (Título e Opções do Grid de Comida)
+            document.getElementById('titulo-tela4').innerText = config.tituloTela4;
+            renderizarGrid('grid-comida', config.comidas, 'food');
+
+            // Tela 5 (Título e Opções do Grid de Atividade)
+            document.getElementById('titulo-tela5').innerText = config.tituloTela5;
+            renderizarGrid('grid-atividade', config.atividades, 'activity');
+
+            // Tela 6 (Fim)
+            document.getElementById('emoji-final').innerText = config.emojiFinal;
+            document.getElementById('titulo-final').innerText = config.tituloFinal;
+            document.getElementById('subtitulo-final').innerText = config.subtituloFinal;
+        }
+
+        function renderizarGrid(elementId, items, type) {
+            const grid = document.getElementById(elementId);
+            grid.innerHTML = ''; // Limpa
+            items.forEach(item => {
+                const box = document.createElement('div');
+                box.className = 'option-box';
+                box.onclick = function() { selectOption(this, type, item.label); };
+                
+                box.innerHTML = `<span class="icon">${item.icon}</span><span class="label">${item.label}</span>`;
+                grid.appendChild(box);
+            });
+        }
+
+        // Sistema flutuante de corações do fundo
         const bg = document.getElementById('hearts-bg');
         const heartIcons = ['🖤', '❤️', '💕', '💖'];
         for (let i = 0; i < 12; i++) {
@@ -513,7 +597,7 @@
             
             if (dateSelections.food === 'Outros') {
                 const textoDigitado = document.getElementById('comida-outros-input').value.trim();
-                if (!textoDigitado) { alert('Digite o que você gostaria de comer! ✍️'); return; }
+                if (!textoDigitado) { alert('Preencha o campo de texto! ✍️'); return; }
                 dateSelections.food = "Outros: " + textoDigitado;
             }
             nextScreen(5);
@@ -524,10 +608,22 @@
             
             if (dateSelections.activity === 'Outros') {
                 const textoDigitado = document.getElementById('vibe-outros-input').value.trim();
-                if (!textoDigitado) { alert('Digite qual é a sua ideia de rolê! ✍️'); return; }
+                if (!textoDigitado) { alert('Preencha o campo de texto! ✍️'); return; }
                 dateSelections.activity = "Outros: " + textoDigitado;
             }
             
+            // Muda o ícone do resumo final dependendo se for resenha ou date
+            if (tipoOcasiao === 'resenha') {
+                document.getElementById('sum-icon-food').innerText = '🍺';
+                document.getElementById('sum-icon-activity').innerText = '🎲';
+            } else if (tipoOcasiao === 'girls-night') {
+                document.getElementById('sum-icon-food').innerText = '🍫';
+                document.getElementById('sum-icon-activity').innerText = '💆‍♀️';
+            } else {
+                document.getElementById('sum-icon-food').innerText = '🍽️';
+                document.getElementById('sum-icon-activity').innerText = '✨';
+            }
+
             document.getElementById('sum-date').innerText = dateSelections.date;
             document.getElementById('sum-time').innerText = dateSelections.time + 'h';
             document.getElementById('sum-food').innerText = dateSelections.food;
@@ -549,19 +645,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.sucesso) {
-                    statusTexto.innerText = "Convite confirmado! Redirecionando para o WhatsApp... 🚀";
+                    statusTexto.innerText = "Confirmado! Redirecionando para o WhatsApp... 🚀";
                     
                     let numCriadorLimpo = data.whatsappCriador.replace(/\D/g, '');
                     if (numCriadorLimpo.length <= 11) numCriadorLimpo = '55' + numCriadorLimpo;
 
-                    // Montando o texto para enviar pro criador do link
+                    const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
+
+                    // Montando o texto dinâmico para enviar pro WhatsApp
                     const msg = encodeURIComponent(
-                        `Oi ${data.nomeCriador}! 🥰 Aceitei o seu convite de date!\n\n` +
+                        `Oi ${data.nomeCriador}! 🥰 ${config.textoWhats}\n\n` +
                         `📅 Data: ${dateSelections.date}\n` +
                         `⏰ Horário: ${dateSelections.time}h\n` +
-                        `🍽️ Prato: ${dateSelections.food}\n` +
-                        `✨ Rolê: ${dateSelections.activity}\n\n` +
-                        `Tudo confirmado, nos vemos lá! 💙`
+                        `${tipoOcasiao === 'resenha' ? '🍻 Consumo:' : '🍽️ Opção:'} ${dateSelections.food}\n` +
+                        `${tipoOcasiao === 'resenha' ? '🎲 Programação:' : '✨ Rolê:'} ${dateSelections.activity}\n\n` +
+                        `Tudo confirmado! 🚀`
                     );
 
                     setTimeout(() => {
@@ -569,7 +667,7 @@
                     }, 1500);
 
                 } else {
-                    statusTexto.innerText = "Erro ao processar as escolhas do date no servidor.";
+                    statusTexto.innerText = "Erro ao processar as escolhas no servidor.";
                 }
             })
             .catch(error => {

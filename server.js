@@ -9,9 +9,10 @@ const convites = {};
 
 // Rota para criar o convite (criar.html)
 app.post('/api/criar-convite', (req, res) => {
-    // Pegando os dados direto ou de dentro do objeto 'criador' (para dar suporte a ambos)
     const nomeCriador = req.body.nomeCriador || (req.body.criador && req.body.criador.nome);
     const whatsappCriador = req.body.whatsappCriador || (req.body.criador && req.body.criador.contactInfo);
+    // Captura a ocasião enviada pelo front-end (se não vier, define 'date' como padrão)
+    const ocasiao = req.body.ocasiao || 'date'; 
 
     if (!nomeCriador || !whatsappCriador) {
         return res.status(400).json({ sucesso: false, erro: "Dados incompletos." });
@@ -23,31 +24,35 @@ app.post('/api/criar-convite', (req, res) => {
     convites[idUnico] = {
         nomeCriador,
         whatsappCriador,
-        respostasDate: null // Onde vamos salvar as escolhas do date
+        ocasiao, // Salvando a ocasião escolhida no banco de dados
+        respostas: null // Onde vamos salvar as escolhas finais do convidado
     };
 
     res.json({ sucesso: true, id: idUnico });
 });
 
-// Rota para carregar o nome do criador na tela do Convidado (index.html)
+// Rota para carregar os dados do convite na tela do Convidado (index.html)
 app.get('/api/convite/:id', (req, res) => {
     const convite = convites[req.params.id];
     if (!convite) return res.status(404).json({ erro: "Não encontrado" });
     
-    res.json({ nomeCriador: convite.nomeCriador });
+    // Agora retornamos também a ocasião para o index.html saber como se adaptar
+    res.json({ 
+        nomeCriador: convite.nomeCriador,
+        ocasiao: convite.ocasiao || 'date'
+    });
 });
 
-// Rota para salvar a resposta e devolver o WhatsApp do criador (index.html - Tela 6)
-// ATENÇÃO: Mudamos a rota para /api/salvar-date/:id para bater exatamente com o fetch do seu index.html
+// Rota para salvar a resposta e devolver o WhatsApp do criador (index.html)
 app.post('/api/salvar-date/:id', (req, res) => {
     const id = req.params.id;
-    // Recebe exatamente o objeto dateSelections enviado pelo front-end
+    // Recebe o objeto de seleções enviado pelo front-end
     const { date, time, food, activity } = req.body;
 
     if (!convites[id]) return res.status(404).json({ sucesso: false, erro: "Convite não encontrado." });
 
-    // Salva o combo completo de escolhas dentro do convite
-    convites[id].respostasDate = {
+    // Salva as escolhas feitas dentro do objeto do convite
+    convites[id].respostas = {
         date,
         time,
         food,
@@ -55,7 +60,7 @@ app.post('/api/salvar-date/:id', (req, res) => {
         respondidoEm: new Date()
     };
 
-    // Retorna os dados originais do Criador para o redirecionamento funcionar no front-end
+    // Retorna os dados para o redirecionamento do WhatsApp funcionar no front-end
     res.json({
         sucesso: true,
         nomeCriador: convites[id].nomeCriador,
@@ -63,6 +68,7 @@ app.post('/api/salvar-date/:id', (req, res) => {
     });
 });
 
+// Definição da porta dinâmica para o Render ou local
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando com sucesso na porta ${PORT}! ??`);

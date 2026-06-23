@@ -88,6 +88,21 @@
             transition: all 0.3s;
         }
 
+        /* Estilização para o elemento select */
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23ff2a6d' d='M0 0l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        select.input-field option {
+            background-color: #250c31;
+            color: white;
+        }
+
         .input-field:focus {
             border-color: #ff2a6d;
             box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
@@ -148,8 +163,8 @@
 
     <div class="container">
         <div class="header">
-            <h1>Gerador de Dates 💖</h1>
-            <p>Crie um link personalizado e descubra se o sim vem acompanhado de surpresas!</p>
+            <h1>Gerador de Convites ✨</h1>
+            <p>Crie um link personalizado e viva dias especiais!</p>
         </div>
 
         <div class="card">
@@ -161,6 +176,16 @@
             <div class="input-group">
                 <label>Seu WhatsApp (para receber o aviso do SIM)</label>
                 <input type="text" id="contato-criador" class="input-field" placeholder="Ex: 11999999999">
+            </div>
+
+            <div class="input-group">
+                <label>Qual é a ocasião?</label>
+                <select id="ocasiao-convite" class="input-field">
+                    <option value="date">Encontro Romântico (Date) 🌹</option>
+                    <option value="resenha">Resenha / Rolê com Amigos 🍻</option>
+                    <option value="girls-night">Noite das Meninas 💖</option>
+                    <option value="outros">Outro Rolê ✨</option>
+                </select>
             </div>
 
             <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
@@ -180,6 +205,7 @@
         function gerarLink() {
             const nome = document.getElementById('nome-criador').value.trim();
             let contato = document.getElementById('contato-criador').value.trim();
+            const ocasiao = document.getElementById('ocasiao-convite').value;
 
             if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
             if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
@@ -187,18 +213,18 @@
             // Remove parênteses, traços e espaços do WhatsApp para evitar quebras de link no final
             contato = contato.replace(/\D/g, '');
 
-            // Envia a configuração para o Backend em memória salvar
+            // Envia a configuração para o Backend incluindo a nova propriedade "ocasiao"
             fetch('/api/criar-convite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     nomeCriador: nome,
-                    whatsappCriador: contato
+                    whatsappCriador: contato,
+                    ocasiao: ocasiao // Enviando a ocasião selecionada
                 })
             })
             .then(res => res.json())
             .then(data => {
-                // CORREÇÃO AQUI: Mudamos de data.idConvite para data.id para bater com o server.js
                 if (data.sucesso && data.id) {
                     const baseURl = window.location.origin;
                     const linkFinal = `${baseURl}/index.html?id=${data.id}`;
