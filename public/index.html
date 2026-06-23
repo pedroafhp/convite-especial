@@ -251,10 +251,24 @@
     </div>
 
     <script>
-        // Captura o ID de forma robusta ignorando barras vazias no final da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const caminhos = window.location.pathname.split('/').filter(Boolean);
-        const idConvite = caminhos[caminhos.length - 1] || urlParams.get('id');
+        // Função Robusta para capturar o ID da URL em qualquer formato ou estrutura do Render
+        function obterIdConvite() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('id')) {
+                return urlParams.get('id');
+            }
+            const caminhos = window.location.pathname.split('/').filter(Boolean);
+            if (caminhos.length > 0) {
+                const ultimoSegmento = caminhos[caminhos.length - 1];
+                if (ultimoSegmento.includes('.html')) {
+                    return caminhos[caminhos.length - 2];
+                }
+                return ultimoSegmento;
+            }
+            return null;
+        }
+
+        const idConvite = obterIdConvite();
 
         // Estado das escolhas do convidado
         let nomeCriador = "";
@@ -269,8 +283,14 @@
         // Carrega as informações iniciais do banco de dados ao abrir a página
         async function carregarConvite() {
             try {
+                if (!idConvite) {
+                    console.error("ID do convite não encontrado na URL atual.");
+                    throw new Error("ID ausente");
+                }
+
+                console.log("Buscando dados no banco para o ID:", idConvite);
                 const response = await fetch(`/api/convite/${idConvite}`);
-                if (!response.ok) throw new Error();
+                if (!response.ok) throw new Error("Registro não localizado no MongoDB");
                 
                 const dados = await response.json();
                 nomeCriador = dados.nomeCriador;
@@ -282,6 +302,7 @@
                 // Ativa o primeiro passo (Data)
                 mostrarPasso('passo-data');
             } catch (err) {
+                console.error("Erro no processamento do convite:", err);
                 document.getElementById('titulo-convite').innerText = "Erro 😢";
                 document.getElementById('sub-titulo').innerText = "Convite não encontrado ou link inválido.";
             }
@@ -295,6 +316,7 @@
 
         // Trata a seleção das telas de clique único (Data, Hora, Comida)
         function selecionarOpcao(campo, valor) {
+            bytescolhas = escolhas; // Mantém compatibilidade interna de contexto
             escolhas[campo] = valor;
 
             if (campo === 'date') {
@@ -383,13 +405,11 @@
             const tituloEvento = `Date com ${nomeCriador} 💖`;
             const descricaoEvento = `Cardápio: ${escolhas.food} | Atividades planejadas: ${escolhas.activity}`;
             
-            // Define uma data simulada baseada na escolha aproximada do usuário para evitar arquivos inválidos
             const hoje = new Date();
             const ano = hoje.getFullYear();
             const mes = String(hoje.getMonth() + 1).padStart(2, '0');
             const dia = String(hoje.getDate()).padStart(2, '0');
             
-            // Extrai os dígitos numéricos da hora informada (ex: "20:00h" vira "2000")
             const horaLimpa = escolhas.time.replace(/\D/g, '').substring(0, 4) || "2000";
             const dataFmt = `${ano}${mes}${dia}T${horaLimpa}00`;
 
