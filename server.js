@@ -36,7 +36,7 @@ app.get('/api/convite/:id', (req, res) => {
     const convite = convites[req.params.id];
     if (!convite) return res.status(404).json({ erro: "Não encontrado" });
     
-    // Agora retornamos também a ocasião para o index.html saber como se adaptar
+    // Retorna o nome e a ocasião para o index.html saber como se adaptar (e montar a agenda)
     res.json({ 
         nomeCriador: convite.nomeCriador,
         ocasiao: convite.ocasiao || 'date'
@@ -60,7 +60,7 @@ app.post('/api/salvar-date/:id', (req, res) => {
         respondidoEm: new Date()
     };
 
-    // Retorna os dados para o redirecionamento do WhatsApp funcionar no front-end
+    // Retorna os dados para o redirecionamento do WhatsApp e preenchimento da agenda funcionarem
     res.json({
         sucesso: true,
         nomeCriador: convites[id].nomeCriador,

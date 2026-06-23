@@ -375,12 +375,18 @@
                 <h2 style="font-size: 24px; margin-bottom: 5px;" id="emoji-final">🐧🕶️🌹</h2>
                 <h2 id="titulo-final">Tô contigo, gatinha. 💙</h2>
                 <p style="margin-bottom: 12px;" id="subtitulo-final">Fica pronta que eu vou te buscar 🚗</p>
+                
                 <div class="summary-list">
                     <div class="summary-item"><span>📅</span> <span id="sum-date">--/--/----</span></div>
                     <div class="summary-item"><span>⏰</span> <span id="sum-time">--:--</span></div>
                     <div class="summary-item"><span id="sum-icon-food">🍽️</span> <span id="sum-food">Não selecionado</span></div>
                     <div class="summary-item"><span id="sum-icon-activity">✨</span> <span id="sum-activity">Não selecionado</span></div>
                 </div>
+
+                <button class="btn" id="btn-agenda" onclick="criarEventoAgenda()" style="width: 100%; margin-bottom: 15px; background: #31133d; border: 1px solid #ff2a6d; font-size: 12px; padding: 10px; box-shadow: none;">
+                    🗓️ Salvar no Calendário do Celular
+                </button>
+                
                 <div class="status-envio" id="status-texto">Processando confirmação...</div>
             </div>
         </div>
@@ -499,6 +505,7 @@
 
             // Tela 4 (Título e Opções do Grid de Comida)
             document.getElementById('titulo-tela4').innerText = config.tituloTela4;
+            document.getElementById('renderizarGrid'/* Element ID placeholder */ || 'grid-comida');
             renderizarGrid('grid-comida', config.comidas, 'food');
 
             // Tela 5 (Título e Opções do Grid de Atividade)
@@ -674,6 +681,58 @@
                 statusTexto.innerText = "Erro ao enviar respostas para o servidor.";
                 console.error(error);
             });
+        }
+
+        // Função para gerar e baixar o lembrete de calendário (.ics) nativo
+        function criarEventoAgenda() {
+            const dataBruta = document.getElementById('date-input').value; // YYYY-MM-DD
+            const horaBruta = document.getElementById('time-input').value; // HH:MM
+
+            if (!dataBruta || !horaBruta) {
+                alert("Não foi possível processar a data ou hora selecionada.");
+                return;
+            }
+
+            // Formata strings para o padrão iCalendar: YYYYMMDDTHHMMSS
+            const anoMesDia = dataBruta.replace(/-/g, '');
+            const horaMinuto = horaBruta.replace(/:/g, '');
+            const dataInicio = `${anoMesDia}T${horaMinuto}00`;
+            
+            // Define término padrão adicionando 3 horas ao início
+            let horaTerminoNum = parseInt(horaMinuto.substring(0, 2)) + 3;
+            if (horaTerminoNum >= 24) horaTerminoNum = horaTerminoNum - 24; // Ajuste simples de virada de dia
+            const horaTerminoStr = String(horaTerminoNum).padStart(2, '0') + horaMinuto.substring(2);
+            const dataFim = `${anoMesDia}T${horaTerminoStr}00`;
+
+            const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
+            const tituloLimpo = config.textoWhats.replace(/[!.,]/g, '');
+            const tituloEvento = `${tituloLimpo} c/ ${nomeDonoDoLink}`;
+            
+            const descricaoEvento = `Opção/Consumo: ${dateSelections.food}\\nProgramação/Vibe: ${dateSelections.activity}\\n\\nConfirmado via convite interativo! 🚀`;
+
+            // Montagem estruturada do arquivo iCalendar (.ics)
+            const icsMecanismo = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Convite Interativo//BR',
+                'BEGIN:VEVENT',
+                `DTSTART:${dataInicio}`,
+                `DTEND:${dataFim}`,
+                `SUMMARY:${tituloEvento}`,
+                `DESCRIPTION:${descricaoEvento}`,
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            // Criação do link virtual de download do arquivo binário (.ics)
+            const blob = new Blob([icsMecanismo], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `lembrete-${tipoOcasiao}.ics`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
