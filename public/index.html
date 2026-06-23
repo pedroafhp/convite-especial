@@ -244,17 +244,17 @@
         </div>
 
         <div id="passo-final" class="passo">
-            <div class="resumo-box" id="resumo-escolhas">
-                </div>
+            <div class="resumo-box" id="resumo-escolhas"></div>
             <button class="btn-acao btn-whatsapp" id="btn-whatsapp" onclick="confirmarWhatsApp()">💬 Confirmar no WhatsApp</button>
             <button class="btn-acao btn-agenda" style="margin-top: 12px;" onclick="salvarNaAgenda()">🗓️ Salvar no Calendário (Opcional)</button>
         </div>
     </div>
 
     <script>
-        // Captura o ID do convite direto da URL do navegador
+        // Captura o ID de forma robusta ignorando barras vazias no final da URL
         const urlParams = new URLSearchParams(window.location.search);
-        const idConvite = window.location.pathname.split('/').pop() || urlParams.get('id');
+        const caminhos = window.location.pathname.split('/').filter(Boolean);
+        const idConvite = caminhos[caminhos.length - 1] || urlParams.get('id');
 
         // Estado das escolhas do convidado
         let nomeCriador = "";
