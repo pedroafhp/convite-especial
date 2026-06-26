@@ -108,6 +108,99 @@
             box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
         }
 
+        /* Estilização dos Cards de Escolha (Individual vs Grupo) */
+        .radio-cards-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .radio-card {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+            border-radius: 14px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .radio-card input[type="radio"] {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            accent-color: #ff2a6d;
+        }
+
+        .radio-card:hover {
+            border-color: rgba(255, 42, 109, 0.4);
+        }
+
+        /* Quando o card de rádio for selecionado pelo usuário */
+        .radio-card:has(input[type="radio"]:checked) {
+            border-color: #ff2a6d;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.1) 0%, rgba(155, 0, 232, 0.05) 100%);
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.15);
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 13px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .card-description {
+            font-size: 11px;
+            color: #b59cb8;
+            line-height: 1.3;
+        }
+
+        /* Estilização do Bloco de Opções do Grupo */
+        .grupo-options-box {
+            display: none;
+            margin-top: 10px;
+            margin-bottom: 16px;
+            border-left: 3px solid #9b00e8;
+            padding-left: 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 14px;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            margin-top: 2px;
+            accent-color: #ff2a6d;
+        }
+
+        .checkbox-label-text {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .checkbox-subtext {
+            display: block;
+            font-size: 11px;
+            color: #b59cb8;
+            margin-top: 2px;
+        }
+
         .btn-gerar {
             width: 100%;
             padding: 15px;
@@ -188,6 +281,38 @@
                 </select>
             </div>
 
+            <div class="input-group">
+                <label>Formato do Convite</label>
+                <div class="radio-cards-container">
+                    <label class="radio-card">
+                        <input type="radio" name="tipo_convite" value="individual" checked onchange="toggleGrupoOptions()">
+                        <span class="card-title">👤 Individual</span>
+                        <span class="card-description">Apenas uma pessoa. Agendamento direto.</span>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="tipo_convite" value="grupo" onchange="toggleGrupoOptions()">
+                        <span class="card-title">👥 Em Grupo</span>
+                        <span class="card-description">Múltiplos amigos com votação de sugestões.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="opcoes_grupo" class="grupo-options-box">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="permitir_votacao" name="permitir_votacao" value="true" checked>
+                    <div class="checkbox-label-text">
+                        Permitir votação e contraproposta?
+                        <span class="checkbox-subtext">Se alguém discordar, poderá propor uma alternativa de horário/local.</span>
+                    </div>
+                </label>
+                
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label for="emails_grupo">E-mails do grupo (separados por vírgula)</label>
+                    <input type="text" id="emails_grupo" class="input-field" placeholder="amigo1@email.com, amigo2@email.com">
+                </div>
+            </div>
+
             <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
         </div>
 
@@ -202,25 +327,51 @@
     </div>
 
     <script>
+        // NOVA FUNÇÃO: Exibe ou esconde as configurações extras do grupo de forma limpa e inteligente
+        function toggleGrupoOptions() {
+            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
+            const opcoesGrupo = document.getElementById('opcoes_grupo');
+            
+            if (tipoConvite === 'grupo') {
+                opcoesGrupo.style.display = 'block';
+            } else {
+                opcoesGrupo.style.display = 'none';
+            }
+        }
+
         function gerarLink() {
             const nome = document.getElementById('nome-criador').value.trim();
             let contato = document.getElementById('contato-criador').value.trim();
             const ocasiao = document.getElementById('ocasiao-convite').value;
+            
+            // ATUALIZADO: Coletando novos campos do formulário para enviar ao back-end
+            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
+            const permitirVotacao = document.getElementById('permitir_votacao').checked;
+            const emailsGrupo = document.getElementById('emails_grupo').value.trim();
 
             if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
             if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
+            
+            // Validação simples: Se for grupo, exige que preencha ao menos um e-mail participante
+            if (tipoConvite === 'grupo' && !emailsGrupo) {
+                alert('Por favor, insira pelo menos um e-mail para os participantes do grupo! 👥');
+                return;
+            }
 
             // Remove parênteses, traços e espaços do WhatsApp para evitar quebras de link no final
             contato = contato.replace(/\D/g, '');
 
-            // Envia a configuração para o Backend incluindo a nova propriedade "ocasiao"
+            // Envia a configuração para o Backend incluindo a propriedade "ocasiao" e novos parâmetros de grupo
             fetch('/api/criar-convite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     nomeCriador: nome,
                     whatsappCriador: contato,
-                    ocasiao: ocasiao // Enviando a ocasião selecionada
+                    ocasiao: ocasiao, // Enviando a ocasião selecionada
+                    tipoConvite: tipoConvite, // NOVO: "individual" ou "grupo"
+                    permitirVotacao: permitirVotacao, // NOVO: true ou false
+                    emailsGrupo: emailsGrupo // NOVO: String crua com os e-mails separados por vírgula
                 })
             })
             .then(res => res.json())
