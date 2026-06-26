@@ -29,18 +29,17 @@ mongoose.connect(MONGODB_URI || 'mongodb://127.0.0.1:27017/convites_db')
     .then(() => console.log('Conectado ao MongoDB com sucesso! ??')) // Executado em caso de sucesso
     .catch(err => console.error('Erro crítico ao conectar ao MongoDB:', err)); // Captura falhas de conexão
 
-// MODELO ATUALIZADO (SCHEMA): Suporta fluxos individuais e dinâmicas de votação em grupo
+// MODELO ATUALIZADO (SCHEMA): Suporta fluxos individuais e dinâmicas de votação em grupo via WhatsApp
 const ConviteSchema = new mongoose.Schema({
     nomeCriador: String,       // Nome de quem gerou o link do evento
     whatsappCriador: String,   // Número do criador para controle de envio/dados
     ocasiao: { type: String, default: 'date' }, // Tipo do evento (date, resenha, girls-night, etc.)
     
-    // NOVOS CAMPOS PARA GRUPO:
+    // CAMPOS DE CONTROLE DO FORMATO:
     tipoConvite: { type: String, default: 'individual' }, // 'individual' ou 'grupo'
     permitirVotacao: { type: Boolean, default: true },   // Ativa sistema de contrapropostas
-    emailsGrupo: { type: String, default: '' },          // String crua com e-mails dos participantes
     
-    // Lista acumulativa de respostas / votos recebidos
+    // Lista acumulativa de respostas / votos recebidos dos amigos
     respostas: [{
         nomeParticipante: String, // Nome ou apelido inserido pelo convidado na nova tela
         date: String,             // Data escolhida ou aceita
@@ -48,7 +47,7 @@ const ConviteSchema = new mongoose.Schema({
         food: String,             // Comidas/bebidas marcadas por ele
         activity: String,         // Atividades/vibe selecionadas por ele
         
-        // NOVOS CAMPOS DE VOTAÇÃO:
+        // CAMPOS DE VOTAÇÃO COLETIVA:
         votoConcorda: { type: Boolean, default: true }, // true = aceitou sugestão anterior | false = contraproposta
         sugestaoAlternativa: { type: String, default: '' }, // Caso recuse, detalha o que sugere de novo
         
@@ -67,24 +66,22 @@ app.post('/api/criar-convite', async (req, res) => {
         const whatsappCriador = req.body.whatsappCriador || (req.body.criador && req.body.criador.contactInfo);
         const ocasiao = req.body.ocasiao || 'date'; 
         
-        // NOVOS PARAMETROS: Resgata as preferências estruturadas do formato de grupo
+        // PARAMETROS DE CONFIGURAÇÃO: Resgata se o fluxo é individual ou focado em grupos no WhatsApp
         const tipoConvite = req.body.tipoConvite || 'individual';
         const permitirVotacao = req.body.permitirVotacao !== undefined ? req.body.permitirVotacao : true;
-        const emailsGrupo = req.body.emailsGrupo || '';
 
         // Barra a execução se os parâmetros vitais não forem encaminhados no corpo da requisição
         if (!nomeCriador || !whatsappCriador) {
             return res.status(400).json({ sucesso: false, erro: "Dados incompletos." });
         }
 
-        // Instancia um novo documento no banco incluindo as propriedades configuradas para grupos ou individuais
+        // Instancia um novo documento no banco incluindo as propriedades configuradas para o rolê
         const novoConvite = new Convite({
             nomeCriador,
             whatsappCriador,
             ocasiao,
             tipoConvite,
-            permitirVotacao,
-            emailsGrupo
+            permitirVotacao
         });
 
         // Grava fisicamente as informações na coleção correspondente do MongoDB Atlas
@@ -107,13 +104,12 @@ app.get('/api/convite/:id', async (req, res) => {
         // Se o ID não existir na base de dados, encerra com o status HTTP 404 (Não Encontrado)
         if (!convite) return res.status(404).json({ erro: "Não encontrado" });
         
-        // ATUALIZADO: Devolve as regras do grupo e o histórico de respostas para montar a timeline/votação
+        // Devolve as regras do grupo e o histórico de respostas para montar a timeline/votação na index.html
         res.json({ 
             nomeCriador: convite.nomeCriador,
             ocasiao: convite.ocasiao || 'date',
             tipoConvite: convite.tipoConvite || 'individual',
             permitirVotacao: convite.permitirVotacao,
-            emailsGrupo: convite.emailsGrupo,
             respostas: convite.respostas // Envia o array para o front renderizar as escolhas anteriores
         });
     } catch (err) {
@@ -122,12 +118,12 @@ app.get('/api/convite/:id', async (req, res) => {
     }
 });
 
-// ROTA POST ATUALIZADA: Computa a resposta (seja voto individual padrão, aceitação de grupo ou contraproposta)
+// ROTA POST: Computa a resposta (seja voto individual padrão, aceitação de grupo ou contraproposta)
 app.post('/api/salvar-date/:id', async (req, res) => {
     try {
         const id = req.params.id; // Extrai o ID do convite a partir dos parâmetros da URL
         
-        // Desestrutura os parâmetros mapeados incluindo os novos controles de fluxo de votação
+        // Desestrutura os parâmetros mapeados incluindo os controles de fluxo de votação
         const { 
             nomeParticipante, 
             date, 

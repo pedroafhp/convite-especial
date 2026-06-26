@@ -88,7 +88,6 @@
             transition: all 0.3s;
         }
 
-        /* Estilização para o elemento select */
         select.input-field {
             cursor: pointer;
             appearance: none;
@@ -108,7 +107,6 @@
             box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
         }
 
-        /* Estilização dos Cards de Escolha (Individual vs Grupo) */
         .radio-cards-container {
             display: flex;
             gap: 12px;
@@ -139,7 +137,6 @@
             border-color: rgba(255, 42, 109, 0.4);
         }
 
-        /* Quando o card de rádio for selecionado pelo usuário */
         .radio-card:has(input[type="radio"]:checked) {
             border-color: #ff2a6d;
             background: linear-gradient(135deg, rgba(255, 42, 109, 0.1) 0%, rgba(155, 0, 232, 0.05) 100%);
@@ -159,7 +156,6 @@
             line-height: 1.3;
         }
 
-        /* Estilização do Bloco de Opções do Grupo */
         .grupo-options-box {
             display: none;
             margin-top: 10px;
@@ -179,7 +175,7 @@
             align-items: flex-start;
             gap: 10px;
             cursor: pointer;
-            margin-bottom: 14px;
+            margin-bottom: 5px;
             user-select: none;
         }
 
@@ -199,6 +195,17 @@
             font-size: 11px;
             color: #b59cb8;
             margin-top: 2px;
+        }
+
+        .info-whatsapp-grupo {
+            font-size: 12px;
+            color: #ccb9d1;
+            line-height: 1.4;
+            margin-top: 12px;
+            background: rgba(155, 0, 232, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed rgba(155, 0, 232, 0.3);
         }
 
         .btn-gerar {
@@ -221,7 +228,6 @@
             transform: scale(0.98);
         }
 
-        /* Bloco do Link Gerado */
         .resultado-container {
             display: none;
             margin-top: 20px;
@@ -249,6 +255,34 @@
 
         .link-box:hover {
             background-color: rgba(255, 42, 109, 0.05);
+        }
+
+        .btn-whatsapp-share {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn-whatsapp-share:hover {
+            background-color: #1ebd58;
+        }
+
+        .btn-whatsapp-share:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -307,9 +341,8 @@
                     </div>
                 </label>
                 
-                <div class="input-group" style="margin-bottom: 0;">
-                    <label for="emails_grupo">E-mails do grupo (separados por vírgula)</label>
-                    <input type="text" id="emails_grupo" class="input-field" placeholder="amigo1@email.com, amigo2@email.com">
+                <div class="info-whatsapp-grupo">
+                    📢 <strong>Fluxo do Grupo ativado:</strong> O sistema gerará um link de votação coletiva para você disparar direto no grupo de WhatsApp dos seus amigos!
                 </div>
             </div>
 
@@ -318,16 +351,19 @@
 
         <div class="resultado-container" id="resultado">
             <div class="header" style="margin-top: 15px;">
-                <h1 style="font-size: 18px;">Seu Link está Pronto! ✨</h1>
-                <p style="font-size: 12px; margin-bottom: 10px;">Copie e envie para a pessoa especial:</p>
+                <h1 style="font-size: 18px;" id="titulo-sucesso">Seu Link está Pronto! ✨</h1>
+                <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para a pessoa especial:</p>
             </div>
             <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
             <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
+            
+            <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">
+                📲 Compartilhar no WhatsApp
+            </a>
         </div>
     </div>
 
     <script>
-        // NOVA FUNÇÃO: Exibe ou esconde as configurações extras do grupo de forma limpa e inteligente
         function toggleGrupoOptions() {
             const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
             const opcoesGrupo = document.getElementById('opcoes_grupo');
@@ -344,34 +380,24 @@
             let contato = document.getElementById('contato-criador').value.trim();
             const ocasiao = document.getElementById('ocasiao-convite').value;
             
-            // ATUALIZADO: Coletando novos campos do formulário para enviar ao back-end
             const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
             const permitirVotacao = document.getElementById('permitir_votacao').checked;
-            const emailsGrupo = document.getElementById('emails_grupo').value.trim();
 
             if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
             if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
-            
-            // Validação simples: Se for grupo, exige que preencha ao menos um e-mail participante
-            if (tipoConvite === 'grupo' && !emailsGrupo) {
-                alert('Por favor, insira pelo menos um e-mail para os participantes do grupo! 👥');
-                return;
-            }
 
-            // Remove parênteses, traços e espaços do WhatsApp para evitar quebras de link no final
-            contato = contato.replace(/\D/g, '');
+            contato = contact.replace(/\D/g, '');
 
-            // Envia a configuração para o Backend incluindo a propriedade "ocasiao" e novos parâmetros de grupo
             fetch('/api/criar-convite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     nomeCriador: nome,
                     whatsappCriador: contato,
-                    ocasiao: ocasiao, // Enviando a ocasião selecionada
-                    tipoConvite: tipoConvite, // NOVO: "individual" ou "grupo"
-                    permitirVotacao: permitirVotacao, // NOVO: true ou false
-                    emailsGrupo: emailsGrupo // NOVO: String crua com os e-mails separados por vírgula
+                    ocasiao: ocasiao,
+                    tipoConvite: tipoConvite,
+                    permitirVotacao: permitirVotacao,
+                    emailsGrupo: "" // Enviando vazio para manter compatibilidade com o modelo do backend
                 })
             })
             .then(res => res.json())
@@ -381,9 +407,29 @@
                     const linkFinal = `${baseURl}/index.html?id=${data.id}`;
                     
                     document.getElementById('link-gerado').innerText = linkFinal;
+                    
+                    // Modifica os textos de sucesso baseados na escolha (Individual vs Grupo)
+                    const titulo = document.getElementById('titulo-sucesso');
+                    const subtitulo = document.getElementById('subtitulo-sucesso');
+                    const btnWhats = document.getElementById('btn-whatsapp');
+                    
+                    let mensagemWhats = "";
+                    
+                    if (tipoConvite === 'grupo') {
+                        titulo.innerText = "Votação do Grupo Criada! 🔥";
+                        subtitulo.innerText = "Envie este link no grupo para a galera votar:";
+                        mensagemWhats = `Bora decidir o nosso próximo rolê? Votem nas opções de data/local aqui: ${linkFinal}`;
+                    } else {
+                        titulo.innerText = "Seu Link está Pronto! ✨";
+                        subtitulo.innerText = "Copie e envie para a pessoa especial:";
+                        mensagemWhats = `Criei um convite especial para você, olha só: ${linkFinal}`;
+                    }
+                    
+                    // Configura a URL de compartilhamento direto do WhatsApp API
+                    btnWhats.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
+                    
                     document.getElementById('resultado').style.display = 'block';
                     
-                    // Reseta texto de feedback
                     document.getElementById('feedback-copiar').innerText = "Toque no link acima para copiar";
                     document.getElementById('feedback-copiar').style.color = "#b59cb8";
                 } else {
