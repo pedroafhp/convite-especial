@@ -489,7 +489,6 @@
         let nomeDonoDoLink = 'Alguém'; 
         let whatsappCriadorLink = '';
         
-        // NOVAS VARIÁVEIS ADAPTADAS PARA O MODO COLETIVO:
         let configTipoConvite = 'individual'; 
         let nomeDoParticipanteAtual = '';
 
@@ -565,7 +564,7 @@
             }
         };
 
-        // CAPTURA DO PARÂMETRO ID
+        // CAPTURA DO PARÂMETRO ID DO LINK
         const urlParams = new URLSearchParams(window.location.search);
         const idConvite = urlParams.get('id');
 
@@ -577,12 +576,17 @@
                         nomeDonoDoLink = data.nomeCriador; 
                         tipoOcasiao = data.ocasiao || 'date'; 
                         configTipoConvite = data.tipoConvite || 'individual';
+                        whatsappCriadorLink = data.whatsappCriador || '';
                         
                         aplicarConfiguracaoOcasiao(tipoOcasiao);
                         
-                        // FLUXO COLETIVO DE GRUPO: Intercepta e altera o comportamento inicial
+                        // CORREÇÃO AQUI: Só ativa interface de grupo se o tipo do convite for "grupo"
                         if (configTipoConvite === 'grupo') {
                             configurarInterfaceGrupo(data.respostas || []);
+                        } else {
+                            // Se for individual, garante que começa direto na Tela 1 tradicional
+                            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                            document.getElementById('screen-1').classList.add('active');
                         }
                     }
                 }).catch(err => console.error("Erro ao carregar dados do convite:", err));
@@ -594,8 +598,7 @@
         function configurarInterfaceGrupo(respostasAnteriores) {
             // 1. Troca a tela visível inicial para a captura de Nome (Tela 0)
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-0').add; 
-            document.getElementById('screen-0').classList.add('active');
+            document.getElementById('screen-0').classList.add('active'); // CORRIGIDO (Removido o .add quebrado)
 
             // 2. Modifica a pergunta na Tela 1 para tirar a exclusividade romântica de "comigo"
             document.getElementById('titulo-dinamico').innerText = `${nomeDonoDoLink} está chamando o grupo para um evento! Bora participar?`;
@@ -631,7 +634,7 @@
                 return;
             }
             nomeDoParticipanteAtual = nomeInput;
-            nextScreen(1); // Vai para o convite principal
+            nextScreen(1); // Vai para o convite principal (Tela 1)
         }
 
         function prosseguirGrupoComVoto() {
@@ -647,7 +650,7 @@
             document.getElementById('campo-contraproposta').style.display = 'block';
         }
 
-        // SALVA VOTO RÁPIDO DO GRUPO NO BANCO (CONCORDA / REJEITA COM CONTRAPROPOSTA)
+        // SALVA VOTO RÁPIDO DO GRUPO NO BANCO
         function votarGrupo(concorda) {
             let sugestao = '';
             if (!concorda) {
@@ -677,8 +680,8 @@
             .then(data => {
                 if (data.sucesso) {
                     alert('Seu voto foi registrado com sucesso! Se quiser customizar suas comidas e vibes favoritas para o organizador ver, continue nas próximas telas.');
-                    whatsappCriadorLink = data.whatsappCriador;
-                    // Habilita o avanço se eles quiserem preencher o resto do formulário
+                    if(data.whatsappCriador) whatsappCriadorLink = data.whatsappCriador;
+                    
                     document.getElementById('wrapper-votacao-grupo').style.display = 'none';
                     document.getElementById('btn-avancar-fluxo-padrao').style.display = 'block';
                     nextScreen(3);
@@ -711,148 +714,116 @@
         }
 
         function renderizarGrid(elementId, items, type) {
-            const grid = document.getElementById(elementId);
-            grid.innerHTML = ''; 
-            
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
             items.forEach(item => {
-                const box = document.createElement('div');
-                box.className = 'option-box';
-                box.onclick = function() { toggleOption(this, type, item.label); };
-                box.innerHTML = `<span class="icon">${item.icon}</span><span class="label">${item.label}</span>`;
-                grid.appendChild(box); 
+                const div = document.createElement('div');
+                div.className = 'option-box';
+                div.onclick = () => toggleSelectOption(div, item.label, type);
+                div.innerHTML = `<span class="icon">${item.icon}</span><span class="label">${item.label}</span>`;
+                container.appendChild(div);
             });
         }
 
-        // ENGENHARIA DE CORAÇÕES FLUTUANTES
-        const bg = document.getElementById('hearts-bg');
-        const heartIcons = ['🖤', '❤️', '💕', '💖'];
-        for (let i = 0; i < 12; i++) {
-            let heart = document.createElement('div');
-            heart.className = 'heart-icon';
-            heart.innerText = heartIcons[Math.floor(Math.random() * heartIcons.length)];
-            heart.style.left = Math.random() * 100 + '%';
-            heart.style.animationDelay = Math.random() * 6 + 's';
-            heart.style.fontSize = (Math.random() * 12 + 16) + 'px'; 
-            bg.appendChild(heart);
+        function toggleSelectOption(element, label, type) {
+            element.classList.toggle('selected');
+            const isSelected = element.classList.contains('selected');
+            const arr = type === 'food' ? selectedFoods : selectedActivities;
+            
+            if (isSelected) {
+                arr.push(label);
+            } else {
+                const idx = arr.indexOf(label);
+                if (idx > -1) arr.splice(idx, 1);
+            }
+
+            if (type === 'food') {
+                document.getElementById('campo-outros-comida').style.display = selectedFoods.includes('Outros') ? 'block' : 'none';
+            } else {
+                document.getElementById('campo-outros-vibe').style.display = selectedActivities.includes('Outros') ? 'block' : 'none';
+            }
         }
 
-        function nextScreen(screenNum) {
+        function nextScreen(num) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + screenNum).classList.add('active');
+            document.getElementById(`screen-${num}`).classList.add('active');
         }
 
         function fugirBotao() {
-            const btnNao = document.getElementById('btn-nao');
-            const maxX = 60; 
-            const maxY = 30; 
-            const randomX = (Math.random() - 0.5) * maxX * 2;
-            const randomY = (Math.random() - 0.5) * maxY * 2;
-            btnNao.style.transform = `translate(${randomX}px, ${randomY}px)`;
-        }
-
-        function toggleOption(element, type, value) {
-            if (type === 'food') {
-                if (selectedFoods.includes(value)) {
-                    selectedFoods = selectedFoods.filter(item => item !== value);
-                    element.classList.remove('selected'); 
-                } else {
-                    selectedFoods.push(value);
-                    element.classList.add('selected'); 
-                }
-                
-                const campoOutrosComida = document.getElementById('campo-outros-comida');
-                if (selectedFoods.includes('Outros')) {
-                    campoOutrosComida.style.display = 'block';
-                } else {
-                    campoOutrosComida.style.display = 'none';
-                    document.getElementById('comida-outros-input').value = ''; 
-                }
-            }
-
-            if (type === 'activity') {
-                if (selectedActivities.includes(value)) {
-                    selectedActivities = selectedActivities.filter(item => item !== value);
-                    element.classList.remove('selected');
-                } else {
-                    selectedActivities.push(value);
-                    element.classList.add('selected');
-                }
-
-                const campoOutrosVibe = document.getElementById('campo-outros-vibe');
-                if (selectedActivities.includes('Outros')) {
-                    campoOutrosVibe.style.display = 'block';
-                } else {
-                    campoOutrosVibe.style.display = 'none';
-                    document.getElementById('vibe-outros-input').value = '';
-                }
-            }
+            if (configTipoConvite === 'grupo') return; // Bloqueia fuga no modo grupo
+            const btn = document.getElementById('btn-nao');
+            const randomX = Math.floor(Math.random() * 160) - 80;
+            const randomY = Math.floor(Math.random() * 160) - 80;
+            btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
         }
 
         function validateScreen3() {
-            const dateVal = document.getElementById('date-input').value;
-            const timeVal = document.getElementById('time-input').value;
-            
-            if (!dateVal) { alert('Por favor, selecione uma data!'); return; }
-            
-            const dateObj = new Date(dateVal + 'T00:00:00');
-            const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' });
-            
-            dateSelections.date = formattedDate;
-            dateSelections.time = timeVal;
-            nextScreen(4); 
+            const date = document.getElementById('date-input').value;
+            const time = document.getElementById('time-input').value;
+            if (!date || !time) {
+                alert('Por favor, informe a data e o horário! 🗓️');
+                return;
+            }
+            dateSelections.date = date.split('-').reverse().join('/');
+            dateSelections.time = time;
+            nextScreen(4);
         }
 
         function validateScreen4() {
-            if (selectedFoods.length === 0) { alert('Escolha pelo menos uma opção! 😋'); return; }
-            
-            let comidasFormatadas = [...selectedFoods]; 
-            if (comidasFormatadas.includes('Outros')) {
-                const textoDigitado = document.getElementById('comida-outros-input').value.trim();
-                if (!textoDigitado) { alert('Preencha a sua sugestão de comida! ✍️'); return; }
-                comidasFormatadas = comidasFormatadas.map(item => item === 'Outros' ? `Outros (${textoDigitado})` : item);
+            if (selectedFoods.length === 0) {
+                alert('Escolha pelo menos uma opção ou selecione "Outros"!');
+                return;
             }
-            
-            dateSelections.food = comidasFormatadas.join(', ');
+            let list = [...selectedFoods];
+            if (list.includes('Outros')) {
+                const outrosVal = document.getElementById('comida-outros-input').value.trim();
+                if (outrosVal) {
+                    list[list.indexOf('Outros')] = outrosVal;
+                }
+            }
+            dateSelections.food = list.join(', ');
             nextScreen(5);
         }
 
-        // COMPLEMENTO DA TELA 5 E MONTAGEM DO SUMMARY (TELA 6)
         function validateScreen5() {
-            if (selectedActivities.length === 0) { alert('Escolha pelo menos uma atividade! ✨'); return; }
-            
-            let atividadesFormatadas = [...selectedActivities];
-            if (atividadesFormatadas.includes('Outros')) {
-                const textoDigitado = document.getElementById('vibe-outros-input').value.trim();
-                if (!textoDigitado) { alert('Preencha a sua sugestão de atividade! 🗺️'); return; }
-                atividadesFormatadas = atividadesFormatadas.map(item => item === 'Outros' ? `Outros (${textoDigitado})` : item);
+            if (selectedActivities.length === 0) {
+                alert('Selecione pelo menos uma vibe para continuar!');
+                return;
             }
-            
-            dateSelections.activity = atividadesFormatadas.join(', ');
-
-            // Atualiza os campos visuais do Summary na Tela 6
-            document.getElementById('sum-date').innerText = dateSelections.date;
-            document.getElementById('sum-time').innerText = dateSelections.time + "h";
-            document.getElementById('sum-food').innerText = dateSelections.food;
-            document.getElementById('sum-activity').innerText = dateSelections.activity;
-
+            let list = [...selectedActivities];
+            if (list.includes('Outros')) {
+                const outrosVal = document.getElementById('vibe-outros-input').value.trim();
+                if (outrosVal) {
+                    list[list.indexOf('Outros')] = outrosVal;
+                }
+            }
+            dateSelections.activity = list.join(', ');
+            montarResumoFinal();
             nextScreen(6);
         }
 
-        // ENVIO DOS DADOS COMPLETOS AO BACKEND
+        function montarResumoFinal() {
+            document.getElementById('sum-date').innerText = dateSelections.date;
+            document.getElementById('sum-time').innerText = dateSelections.time;
+            document.getElementById('sum-food').innerText = dateSelections.food;
+            document.getElementById('sum-activity').innerText = dateSelections.activity;
+        }
+
         function enviarDadosBackend() {
-            // Se não capturou nome ainda por ser individual, usa uma assinatura padrão amigável
-            const assinaturaFinal = nomeDoParticipanteAtual || "Seu Convidado";
+            document.getElementById('status-texto').innerText = "Enviando dados de confirmação...";
+            
+            const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
+            const nomeQuemRespondeu = configTipoConvite === 'grupo' ? nomeDoParticipanteAtual : 'A pessoa especial';
 
             const payload = {
-                nomeParticipante: assinaturaFinal,
+                nomeParticipante: nomeQuemRespondeu,
+                votoConcorda: true,
+                sugestaoAlternativa: 'Resumo completo preenchido',
                 date: dateSelections.date,
                 time: dateSelections.time,
                 food: dateSelections.food,
-                activity: dateSelections.activity,
-                votoConcorda: true
+                activity: dateSelections.activity
             };
-
-            document.getElementById('status-texto').innerText = "Salvando no banco de dados...";
 
             fetch(`/api/salvar-date/${idConvite}`, {
                 method: 'POST',
@@ -861,59 +832,53 @@
             })
             .then(res => res.json())
             .then(data => {
-                if (data.sucesso) {
-                    document.getElementById('status-texto').innerText = "Salvo com sucesso! Abrindo WhatsApp...";
-                    whatsappCriadorLink = data.whatsappCriador;
-                    dispararWhatsApp(assinaturaFinal);
-                } else {
-                    document.getElementById('status-texto').innerText = "Erro ao processar salvamento.";
-                }
+                document.getElementById('status-texto').innerText = "Pronto! Abrindo WhatsApp...";
+                
+                const fone = whatsappCriadorLink || data.whatsappCriador || '';
+                const msg = `*${config.textoWhats}*\n\n` +
+                            `👤 *Quem:* ${nomeQuemRespondeu}\n` +
+                            `📅 *Data:* ${dateSelections.date}\n` +
+                            `⏰ *Horário:* ${dateSelections.time}\n` +
+                            `🍽️ *Cardápio:* ${dateSelections.food}\n` +
+                            `✨ *Vibe:* ${dateSelections.activity}`;
+
+                window.open(`https://api.whatsapp.com/send?phone=${fone}&text=${encodeURIComponent(msg)}`, '_blank');
             })
             .catch(err => {
                 console.error(err);
-                document.getElementById('status-texto').innerText = "Erro de conexão com o servidor.";
+                document.getElementById('status-texto').innerText = "Erro ao salvar no banco. Abrindo WhatsApp direto...";
+                const msg = `*Confirmação de Rolê*\n\n📅 *Data:* ${dateSelections.date}\n⏰ *Horário:* ${dateSelections.time}\n🍽️ *Cardápio:* ${dateSelections.food}\n✨ *Vibe:* ${dateSelections.activity}`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
             });
         }
 
-        // OPERAÇÃO DE REDIRECIONAMENTO COM TEXTO DO WHATSAPP
-        function dispararWhatsApp(nomeAutor) {
-            const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
+        function criarEventoAgenda() {
+            const [dia, mes, ano] = dateSelections.date.split('/');
+            const [hora, min] = dateSelections.time.split(':');
             
-            let mensagem = `Olá ${nomeDonoDoLink}! *${nomeAutor}* respondeu ao seu convite da categoria [${tipoOcasiao.toUpperCase()}].\n\n`;
-            mensagem += `📅 Data: ${dateSelections.date}\n`;
-            mensagem += `⏰ Horário: ${dateSelections.time}\n`;
-            mensagem += `🍽️ Cardápio: ${dateSelections.food}\n`;
-            mensagem += `✨ Opções: ${dateSelections.activity}\n\n`;
-            mensagem += `Link do painel de respostas: ${window.location.origin}/respostas.html?id=${idConvite}`;
+            const dataInicio = new Date(ano, mes - 1, dia, hora, min);
+            const dataFim = new Date(dataInicio.getTime() + (3 * 60 * 60 * 1000)); // +3 horas
 
-            const urlWhats = `https://api.whatsapp.com/send?phone=${whatsappCriadorLink}&text=${encodeURIComponent(mensagem)}`;
-            window.open(urlWhats, '_blank');
+            const isoInicio = dataInicio.toISOString().replace(/-|:|\.\d\d\d/g, "");
+            const isoFim = dataFim.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+            const titulo = `Rolê com ${nomeDonoDoLink} (${tipoOcasiao.toUpperCase()})`;
+            const detalhes = `Cardápio escolhido: ${dateSelections.food}\nProgramação: ${dateSelections.activity}`;
+
+            const urlGoogleCalendar = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&dates=${isoInicio}/${isoFim}&details=${encodeURIComponent(detalhes)}`;
+            window.open(urlGoogleCalendar, '_blank');
         }
 
-        // CRIAÇÃO DE ARQUIVO .ICS PARA AGENDA DO CELULAR
-        function criarEventoAgenda() {
-            const titulo = `Rolê com ${nomeDonoDoLink} (${tipoOcasiao.toUpperCase()})`;
-            const descricao = `Combinado via Convite Especial. Detalhes: ${dateSelections.food} e ${dateSelections.activity}`;
-            
-            const conteudoIcs = [
-                "BEGIN:VCALENDAR",
-                "VERSION:2.0",
-                "BEGIN:VEVENT",
-                `SUMMARY:${titulo}`,
-                `DESCRIPTION:${descricao}`,
-                "DTSTART;VALUE=DATE:20261025", // Fallback padrão fixado para o ano corrente de 2026
-                "DTEND;VALUE=DATE:20261026",
-                "END:VEVENT",
-                "END:VCALENDAR"
-            ].join("\n");
-
-            const blob = new Blob([conteudoIcs], { type: 'text/calendar;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute('download', 'lembrete_role.ics');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        // Cria corações estáticos e flutuantes de fundo
+        const bg = document.getElementById('hearts-bg');
+        for (let i = 0; i < 15; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart-icon';
+            heart.innerText = '🌹';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 6 + 's';
+            heart.style.fontSize = Math.floor(Math.random() * 15) + 15 + 'px';
+            bg.appendChild(heart);
         }
     </script>
 </body>
