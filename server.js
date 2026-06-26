@@ -31,7 +31,7 @@ mongoose.connect(MONGODB_URI || 'mongodb://127.0.0.1:27017/convites_db')
 
 // MODELO ATUALIZADO (SCHEMA): Suporta fluxos individuais e dinâmicas de votação em grupo via WhatsApp
 const ConviteSchema = new mongoose.Schema({
-    nomeCriador: String,       // Nome de quem gerou o link do evento
+    nomeCriador: String,       // Nome de quem gerou o link original (link do grupo)
     whatsappCriador: String,   // Número do criador para controle de envio/dados
     ocasiao: { type: String, default: 'date' }, // Tipo do evento (date, resenha, girls-night, etc.)
     
@@ -41,15 +41,14 @@ const ConviteSchema = new mongoose.Schema({
     
     // Lista acumulativa de respostas / votos recebidos dos amigos
     respostas: [{
-        nomeParticipante: String, // Nome ou apelido inserido pelo convidado na nova tela
-        date: String,             // Data escolhida ou aceita
-        time: String,             // Horário escolhido ou aceito
-        food: String,             // Comidas/bebidas marcadas por ele
+        nomeParticipante: String, // Nome inserido pelo convidado
+        date: String,             // Data escolhida (ou sugerida na contraproposta)
+        time: String,             // Horário escolhido (ou sugerido na contraproposta)
+        food: String,             // Comidas/bebidas marcadas por ele (string formatada ou array se tratar no front)
         activity: String,         // Atividades/vibe selecionadas por ele
         
         // CAMPOS DE VOTAÇÃO COLETIVA:
-        votoConcorda: { type: Boolean, default: true }, // true = aceitou sugestão anterior | false = contraproposta
-        sugestaoAlternativa: { type: String, default: '' }, // Caso recuse, detalha o que sugere de novo
+        votoConcorda: { type: Boolean, default: true }, // true = aceitou a proposta atual | false = abriu contraproposta
         
         respondidoEm: { type: Date, default: Date.now } // Data e hora automática do voto
     }]
@@ -58,36 +57,30 @@ const ConviteSchema = new mongoose.Schema({
 // Compila a estrutura do Schema criando o modelo manipulável chamado 'Convite'
 const Convite = mongoose.model('Convite', ConviteSchema);
 
-// ROTA POST: Criação do convite base (Página criar.html)
+// ROTA POST: Criação do link base do convite (Página criar.html)
+// Note que agora ele apenas inicializa o link do grupo. O primeiro que acessar cria a proposta oficial.
 app.post('/api/criar-convite', async (req, res) => {
     try {
-        // Captura os dados do criador aceitando variações de nomenclatura enviadas pelo frontend
         const nomeCriador = req.body.nomeCriador || (req.body.criador && req.body.criador.nome);
         const whatsappCriador = req.body.whatsappCriador || (req.body.criador && req.body.criador.contactInfo);
         const ocasiao = req.body.ocasiao || 'date'; 
-        
-        // PARAMETROS DE CONFIGURAÇÃO: Resgata se o fluxo é individual ou focado em grupos no WhatsApp
         const tipoConvite = req.body.tipoConvite || 'individual';
         const permitirVotacao = req.body.permitirVotacao !== undefined ? req.body.permitirVotacao : true;
 
-        // Barra a execução se os parâmetros vitais não forem encaminhados no corpo da requisição
         if (!nomeCriador || !whatsappCriador) {
             return res.status(400).json({ sucesso: false, erro: "Dados incompletos." });
         }
 
-        // Instancia um novo documento no banco incluindo as propriedades configuradas para o rolê
         const novoConvite = new Convite({
             nomeCriador,
             whatsappCriador,
             ocasiao,
             tipoConvite,
-            permitirVotacao
+            permitirVotacao,
+            respostas: [] // Nasce completamente vazio para aguardar o primeiro acesso
         });
 
-        // Grava fisicamente as informações na coleção correspondente do MongoDB Atlas
         await novoConvite.save();
-
-        // Responde ao criador fornecendo o ID hexadecimal exclusivo gerado de forma automática pelo banco
         res.json({ sucesso: true, id: novoConvite.id });
     } catch (err) {
         console.error("Erro na rota /api/criar-convite:", err);
@@ -98,48 +91,43 @@ app.post('/api/criar-convite', async (req, res) => {
 // ROTA GET: Carrega o contexto do rolê ao abrir o link do convidado (Página index.html)
 app.get('/api/convite/:id', async (req, res) => {
     try {
-        // Resgata o documento correspondente ao ID informado na barra de endereços (:id)
         const convite = await Convite.findById(req.params.id);
-        
-        // Se o ID não existir na base de dados, encerra com o status HTTP 404 (Não Encontrado)
         if (!convite) return res.status(404).json({ erro: "Não encontrado" });
         
-        // Devolve as regras do grupo e o histórico de respostas para montar a timeline/votação na index.html
+        // Regra de Grupo Dinâmica: se o array de respostas estiver vazio, indica que ninguém sugeriu nada ainda
+        const temSugestaoInicial = convite.tipoConvite === 'grupo' ? convite.respostas.length > 0 : true;
+
         res.json({ 
             nomeCriador: convite.nomeCriador,
             ocasiao: convite.ocasiao || 'date',
             tipoConvite: convite.tipoConvite || 'individual',
             permitirVotacao: convite.permitirVotacao,
-            respostas: convite.respostas // Envia o array para o front renderizar as escolhas anteriores
+            temSugestaoInicial: temSugestaoInicial, // Front-end usará isso para saber se abre direto o formulário de criação
+            sugestaoAtual: temSugestaoInicial ? convite.respostas[0] : null, // A primeira resposta gravada vira o padrão oficial do grupo
+            respostas: convite.respostas // Envia todo o histórico (inclusive as contrapropostas com nome de quem sugeriu)
         });
     } catch (err) {
-        // Trata erros de conversão de ID (caso digitem caracteres inválidos no parâmetro da URL)
         res.status(404).json({ erro: "Formato de ID inválido ou registro não encontrado." });
     }
 });
 
-// ROTA POST: Computa a resposta (seja voto individual padrão, aceitação de grupo ou contraproposta)
+// ROTA POST: Computa a resposta (Criadora inicial, aceitação ou contraproposta)
 app.post('/api/salvar-date/:id', async (req, res) => {
     try {
-        const id = req.params.id; // Extrai o ID do convite a partir dos parâmetros da URL
-        
-        // Desestrutura os parâmetros mapeados incluindo os controles de fluxo de votação
+        const id = req.params.id;
         const { 
             nomeParticipante, 
             date, 
             time, 
             food, 
             activity, 
-            votoConcorda, 
-            sugestaoAlternativa 
+            votoConcorda 
         } = req.body;
 
-        // Validação preventiva de segurança exigindo a assinatura do participante
         if (!nomeParticipante) {
             return res.status(400).json({ sucesso: false, erro: "O nome do participante é obrigatório." });
         }
 
-        // Monta o novo objeto de resposta de maneira condicional e flexível
         const novaResposta = {
             nomeParticipante,
             date,
@@ -147,31 +135,24 @@ app.post('/api/salvar-date/:id', async (req, res) => {
             food,
             activity,
             votoConcorda: votoConcorda !== undefined ? votoConcorda : true,
-            sugestaoAlternativa: sugestaoAlternativa || '',
-            respondidoEm: new Date() // Marca o carimbo de data/hora atual da resposta
+            respondidoEm: new Date()
         };
 
-        // Localiza e atualiza o documento aplicando a modificação via operador $push
         const conviteAtualizado = await Convite.findByIdAndUpdate(
             id,
-            {
-                // OPERADOR $push: "Empurra" o objeto construído para dentro do Array histórico de respostas
-                $push: { respostas: novaResposta }
-            },
-            { new: true } // Retorna o documento modificado pós-atualização para análise
+            { $push: { respostas: novaResposta } },
+            { new: true }
         );
 
-        // Retorna erro se o ID do convite acessado tiver sido deletado ou digitado errado
         if (!conviteAtualizado) {
             return res.status(404).json({ sucesso: false, erro: "Convite não encontrado." });
         }
 
-        // Responde com metadados do criador e o estado atualizado do array de respostas
         res.json({
             sucesso: true,
             nomeCriador: conviteAtualizado.nomeCriador,
             whatsappCriador: conviteAtualizado.whatsappCriador,
-            totalRespostas: conviteAtualizado.respostas.length // Útil para o front saber o tamanho do grupo atual
+            totalRespostas: conviteAtualizado.respostas.length
         });
     } catch (err) {
         console.error("Erro na rota /api/salvar-date:", err);
@@ -179,7 +160,7 @@ app.post('/api/salvar-date/:id', async (req, res) => {
     }
 });
 
-// Define a porta onde a aplicação vai escutar requisições (A porta do Render é dinâmica, localmente assume a 3000)
+// Define a porta onde a aplicação vai escutar requisições
 const PORT = process.env.PORT || 3000;
 
 // Inicializa efetivamente os serviços do servidor web

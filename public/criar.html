@@ -386,7 +386,6 @@
             if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
             if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
 
-            // CORRIGIDO: Variável correta agora limpa os números sem travar a execução
             contato = contato.replace(/\D/g, '');
 
             fetch('/api/criar-convite', {
@@ -418,7 +417,8 @@
                     if (tipoConvite === 'grupo') {
                         titulo.innerText = "Votação do Grupo Criada! 🔥";
                         subtitulo.innerText = "Envie este link no grupo para a galera votar:";
-                        mensagemWhats = `Bora decidir o nosso próximo rolê? Votem nas opções de data/local aqui: ${linkFinal}`;
+                        // AJUSTADO: Texto da mensagem alterado para indicar que quem entrar primeiro propõe
+                        mensagemWhats = `Bora decidir o nosso próximo rolê? O primeiro a acessar monta a proposta inicial e os outros votam! Acesse aqui: ${linkFinal}`;
                     } else {
                         titulo.innerText = "Seu Link está Pronto! ✨";
                         subtitulo.innerText = "Copie e envie para a pessoa especial:";
