@@ -386,7 +386,8 @@
             if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
             if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
 
-            contato = contact.replace(/\D/g, '');
+            // CORRIGIDO: Variável correta agora limpa os números sem travar a execução
+            contato = contato.replace(/\D/g, '');
 
             fetch('/api/criar-convite', {
                 method: 'POST',
@@ -397,7 +398,7 @@
                     ocasiao: ocasiao,
                     tipoConvite: tipoConvite,
                     permitirVotacao: permitirVotacao,
-                    emailsGrupo: "" // Enviando vazio para manter compatibilidade com o modelo do backend
+                    emailsGrupo: "" 
                 })
             })
             .then(res => res.json())
@@ -408,7 +409,6 @@
                     
                     document.getElementById('link-gerado').innerText = linkFinal;
                     
-                    // Modifica os textos de sucesso baseados na escolha (Individual vs Grupo)
                     const titulo = document.getElementById('titulo-sucesso');
                     const subtitulo = document.getElementById('subtitulo-sucesso');
                     const btnWhats = document.getElementById('btn-whatsapp');
@@ -425,7 +425,6 @@
                         mensagemWhats = `Criei um convite especial para você, olha só: ${linkFinal}`;
                     }
                     
-                    // Configura a URL de compartilhamento direto do WhatsApp API
                     btnWhats.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
                     
                     document.getElementById('resultado').style.display = 'block';
