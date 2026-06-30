@@ -519,7 +519,10 @@
             }
             nomeDoParticipanteAtual = nomeInput;
 
-            if (ehPrimeiroAcessoGrupo) {
+            // CORREÇÃO: Direciona o fluxo individual direto para o passo a passo (Tela 3)
+            if (configTipoConvite === 'individual') {
+                nextScreen(3); 
+            } else if (ehPrimeiroAcessoGrupo) {
                 nextScreen(3); 
             } else {
                 proseguirGrupoComVoto();
@@ -545,7 +548,6 @@
                 `;
             }
 
-            // CORREÇÃO ESSENCIAL: Os botões ganharam classes e estilizações limpas idênticas às imagens originais
             document.getElementById('container-botoes-votacao').innerHTML = `
                 <button class="btn-vote-sim" onclick="votarGrupoSim()" style="background:#ff2a6d; color:white; border:none; padding:14px 20px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:12px;">FECHADO! TOPO 💙</button>
                 <button class="btn-vote-nao" onclick="votarGrupoNao()" style="background:#250f31; color:white; border:1px solid rgba(255,42,109,0.3); padding:14px 20px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:12px;">MUDAR DETALHES 🗺️</button>
@@ -741,7 +743,8 @@
             const defineComoBase = ehPrimeiroAcessoGrupo;
 
             const payload = {
-                nomeParticipante: configTipoConvite === 'grupo' ? nomeDoParticipanteAtual : 'Convidado Individual',
+                // CORREÇÃO: Envia o nome real do participante digitado na tela inicial
+                nomeParticipante: nomeDoParticipanteAtual || 'Convidado Individual',
                 votoConcorda: ehPrimeiroAcessoGrupo, 
                 sugestaoAlternativa: ehPrimeiroAcessoGrupo ? 'Criou a Proposta Base' : 'Enviou uma Contraproposta alternativa',
                 ehPropostaBase: defineComoBase,
@@ -778,7 +781,7 @@
                 headlineWhats = ehPrimeiroAcessoGrupo ? 'Criei a sugestão inicial do nosso rolê em grupo! 🚀' : 'Enviei uma contraproposta para o rolê do grupo! 🔄';
             }
 
-            const identificador = configTipoConvite === 'grupo' ? `Fui eu, o(a) *${nomeDoParticipanteAtual}*` : 'Aceitei seu convite';
+            const identificador = configTipoConvite === 'grupo' ? `Fui eu, o(a) *${nomeDoParticipanteAtual}*` : `Fui eu, o(a) *${nomeDoParticipanteAtual}*`;
             const textoFormatado = 
                 `*${headlineWhats}*\n\n` +
                 `👤 ${identificador}\n` +
