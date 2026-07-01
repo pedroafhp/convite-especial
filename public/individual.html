@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Convite Especial ✨</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0d0614 0%, #0c0410 100%);
+            --primary-color: #ff2a6d;
+            --primary-hover: #e01b5a;
+            --purple-gradient: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%);
+            --card-bg: rgba(25, 12, 36, 0.75);
+            --border-color: rgba(255, 42, 109, 0.2);
+            --text-color: #ffffff;
+            --text-muted: #ccb9d1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; min-height: 100dvh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; position: relative; padding: 15px; }
+
+        #hearts-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 1; pointer-events: none; }
+        .heart-icon { position: absolute; bottom: -20px; pointer-events: none; opacity: 0.2; animation: floatUp linear infinite; }
+        @keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 0.3; } 100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; } }
+
+        .container { width: 100%; max-width: 420px; z-index: 2; display: flex; flex-direction: column; justify-content: center; }
+        
+        .screen { display: none !important; background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--border-color); border-radius: 30px; padding: 35px 24px; text-align: center; box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8); }
+        .screen.active { display: block !important; animation: fadeIn 0.4s ease-out forwards; }
+        #loading-screen.screen.active { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .emoji-header { font-size: 3.5rem; margin-bottom: 20px; display: flex; justify-content: center; gap: 12px; filter: drop-shadow(0 0 10px rgba(255, 42, 109, 0.4)); }
+        h2 { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; line-height: 1.3; }
+        p { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.4; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: #b59cb8; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .input-field { width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; color: white; font-size: 14px; outline: none; text-align: center; transition: border-color 0.3s; }
+        .input-field:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(255, 42, 109, 0.3); }
+
+        .btn { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; font-size: 15px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4); transition: transform 0.1s, background-color 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:active { transform: scale(0.98); }
+        .btn-gradient { background: var(--purple-gradient); box-shadow: 0 4px 15px rgba(155, 0, 232, 0.4); }
+
+        .wrapper-botoes-aceite { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 12px; margin-top: 10px; }
+        #btn-fuga-container { width: 100%; height: 50px; position: relative; display: flex; justify-content: center; align-items: center; }
+        #btn-grande-nao { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50px; padding: 14px; width: 100%; max-width: 140px; font-size: 14px; font-weight: 700; text-transform: uppercase; color: #ffffff; cursor: pointer; position: absolute; transition: all 0.1s ease-out; z-index: 10; }
+
+        .grid-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        .option-box { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 42, 109, 0.15); border-radius: 16px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: all 0.2s; }
+        .option-box:hover { border-color: rgba(255, 42, 109, 0.5); background: rgba(255, 42, 109, 0.05); }
+        .option-box.selected { border-color: #ff2a6d; background: linear-gradient(135deg, rgba(255, 42, 109, 0.15) 0%, rgba(155, 0, 232, 0.05) 100%); box-shadow: 0 0 10px rgba(255, 42, 109, 0.2); }
+        .option-box .icon { font-size: 26px; }
+        .option-box .label { font-size: 13px; font-weight: 600; }
+
+        .footer-interact { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255, 255, 255, 0.3); margin-top: 25px; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div id="hearts-bg"></div>
+
+    <div class="container">
+        
+        <div id="loading-screen" class="screen active">
+            <div class="emoji-header">✨</div>
+            <h2>A abrir convite...</h2>
+            <p>Por favor, aguarde um momento.</p>
+        </div>
+
+        <div id="screen-2" class="screen">
+            <div class="emoji-header" id="emoji-tela2">🥺😏🌹</div>
+            <h2 id="titulo-tela2">Carregando convite...</h2>
+            
+            <div class="wrapper-botoes-aceite">
+                <button class="btn btn-gradient" style="margin-bottom:0;" onclick="nextScreen(4)">Sim</button>
+                <div id="btn-fuga-container">
+                    <button id="btn-grande-nao" onmouseover="fugir()" onclick="fugir()" ontouchstart="fugir(event)">Não</button>
+                </div>
+            </div>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-4" class="screen">
+            <div class="emoji-header">📅</div>
+            <h2>Quando fica melhor?</h2>
+            <p>Escolha a data e o horário ideais.</p>
+            <div class="input-group">
+                <label>Data:</label>
+                <input type="date" id="date-input" class="input-field">
+            </div>
+            <div class="input-group">
+                <label>Horário:</label>
+                <input type="time" id="time-input" class="input-field">
+            </div>
+            <button class="btn btn-gradient" onclick="validarTelaData()">Definir Horário 🚀</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-5" class="screen">
+            <div class="emoji-header" id="emoji-tela5">🍔</div>
+            <h2 id="titulo-tela5">O que vamos comer?</h2>
+            <p>Selecione uma ou mais opções.</p>
+            <div class="grid-options" id="grid-comida"></div>
+            <button class="btn btn-gradient" onclick="validarTelaComida()">Confirmar Opções 🍕</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-6" class="screen">
+            <div class="emoji-header" id="emoji-tela6">✨</div>
+            <h2 id="titulo-tela6">Qual vai ser a vibe?</h2>
+            <p>Selecione os melhores complementos.</p>
+            <div class="grid-options" id="grid-atividade"></div>
+            <button class="btn btn-gradient" onclick="validarTelaVibe()">Concluir Detalhes 🎸</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-7" class="screen">
+            <div class="emoji-header">🥳</div>
+            <h2>Tudo Pronto!</h2>
+            <p>Suas escolhas foram registradas com sucesso!</p>
+            <button class="btn btn-gradient" onclick="finalizarFluxoEEnviarWhats()">Notificar no WhatsApp 💬</button>
+        </div>
+
+    </div>
+
+    <script>
+        const dicionarioOcasioes = {
+            'date': {
+                emojis: '🥺😏🌹', inviteText: '{criador} te chamou para um date! Você aceita?',
+                tituloTela5: "O que está a fim de comer? 🤔", tituloTela6: "Qual é a vibe do encontro? ✨",
+                comidas: [{icon: '🍔', label: 'Hambúrguer'}, {icon: '🍣', label: 'Sushi'}, {icon: '🍝', label: 'Massas'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍸', label: 'Drinks'}],
+                atividades: [{icon: '🍻', label: 'Barzinho'}, {icon: '🎬', label: 'Cinema'}, {icon: '☕', label: 'Café/Doceria'}, {icon: '🎸', label: 'Show'}, {icon: '🕯️', label: 'Jantar'}]
+            },
+            'resenha': {
+                emojis: '😎🍻🔥', inviteText: '{criador} te chamou para uma resenha! Bora encostar?',
+                tituloTela5: "O que vamos comer/beber? 🍻", tituloTela6: "Qual vai ser a programação? 🎲",
+                comidas: [{icon: '🥩', label: 'Churrasco'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍻', label: 'Cerveja/Drinks'}, {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍿', label: 'Petiscos'}],
+                atividades: [{icon: '🔊', label: 'Ouvir Som'}, {icon: '🎮', label: 'Jogar Game'}, {icon: '🃏', label: 'Cartas/Jogos'}, {icon: '⚽', label: 'Assistir Jogo'}, {icon: '🗣️', label: 'Só Fofocar'}]
+            },
+            'girls-night': {
+                emojis: '💅✨🍿', inviteText: '{criador} te chamou pra Noite das Meninas! Vamos?',
+                tituloTela5: "Qual vai ser o cardápio? 🍫", tituloTela6: "Qual vai ser a nossa vibe? 💆‍♀️",
+                comidas: [{icon: '🍕', label: 'Pizza'}, {icon: '🍫', label: 'Doces/Chocolates'}, {icon: '🍣', label: 'Sushi'}, {icon: '🥂', label: 'Vinho/Drinks'}, {icon: '🍿', label: 'Pipoca'}],
+                atividades: [{icon: '🗣️', label: 'Fofocar Muito'}, {icon: '🎬', label: 'Filme/Série'}, {icon: '💆‍♀️', label: 'Skin Care'}, {icon: '🎤', label: 'Karaokê'}, {icon: '📸', label: 'Sessão Fotos'}]
+            },
+            'outros': {
+                emojis: '🚀🗺️💙', inviteText: '{criador} te enviou um convite especial! Topa?',
+                tituloTela5: "O que seria bom comer? 😋", tituloTela6: "Qual é o plano principal? 🗺️",
+                comidas: [{icon: '🍔', label: 'Hambúrguer'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍦', label: 'Açaí/Sorvete'}, {icon: '🍽️', label: 'Restaurante'}],
+                atividades: [{icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍️', label: 'Shopping'}, {icon: '🎳', label: 'Boliche'}, {icon: '🏠', label: 'Rolê Caseiro'}]
+            }
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const conviteId = urlParams.get('id');
+        let dadosConviteServidor = null; 
+        let configOcasiaoAtual = dicionarioOcasioes['date'];
+        let itensComidaSelecionados = [];
+        let itensVibeSelecionados = [];
+        let planoColetadoForm = { date: '', time: '', food: '', activity: '' };
+
+        function carregarDadosDoConvite() {
+            if (!conviteId) return;
+            fetch(`/api/obter-convite/${conviteId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        dadosConviteServidor = data.convite;
+                        configOcasiaoAtual = dicionarioOcasioes[dadosConviteServidor.ocasiao] || dicionarioOcasioes['date'];
+                        document.getElementById('emoji-tela2').innerText = configOcasiaoAtual.emojis;
+                        document.getElementById('titulo-tela2').innerText = configOcasiaoAtual.inviteText.replace('{criador}', dadosConviteServidor.nomeCriador);
+                        nextScreen(2);
+                    }
+                }).catch(() => nextScreen(2));
+        }
+
+        function nextScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`screen-${screenNum}`);
+            if (target) target.classList.add('active');
+        }
+
+        function validarTelaData() {
+            const d = document.getElementById('date-input').value;
+            const h = document.getElementById('time-input').value;
+            if (!d || !h) { alert('Defina a data e o horário!'); return; }
+            const [ano, mes, dia] = d.split('-');
+            planoColetadoForm.date = `${dia}/${mes}/${ano}`;
+            planoColetadoForm.time = h;
+
+            document.getElementById('titulo-tela5').innerText = configOcasiaoAtual.tituloTela5;
+            renderGrid('grid-comida', configOcasiaoAtual.comidas, 'food');
+            nextScreen(5);
+        }
+
+        function renderGrid(boxId, itens, tipo) {
+            const container = document.getElementById(boxId);
+            container.innerHTML = '';
+            itens.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'option-box';
+                div.onclick = () => {
+                    div.classList.toggle('selected');
+                    const arr = tipo === 'food' ? itensComidaSelecionados : itensVibeSelecionados;
+                    const idx = arr.indexOf(item.label);
+                    if (idx > -1) arr.splice(idx, 1); else arr.push(item.label);
+                };
+                div.innerHTML = `<span class="icon">${item.icon}</span><span class="label">${item.label}</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function validarTelaComida() {
+            if (itensComidaSelecionados.length === 0) { alert('Selecione uma opção!'); return; }
+            planoColetadoForm.food = itensComidaSelecionados.join(', ');
+            document.getElementById('titulo-tela6').innerText = configOcasiaoAtual.tituloTela6;
+            renderGrid('grid-atividade', configOcasiaoAtual.atividades, 'vibe');
+            nextScreen(6);
+        }
+
+        function validarTelaVibe() {
+            if (itensVibeSelecionados.length === 0) { alert('Selecione uma opção!'); return; }
+            planoColetadoForm.activity = itensVibeSelecionados.join(', ');
+
+            fetch(`/api/convite/${conviteId}/propor`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nomeUser: 'Convidado', tipoConvite: 'individual',
+                    dataHora: `${planoColetadoForm.date} às ${planoColetadoForm.time}`,
+                    comida: planoColetadoForm.food, vibe: planoColetadoForm.activity
+                })
+            }).then(res => res.json()).then(data => {
+                if (data.sucesso) nextScreen(7);
+            });
+        }
+
+        function finalizarFluxoEEnviarWhats() {
+            const msg = `Aceito o convite! Defini os detalhes do nosso encontro! 🌹\n\n📅 Data: ${planoColetadoForm.date} às ${planoColetadoForm.time}\n🍕 Comida: ${planoColetadoForm.food}\n🎸 Vibe: ${planoColetadoForm.activity}`;
+            window.open(`https://api.whatsapp.com/send?phone=${dadosConviteServidor.whatsappCriador}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        const btnNao = document.getElementById('btn-grande-nao');
+        const containerFuga = document.getElementById('btn-fuga-container');
+        function fugir(e) {
+            if (e) e.preventDefault();
+            const cw = containerFuga.clientWidth;
+            const bw = btnNao.clientWidth;
+            let nTop = (Math.random() * 180) - 90;
+            let nLeft = (Math.random() * cw) - (cw / 2);
+            const lim = (cw / 2) - (bw / 2);
+            if (nLeft < -lim) nLeft = -lim; if (nLeft > lim) nLeft = lim;
+            btnNao.style.top = `${nTop}px`;
+            btnNao.style.left = `calc(50% - ${bw / 2}px + ${nLeft}px)`;
+        }
+
+        window.onload = () => {
+            carregarDadosDoConvite();
+            setInterval(() => {
+                if (document.hidden) return;
+                const m = document.createElement('div');
+                m.className = 'heart-icon';
+                m.innerText = ['❤️', '💖', '✨'][Math.floor(Math.random() * 3)];
+                m.style.left = Math.random() * 100 + '%';
+                m.style.fontSize = Math.floor(Math.random() * 14) + 12 + 'px';
+                m.style.animationDuration = Math.random() * 3 + 5 + 's';
+                document.getElementById('hearts-bg').appendChild(m);
+                setTimeout(() => m.remove(), 8000);
+            }, 900);
+        };
+    </script>
+</body>
+</html>

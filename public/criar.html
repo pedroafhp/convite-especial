@@ -354,7 +354,7 @@
                 <h1 style="font-size: 18px;" id="titulo-sucesso">Seu Link está Pronto! ✨</h1>
                 <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para a pessoa especial:</p>
             </div>
-            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
+            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite/id</div>
             <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
             
             <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">
@@ -396,15 +396,15 @@
                     whatsappCriador: contato,
                     ocasiao: ocasiao,
                     tipoConvite: tipoConvite,
-                    permitirVotacao: permitirVotacao,
-                    emailsGrupo: "" 
+                    permitirVotacao: permitirVotacao
                 })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.sucesso && data.id) {
-                    const baseURl = window.location.origin;
-                    const linkFinal = `${baseURl}/index.html?id=${data.id}`;
+                    const baseUrl = window.location.origin;
+                    // ALTERADO PARA A NOVA ROTA LIMPA TRATADA PELO SERVER.JS
+                    const linkFinal = `${baseUrl}/convite/${data.id}`;
                     
                     document.getElementById('link-gerado').innerText = linkFinal;
                     
@@ -417,7 +417,6 @@
                     if (tipoConvite === 'grupo') {
                         titulo.innerText = "Votação do Grupo Criada! 🔥";
                         subtitulo.innerText = "Envie este link no grupo para a galera votar:";
-                        // AJUSTADO: Texto da mensagem alterado para indicar que quem entrar primeiro propõe
                         mensagemWhats = `Bora decidir o nosso próximo rolê? O primeiro a acessar monta a proposta inicial e os outros votam! Acesse aqui: ${linkFinal}`;
                     } else {
                         titulo.innerText = "Seu Link está Pronto! ✨";
