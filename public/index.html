@@ -37,7 +37,6 @@
             padding: 15px;
         }
 
-        /* Corações e Elementos Flutuantes no Fundo */
         #hearts-bg {
             position: absolute;
             top: 0;
@@ -151,7 +150,6 @@
             box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
         }
 
-        /* Botão Principal Estilo Pink/Glow */
         .btn {
             width: 100%;
             padding: 15px;
@@ -188,31 +186,32 @@
         }
         .btn-outline:hover { background: rgba(255, 42, 109, 0.1); }
 
-        /* Contêiner do Botão Fugitivo */
+        /* Area controlada do botão fugitivo para não quebrar o design */
         #btn-fuga-container {
             position: relative;
             width: 100%;
-            height: 85px;
+            height: 90px;
             margin-top: 15px;
         }
 
         #btn-grande-nao {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50px;
-            padding: 12px 28px;
-            width: 130px;
+            padding: 14px;
+            width: 100%;
+            max-width: 140px;
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
             color: #ffffff;
             cursor: pointer;
             position: absolute;
-            left: calc(50% - 65px);
+            left: calc(50% - 70px);
+            top: 15px;
             transition: all 0.15s ease-out;
         }
 
-        /* Painel do Box Coletivo (Idêntico à Imagem 4) */
         .box-sugestao-atual {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 42, 109, 0.15);
@@ -240,7 +239,6 @@
             padding: 14px 10px;
         }
 
-        /* Lista de Respostas do Grupo (Mural da Foto 4) */
         .historico-votos-card {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
@@ -272,7 +270,6 @@
         }
         .voto-linha:last-child { border-bottom: none; }
 
-        /* Grid de Opções (Comidas e Vibes) */
         .grid-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -307,7 +304,6 @@
         .option-box .icon { font-size: 26px; }
         .option-box .label { font-size: 13px; font-weight: 600; }
 
-        /* Rodapé de Interação padrão das fotos */
         .footer-interact {
             font-size: 10px;
             letter-spacing: 1.5px;
@@ -348,9 +344,11 @@
 
         <div id="screen-2" class="screen">
             <div class="emoji-header" id="emoji-tela2">🥺😏🌹</div>
-            <h2 id="titulo-tela2">Pedro te chamou para um date! Você aceitaria?</h2>
+            <h2 id="titulo-tela2">Carregando convite...</h2>
+            <p style="margin-bottom: 20px;">Você aceitaria?</p>
             
-            <button class="btn btn-gradient" onclick="proseguirParaPlanoIndividual()">Sim</button>
+            <button class="btn btn-gradient" onclick="proseguirParaPlanoIndividual()">Sim, com certeza! ❤️</button>
+            
             <div id="btn-fuga-container">
                 <button id="btn-grande-nao" onmouseover="fugir()" onclick="fugir()">Não</button>
             </div>
@@ -432,7 +430,6 @@
     </div>
 
     <script>
-        // Configurações visuais dinâmicas por Tipo de Ocasião (idênticas ao criar.html)
         const dicionarioOcasioes = {
             'date': {
                 emojis: '🥺😏🌹',
@@ -472,9 +469,8 @@
             }
         };
 
-        // Estado e Parâmetros globais da URL
         const urlParams = new URLSearchParams(window.location.search);
-        const conviteId = urlParams.get('id'); // ID único gerado no banco de dados
+        const conviteId = urlParams.get('id');
 
         let dadosConviteServidor = null; 
         let configOcasiaoAtual = dicionarioOcasioes['date'];
@@ -484,14 +480,12 @@
         let itensVibeSelecionados = [];
         let planoColetadoForm = { date: '', time: '', food: '', activity: '' };
 
-        // Carrega as informações reais salvas no banco assim que a página abre
         function carregarDadosDoConvite() {
             if (!conviteId) {
-                alert("ID do convite inválido ou ausente.");
+                console.error("ID do convite ausente na URL.");
                 return;
             }
 
-            // ATENÇÃO: Altere a rota abaixo para a sua rota real do backend que busca o convite
             fetch(`/api/obter-convite/${conviteId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -499,16 +493,14 @@
                         dadosConviteServidor = data.convite;
                         configOcasiaoAtual = dicionarioOcasioes[dadosConviteServidor.ocasiao] || dicionarioOcasioes['date'];
                         
-                        // Atualiza as tags textuais iniciais com o nome do criador real
                         document.getElementById('titulo-boas-vindas').innerText = `${dadosConviteServidor.nomeCriador} te chamou para um rolê!`;
                         
-                        // Esconde o botão de contraproposta se o criador desativou no criar.html
                         if (dadosConviteServidor.tipoConvite === 'grupo' && !dadosConviteServidor.permitirVotacao) {
                             document.getElementById('btn-mudar-detalhes').style.display = 'none';
                         }
                     }
                 })
-                .catch(err => console.error("Erro ao puxar dados do convite do servidor:", err));
+                .catch(err => console.error("Erro ao puxar dados:", err));
         }
 
         function nextScreen(screenNum) {
@@ -516,45 +508,38 @@
             document.getElementById(`screen-${screenNum}`).classList.add('active');
         }
 
-        // TELA 1: Salva o nome e define as rotas lógicas 100% isoladas
         function salvarNomeEIniciarFluxo() {
             const nomeInput = document.getElementById('nome-participante-input').value.trim();
             if (!nomeInput) { alert('Por favor, digite seu nome para continuar! 😉'); return; }
             guestName = nomeInput;
 
             if (!dadosConviteServidor) {
-                alert("Carregando dados do servidor, aguarde um instante...");
+                alert("Carregando informações. Aguarde um segundo...");
                 return;
             }
 
             if (dadosConviteServidor.tipoConvite === 'individual') {
-                // FLUXO INDIVIDUAL: Vai para a tela do botão fugitivo
                 document.getElementById('emoji-tela2').innerText = configOcasiaoAtual.emojis;
                 document.getElementById('titulo-tela2').innerText = configOcasiaoAtual.inviteText.replace('{criador}', dadosConviteServidor.nomeCriador);
                 nextScreen(2);
             } else {
-                // FLUXO GRUPO: Pula o botão fugitivo e abre o Painel Coletivo com histórico
                 atualizarEMostrarPainelGrupo();
                 nextScreen(3);
             }
         }
 
-        // FLUXO INDIVIDUAL -> Aceitou o convite
         function proseguirParaPlanoIndividual() {
-            nextScreen(4); // Vai para as telas de agendamento montar o plano exclusivo
+            nextScreen(4);
         }
 
-        // FLUXO GRUPO: Renderiza o painel coletivo trazendo dados do servidor
         function atualizarEMostrarPainelGrupo() {
             document.getElementById('nome-titulo-grupo').innerText = guestName.toUpperCase();
             document.getElementById('emoji-tela3').innerText = configOcasiaoAtual.proposalEmojis;
 
-            // Alimenta os campos da proposta atual salvos na API
             document.getElementById('grupo-data-hora').innerText = dadosConviteServidor.propostaAtual?.dataHora || "A definir";
             document.getElementById('grupo-comida').innerText = dadosConviteServidor.propostaAtual?.comida || "A definir";
             document.getElementById('grupo-vibe').innerText = dadosConviteServidor.propostaAtual?.vibe || "A definir";
 
-            // Renderiza o Histórico de Respostas do Grupo (Foto 4) vindo do banco
             const muralRespostas = document.getElementById('linhas-historico-grupo');
             muralRespostas.innerHTML = '';
 
@@ -571,9 +556,7 @@
             }
         }
 
-        // FLUXO GRUPO: Votação Direta (Aprovou a Proposta Atual)
         function votarNaPropostaAtual() {
-            // Envia o voto positivo para o banco via API
             fetch(`/api/convite/${conviteId}/votar`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -582,26 +565,22 @@
             .then(res => res.json())
             .then(data => {
                 if (data.sucesso) {
-                    const msgWhats = `Oi! Sou o ${guestName}, acabei de acessar o convite do grupo e fechei com a proposta atual! 💙`;
+                    const msgWhats = `Oi! Sou o ${guestName}, acabei de ver o convite e fechei com a proposta do grupo! 💙`;
                     window.open(`https://api.whatsapp.com/send?phone=${dadosConviteServidor.whatsappCriador}&text=${encodeURIComponent(msgWhats)}`, '_blank');
-                    
-                    // Recarrega os dados e atualiza a tela
                     carregarDadosDoConvite();
                     setTimeout(() => { atualizarEMostrarPainelGrupo(); }, 600);
                 }
             });
         }
 
-        // FLUXO GRUPO: Discordou e quer fazer contraproposta
         function iniciarContraproposta() {
-            nextScreen(4); // Abre as telas de seleção de data, comida e vibe
+            nextScreen(4);
         }
 
-        // SELETORES GERAIS DE PLANO DE ROLÊ
         function validarTelaData() {
             const dataVal = document.getElementById('date-input').value;
             const horaVal = document.getElementById('time-input').value;
-            if (!dataVal || !horaVal) { alert('Por favor, preencha a data e o horário do rolê!'); return; }
+            if (!dataVal || !horaVal) { alert('Por favor, defina a data e o horário do rolê!'); return; }
 
             const [ano, mes, dia] = dataVal.split('-');
             planoColetadoForm.date = `${dia}/${mes}/${ano}`;
@@ -632,7 +611,7 @@
         }
 
         function validarTelaComida() {
-            if (itensComidaSelecionados.length === 0) { alert('Selecione pelo menos uma opção de comida!'); return; }
+            if (itensComidaSelecionados.length === 0) { alert('Selecione pelo menos uma opção!'); return; }
             planoColetadoForm.food = itensComidaSelecionados.join(', ');
 
             document.getElementById('titulo-tela6').innerText = configOcasiaoAtual.tituloTela6;
@@ -641,10 +620,9 @@
         }
 
         function validarTelaVibe() {
-            if (itensVibeSelecionados.length === 0) { alert('Selecione pelo menos uma opção de vibe!'); return; }
+            if (itensVibeSelecionados.length === 0) { alert('Selecione pelo menos uma opção para a vibe!'); return; }
             planoColetadoForm.activity = itensVibeSelecionados.join(', ');
 
-            // Envia o novo plano definitivo ou a contraproposta para o servidor
             fetch(`/api/convite/${conviteId}/propor`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -659,17 +637,15 @@
             .then(res => res.json())
             .then(data => {
                 if (data.sucesso) {
-                    nextScreen(7); // Vai para a tela final de sucesso
+                    nextScreen(7);
                 } else {
-                    alert("Erro ao processar respostas no servidor.");
+                    alert("Erro ao processar as opções no servidor.");
                 }
             });
         }
 
-        // TELA 7: Redirecionamento e envio customizado para o WhatsApp do Criador
         function finalizarFluxoEEnviarWhats() {
             let textoMensagem = "";
-
             if (dadosConviteServidor.tipoConvite === 'individual') {
                 textoMensagem = `Defini os detalhes do nosso encontro! 🌹\n\n📅 Data: ${planoColetadoForm.date} às ${planoColetadoForm.time}\n🍕 Comida: ${planoColetadoForm.food}\n🎸 Vibe: ${planoColetadoForm.activity}`;
             } else {
@@ -678,7 +654,6 @@
 
             window.open(`https://api.whatsapp.com/send?phone=${dadosConviteServidor.whatsappCriador}&text=${encodeURIComponent(textoMensagem)}`, '_blank');
             
-            // Se for grupo, retorna o usuário para a tela do mural coletivo atualizado
             if (dadosConviteServidor.tipoConvite === 'grupo') {
                 carregarDadosDoConvite();
                 setTimeout(() => { 
@@ -698,6 +673,7 @@
             const btnWidth = btnNao.clientWidth;
             const btnHeight = btnNao.clientHeight;
 
+            // Gera posições randômicas mantendo o botão restrito ao contêiner interno
             let novoTop = Math.random() * (containerHeight - btnHeight);
             let novoLeft = Math.random() * (containerWidth - btnWidth);
 
@@ -705,7 +681,6 @@
             btnNao.style.left = `${Math.max(0, novoLeft)}px`;
         }
 
-        // Efeito de partículas/corações flutuando em background
         function dispararAnimacaoDeFundo() {
             const bg = document.getElementById('hearts-bg');
             const elementos = ['❤️', '💖', '✨', '🍿', '🍻'];
@@ -722,7 +697,6 @@
             }, 900);
         }
 
-        // Inicializadores automáticos ao carregar a página
         window.onload = () => {
             carregarDadosDoConvite();
             dispararAnimacaoDeFundo();
