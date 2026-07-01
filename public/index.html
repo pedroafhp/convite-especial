@@ -70,8 +70,9 @@
             justify-content: center;
         }
 
+        /* Padronização de ocultação de todas as telas */
         .screen {
-            display: none;
+            display: none !important; 
             background: var(--card-bg);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -82,9 +83,17 @@
             box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8);
         }
 
+        /* Apenas a classe ativa assume flex block */
         .screen.active {
-            display: block;
+            display: block !important;
             animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        #loading-screen.screen.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         @keyframes fadeIn {
@@ -319,19 +328,6 @@
             margin-top: 25px;
             font-weight: 700;
         }
-        
-        /* Estado de carregamento inicial enquanto a API responde */
-        #loading-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            padding: 40px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -521,14 +517,11 @@
                         
                         document.getElementById('titulo-boas-vindas').innerText = `${dadosConviteServidor.nomeCriador} te chamou para um rolê!`;
                         
-                        // --- CORREÇÃO DO FLUXO DE TELAS DIRETAS ---
                         if (dadosConviteServidor.tipoConvite === 'individual') {
-                            // Se for individual, ignora a tela 0 e 1 e renderiza diretamente a Tela 2 do "Sim" ou "Não"
                             document.getElementById('emoji-tela2').innerText = configOcasiaoAtual.emojis;
                             document.getElementById('titulo-tela2').innerText = configOcasiaoAtual.inviteText.replace('{criador}', dadosConviteServidor.nomeCriador);
                             nextScreen(2);
                         } else {
-                            // Se for grupo, mantém o fluxo tradicional começando na Tela 0
                             if (!dadosConviteServidor.permitirVotacao) {
                                 document.getElementById('btn-mudar-detalhes').style.display = 'none';
                             }
@@ -538,18 +531,18 @@
                 })
                 .catch(err => {
                     console.error("Erro ao puxar dados:", err);
-                    // Em caso de falha de rede, inicializa na tela 0 por segurança
                     nextScreen(0);
                 });
         }
 
         function nextScreen(screenNum) {
+            // Remove a classe active de absolutamente todas as telas antes de ativar a nova
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            // Remove o loading explicitamente se avançar
-            const loading = document.getElementById('loading-screen');
-            if (loading) loading.classList.remove('active');
             
-            document.getElementById(`screen-${screenNum}`).classList.add('active');
+            const targetScreen = document.getElementById(`screen-${screenNum}`);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
         }
 
         function salvarNomeEIniciarFluxo() {
