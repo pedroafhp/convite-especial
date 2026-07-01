@@ -3,259 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Convite Especial ✨</title>
+    <title>Criar Convite Especial</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0d0614; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; color: #ffffff; padding: 15px; overflow-x: hidden; }
-        
-        .card-box { 
-            width: 100%; 
-            max-width: 420px; 
-            background: linear-gradient(135deg, #250c31 0%, #0c0410 100%); 
-            border-radius: 30px; 
-            padding: 40px 24px; 
-            box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.2), 0 30px 60px -15px rgba(0,0,0,0.8); 
-            border: 1px solid rgba(255, 42, 109, 0.2); 
-            text-align: center; 
-            display: none; 
-            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        .active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .emoji { font-size: 54px; margin-bottom: 20px; display: inline-block; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
-        
-        h1 { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 12px; background: linear-gradient(90deg, #ff2a6d, #9b00e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; }
-        p { font-size: 14px; color: #ccb9d1; margin-bottom: 30px; line-height: 1.5; }
-        
-        .btn-action { width: 100%; padding: 16px; border: none; font-weight: bold; font-size: 15px; text-transform: uppercase; border-radius: 50px; cursor: pointer; color: white; transition: all 0.2s; margin-top: 12px; letter-spacing: 0.5px; }
-        .btn-pink { background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%); box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4); }
-        .btn-pink:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(255, 42, 109, 0.2); }
-        .btn-dark { background-color: rgba(25, 12, 36, 0.5); border: 1px solid rgba(255, 42, 109, 0.3); color: #ff2a6d; }
-        .btn-dark:active { background-color: rgba(255, 42, 109, 0.1); }
-        
-        .input-text { width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 42, 109, 0.2); padding: 16px; border-radius: 14px; color: white; font-size: 15px; text-align: center; outline: none; margin-bottom: 20px; transition: border-color 0.3s; }
-        .input-text:focus { border-color: #ff2a6d; }
-        
-        .info-panel { background-color: rgba(25, 12, 36, 0.6); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; border: 1px solid rgba(255, 42, 109, 0.15); text-align: left; margin-bottom: 25px; }
-        .info-row { font-size: 14px; margin-bottom: 12px; color: #ffffff; line-height: 1.4; }
-        .info-row:last-child { margin-bottom: 0; }
-        .info-row strong { color: #b59cb8; font-weight: 600; text-transform: uppercase; font-size: 11px; display: block; letter-spacing: 0.5px; margin-bottom: 2px; }
-        
-        .votos-box { text-align: left; margin-top: 25px; }
-        .votos-title { font-size: 11px; font-weight: 700; color: #b59cb8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .votos-list { max-height: 130px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 14px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .voto-row { font-size: 13px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; }
-        .voto-row:last-child { border-bottom: none; }
-        
-        .subtext-footer { font-size: 10px; color: #584b5e; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 30px; }
+
+        body {
+            background-color: #0d0614;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            color: #ffffff;
+            padding: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(135deg, #250c31 0%, #0c0410 100%);
+            border-radius: 30px;
+            padding: 30px 20px;
+            box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 42, 109, 0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ff2a6d, #9b00e8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #ccb9d1;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .card {
+            background-color: rgba(25, 12, 36, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 16px;
+            border: 1px solid rgba(255, 42, 109, 0.1);
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #b59cb8;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 42, 109, 0.2);
+            padding: 14px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23ff2a6d' d='M0 0l5 5 5-5z'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        select.input-field option {
+            background-color: #250c31;
+            color: white;
+        }
+
+        .input-field:focus {
+            border-color: #ff2a6d;
+            box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
+        }
+
+        .radio-cards-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .radio-card {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 42, 109, 0.15);
+            border-radius: 14px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .radio-card input[type="radio"] {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            accent-color: #ff2a6d;
+        }
+
+        .radio-card:hover {
+            border-color: rgba(255, 42, 109, 0.4);
+        }
+
+        .radio-card:has(input[type="radio"]:checked) {
+            border-color: #ff2a6d;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.1) 0%, rgba(155, 0, 232, 0.05) 100%);
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.15);
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 13px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .card-description {
+            font-size: 11px;
+            color: #b59cb8;
+            line-height: 1.3;
+        }
+
+        .grupo-options-box {
+            display: none;
+            margin-top: 10px;
+            margin-bottom: 16px;
+            border-left: 3px solid #9b00e8;
+            padding-left: 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+
+        .checkbox-container input {
+            margin-top: 2px;
+            accent-color: #ff2a6d;
+        }
+
+        .checkbox-label-text {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .checkbox-subtext {
+            display: block;
+            font-size: 11px;
+            color: #b59cb8;
+            margin-top: 2px;
+        }
+
+        .info-whatsapp-grupo {
+            font-size: 12px;
+            color: #ccb9d1;
+            line-height: 1.4;
+            margin-top: 12px;
+            background: rgba(155, 0, 232, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed rgba(155, 0, 232, 0.3);
+        }
+
+        .btn-gerar {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%);
+            color: white;
+            border: none;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4);
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-gerar:active {
+            transform: scale(0.98);
+        }
+
+        .resultado-container {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .link-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px dashed #ff2a6d;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #ff2a6d;
+            word-break: break-all;
+            margin-bottom: 10px;
+            user-select: all;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .link-box:hover {
+            background-color: rgba(255, 42, 109, 0.05);
+        }
+
+        .btn-whatsapp-share {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn-whatsapp-share:hover {
+            background-color: #1ebd58;
+        }
+
+        .btn-whatsapp-share:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
 
-    <div id="tela-loading" class="card-box active">
-        <span class="emoji">✨</span>
-        <h1>A Carregar...</h1>
-        <p>A preparar a tua experiência exclusiva.</p>
-    </div>
-
-    <div id="tela-recepcao" class="card-box">
-        <span class="emoji" id="recepcao-emoji">🥺</span>
-        <h1 id="recepcao-titulo">Carregando...</h1>
-        <p id="recepcao-sub">Um convite muito especial foi gerado e está à tua espera.</p>
-        <button class="btn-action btn-pink" onclick="prosseguirParaIdentificacao()">Bora Ver! 🔥</button>
-        <div class="subtext-footer">Interaja para avançar</div>
-    </div>
-
-    <div id="tela-identificacao" class="card-box">
-        <span class="emoji">👋</span>
-        <h1>Quem está aí?</h1>
-        <p>Insere o teu nome abaixo para veres os detalhes e dares o teu feedback.</p>
-        <input type="text" id="nome-visitante" class="input-text" placeholder="Escreve o teu nome...">
-        <button class="btn-action btn-pink" onclick="carregarDashboardProposta()">Ver Proposta 🚀</button>
-    </div>
-
-    <div id="tela-proposta" class="card-box">
-        <span class="emoji" id="proposta-emoji">🍕</span>
-        <h1 id="titulo-boas-vindas">E AÍ?</h1>
-        <p id="subtitulo-proposta">Confere o plano atual elaborado para este momento:</p>
-        
-        <div class="info-panel">
-            <div class="info-row" id="detalhe-data"><strong>🗓️ Data / Hora:</strong> Carregando...</div>
-            <div class="info-row" id="detalhe-comida"><strong>🍕 Comida / Bebida:</strong> Carregando...</div>
-            <div class="info-row" id="detalhe-vibe"><strong>🎸 Vibe do Rolê:</strong> Carregando...</div>
+    <div class="container">
+        <div class="header">
+            <h1>Gerador de Convites ✨</h1>
+            <p>Crie um link personalizado e viva dias especiais!</p>
         </div>
 
-        <div id="botoes-acao-container">
+        <div class="card">
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="nome-criador" class="input-field" placeholder="Ex: Lucas">
             </div>
 
-        <div class="votos-box" id="secao-grupo-votos" style="display: none;">
-            <div class="votos-title">Respostas e Decisões do Grupo:</div>
-            <div class="votos-list" id="lista-respostas-grupo">
-                <div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Sê o primeiro!</div>
+            <div class="input-group">
+                <label>Seu WhatsApp (para receber o aviso do SIM)</label>
+                <input type="text" id="contato-criador" class="input-field" placeholder="Ex: 11999999999">
             </div>
+
+            <div class="input-group">
+                <label>Qual é a ocasião?</label>
+                <select id="ocasiao-convite" class="input-field">
+                    <option value="date">Encontro Romântico (Date) 🌹</option>
+                    <option value="resenha">Resenha / Rolê com Amigos 🍻</option>
+                    <option value="girls-night">Noite das Meninas 💖</option>
+                    <option value="outros">Outro Rolê ✨</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Formato do Convite</label>
+                <div class="radio-cards-container">
+                    <label class="radio-card">
+                        <input type="radio" name="tipo_convite" value="individual" checked onchange="toggleGrupoOptions()">
+                        <span class="card-title">👤 Individual</span>
+                        <span class="card-description">Apenas uma pessoa. Agendamento direto.</span>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="tipo_convite" value="grupo" onchange="toggleGrupoOptions()">
+                        <span class="card-title">👥 Em Grupo</span>
+                        <span class="card-description">Múltiplos amigos com votação de sugestões.</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="opcoes_grupo" class="grupo-options-box">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="permitir_votacao" name="permitir_votacao" value="true" checked>
+                    <div class="checkbox-label-text">
+                        Permitir votação e contraproposta?
+                        <span class="checkbox-subtext">Se alguém discordar, poderá propor uma alternativa de horário/local.</span>
+                    </div>
+                </label>
+                
+                <div class="info-whatsapp-grupo">
+                    📢 <strong>Fluxo do Grupo ativado:</strong> O sistema gerará um link de votação coletiva para você disparar direto no grupo de WhatsApp dos seus amigos!
+                </div>
+            </div>
+
+            <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
         </div>
-        
-        <div class="subtext-footer" id="rodape-status">Aguardando decisão</div>
+
+        <div class="resultado-container" id="resultado">
+            <div class="header" style="margin-top: 15px;">
+                <h1 style="font-size: 18px;" id="titulo-sucesso">Seu Link está Pronto! ✨</h1>
+                <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para a pessoa especial:</p>
+            </div>
+            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
+            <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
+            
+            <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">
+                📲 Compartilhar no WhatsApp
+            </a>
+        </div>
     </div>
 
     <script>
-        let conviteId = "";
-        let dadosConvite = null;
-        let nomeVisitante = "";
-
-        // Captura o ID do caminho limpo (/convite/ID) ou da query (?id=ID) sem quebrar
-        function obterIdDaUrl() {
-            const partesPath = window.location.pathname.split('/');
-            const idPath = partesPath[partesPath.indexOf('convite') + 1];
-            if (idPath && idPath.trim() !== "") return idPath;
-            return new URLSearchParams(window.location.search).get('id');
-        }
-
-        window.onload = function() {
-            conviteId = obterIdDaUrl();
-            if (!conviteId) {
-                alert("Link Inválido!");
-                return;
-            }
-
-            // Faz o fetch para recolher as informações originais do back-end
-            fetch(`/api/convite/${conviteId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.sucesso) {
-                        dadosConvite = data.convite;
-                        configurarTelaRecepcao();
-                    } else {
-                        alert("Convite expirado ou inexistente.");
-                    }
-                }).catch(() => alert("Erro ao conectar com o servidor."));
-        };
-
-        function transicaoTela(idDestino) {
-            document.querySelectorAll('.card-box').forEach(el => el.classList.remove('active'));
-            document.getElementById(idDestino).classList.add('active');
-        }
-
-        function configurarTelaRecepcao() {
-            const titulo = document.getElementById('recepcao-titulo');
-            const sub = document.getElementById('recepcao-sub');
-            const emoji = document.getElementById('recepcao-emoji');
-
-            if (dadosConvite.tipoConvite === 'grupo') {
-                emoji.innerText = "👥";
-                titulo.innerText = "Votação de Grupo Ativa!";
-                sub.innerText = `${dadosConvite.nomeCriador} criou um plano coletivo. Entra para veres e votares na tua opção favorita!`;
+        function toggleGrupoOptions() {
+            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
+            const opcoesGrupo = document.getElementById('opcoes_grupo');
+            if (tipoConvite === 'grupo') {
+                opcoesGrupo.style.display = 'block';
             } else {
-                emoji.innerText = "🌹";
-                titulo.innerText = "Um convite só para ti!";
-                sub.innerText = `${dadosConvite.nomeCriador} preparou uma surpresa incrível e quer saber a tua resposta.`;
+                opcoesGrupo.style.display = 'none';
             }
+        }
+
+        function gerarLink() {
+            const nome = document.getElementById('nome-criador').value.trim();
+            let contato = document.getElementById('contato-criador').value.trim();
+            const ocasiao = document.getElementById('ocasiao-convite').value;
             
-            setTimeout(() => transicaoTela('tela-recepcao'), 800);
-        }
+            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
+            const permitirVotacao = document.getElementById('permitir_votacao').checked;
 
-        function prosseguirParaIdentificacao() {
-            transicaoTela('tela-identificacao');
-        }
+            if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
+            if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
 
-        function carregarDashboardProposta() {
-            const nomeInput = document.getElementById('nome-visitante').value.trim();
-            if (!nomeInput) return alert("Precisas de inserir o teu nome para continuar! 😉");
-            nomeVisitante = nomeInput;
+            contato = contato.replace(/\D/g, '');
 
-            document.getElementById('titulo-boas-vindas').innerText = `E AÍ, ${nomeVisitante.toUpperCase()}?`;
-            
-            // Injeta os dados da sugestão recuperados do back-end
-            document.getElementById('detalhe-data').innerHTML = `<strong>🗓️ Data / Hora:</strong> ${dadosConvite.sugestaoAtual.dataHora}`;
-            document.getElementById('detalhe-comida').innerHTML = `<strong>🍕 Comida / Bebida:</strong> ${dadosConvite.sugestaoAtual.comidaBebida}`;
-            document.getElementById('detalhe-vibe').innerHTML = `<strong>🎸 Vibe do Rolê:</strong> ${dadosConvite.sugestaoAtual.vibe}`;
-
-            const botoesContainer = document.getElementById('botoes-acao-container');
-            botoesContainer.innerHTML = ""; // Limpa
-
-            if (dadosConvite.tipoConvite === 'grupo') {
-                document.getElementById('secao-grupo-votos').style.display = 'block';
-                document.getElementById('proposta-emoji').innerText = "🔥";
-                
-                // Botões de Voto do Fluxo Coletivo
-                botoesContainer.innerHTML = `
-                    <button class="btn-action btn-pink" onclick="votarGrupo('Fechado! Topo 💙')">Fechado! Topo 💙</button>
-                    <button class="btn-action btn-dark" onclick="proporAlternativa()">Mudar Detalhes 🗺️</button>
-                `;
-                atualizarListaVotosPainel(dadosConvite.respostas);
-            } else {
-                document.getElementById('secao-grupo-votos').style.display = 'none';
-                document.getElementById('proposta-emoji').innerText = "🌹";
-                
-                // Botões do Fluxo Individual (Sim / Não)
-                botoesContainer.innerHTML = `
-                    <button class="btn-action btn-pink" onclick="responderIndividual('SIM')">Aceitar Convite 💖</button>
-                    <button class="btn-action btn-dark" onclick="responderIndividual('NÃO')">Não Posso 🥺</button>
-                `;
-            }
-
-            transicaoTela('tela-proposta');
-        }
-
-        function responderIndividual(resposta) {
-            fetch(`/api/convite/${conviteId}/responder`, {
+            fetch('/api/criar-convite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome: nomeVisitante, status: resposta })
-            }).then(() => {
-                if (resposta === 'SIM') {
-                    const textoMsg = encodeURIComponent(`Oi ${dadosConvite.nomeCriador}! Eu li o teu convite especial e eu ACEITO! 💖✨`);
-                    window.open(`https://api.whatsapp.com/send?phone=${dadosConvite.whatsappCriador}&text=${textoMsg}`, '_blank');
-                } else {
-                    alert("Resposta enviada. Que pena que não podes ir! 🥺");
-                }
-            });
-        }
-
-        function votarGrupo(opcao) {
-            fetch(`/api/convite/${conviteId}/responder`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome: nomeVisitante, status: opcao })
-            }).then(res => res.json()).then(data => {
-                if (data.sucesso) {
-                    alert("Voto registado com sucesso no grupo! 🗳️");
-                    window.location.reload();
-                }
-            });
-        }
-
-        function proporAlternativa() {
-            const novaData = prompt("Qual o melhor dia/hora para ti?");
-            if (!novaData) return;
-            
-            fetch(`/api/convite/${conviteId}/responder`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    nome: nomeVisitante, 
-                    status: 'contraproposta',
-                    contraproposta: { dataHora: novaData, comidaBebida: "Alterado pelo grupo", vibe: "Discutindo detalhes" }
+                body: JSON.stringify({
+                    nomeCriador: nome,
+                    whatsappCriador: contato,
+                    ocasiao: ocasiao,
+                    tipoConvite: tipoConvite,
+                    permitirVotacao: permitirVotacao,
+                    emailsGrupo: "" 
                 })
-            }).then(() => {
-                alert("A tua contraproposta foi lançada no painel do grupo! 🚀");
-                window.location.reload();
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso && data.id) {
+                    const baseURl = window.location.origin;
+                    const linkFinal = `${baseURl}/index.html?id=${data.id}`;
+                    
+                    document.getElementById('link-gerado').innerText = linkFinal;
+                    
+                    const titulo = document.getElementById('titulo-sucesso');
+                    const subtitulo = document.getElementById('subtitulo-sucesso');
+                    const btnWhats = document.getElementById('btn-whatsapp');
+                    let mensagemWhats = "";
+                    
+                    if (tipoConvite === 'grupo') {
+                        titulo.innerText = "Votação do Grupo Criada! 🔥";
+                        subtitulo.innerText = "Envie este link no grupo para a galera votar:";
+                        mensagemWhats = `Bora decidir o nosso próximo rolê?\nO primeiro a acessar monta a proposta inicial e os outros votam! Acesse aqui: ${linkFinal}`;
+                    } else {
+                        titulo.innerText = "Seu Link está Pronto! ✨";
+                        subtitulo.innerText = "Copie e envie para a pessoa especial:";
+                        mensagemWhats = `Criei um convite especial para você, olha só: ${linkFinal}`;
+                    }
+                    
+                    btnWhats.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
+                    document.getElementById('resultado').style.display = 'block';
+                    
+                    document.getElementById('feedback-copiar').innerText = "Toque no link acima para copiar";
+                    document.getElementById('feedback-copiar').style.color = "#b59cb8";
+                } else {
+                    alert('Erro ao gerar o convite no servidor: ' + (data.erro || 'Desconhecido'));
+                }
+            })
+            .catch(err => {
+                alert('Erro de conexão com o servidor do app.');
+                console.error(err);
             });
         }
 
-        function atualizarListaVotosPainel(respostas) {
-            const lista = document.getElementById('lista-respostas-grupo');
-            if (!respostas || respostas.length === 0) return;
-            
-            lista.innerHTML = "";
-            respostas.forEach(r => {
-                const item = document.createElement('div');
-                item.className = "voto-row";
-                item.innerHTML = `<span>👤 <strong>${r.nome}</strong></span> <span style="color: #ff2a6d">${r.status}</span>`;
-                lista.appendChild(item);
+        function copiarLink() {
+            const linkText = document.getElementById('link-gerado').innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                const feedback = document.getElementById('feedback-copiar');
+                feedback.innerText = "✓ Link copiado com sucesso!";
+                feedback.style.color = "#00ff88";
+            }).catch(err => {
+                console.error('Erro ao copiar o link: ', err);
             });
         }
     </script>
