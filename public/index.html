@@ -186,7 +186,6 @@
         }
         .btn-outline:hover { background: rgba(255, 42, 109, 0.1); }
 
-        /* Estrutura de botões Sim e Não empilhados perfeitamente */
         .wrapper-botoes-aceite {
             display: flex;
             flex-direction: column;
@@ -196,7 +195,6 @@
             margin-top: 10px;
         }
 
-        /* Container de fuga seguro que mantém o botão posicionado inicialmente */
         #btn-fuga-container {
             width: 100%;
             height: 50px;
@@ -234,9 +232,7 @@
             line-height: 1.6;
         }
 
-        .box-sugestao-atual div {
-            margin-bottom: 6px;
-        }
+        .box-sugestao-atual div { margin-bottom: 6px; }
 
         .flex-botoes-grupo {
             display: flex;
@@ -323,6 +319,19 @@
             margin-top: 25px;
             font-weight: 700;
         }
+        
+        /* Estado de carregamento inicial enquanto a API responde */
+        #loading-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -330,8 +339,14 @@
     <div id="hearts-bg"></div>
 
     <div class="container">
+        
+        <div id="loading-screen" class="screen active">
+            <div class="emoji-header">✨</div>
+            <h2>A abrir convite...</h2>
+            <p>Por favor, aguarde um momento.</p>
+        </div>
 
-        <div id="screen-0" class="screen active">
+        <div id="screen-0" class="screen">
             <div class="emoji-header">🥺</div>
             <h2>Você recebeu um convite especial!</h2>
             <p>Clique abaixo para ver a proposta e confirmar os detalhes do rolê.</p>
@@ -359,7 +374,6 @@
             
             <div class="wrapper-botoes-aceite">
                 <button class="btn btn-gradient" style="margin-bottom:0;" onclick="proseguirParaPlanoIndividual()">Sim</button>
-                
                 <div id="btn-fuga-container">
                     <button id="btn-grande-nao" onmouseover="fugir()" onclick="fugir()" ontouchstart="fugir(event)">Não</button>
                 </div>
@@ -387,8 +401,7 @@
             
             <div class="historico-votos-card">
                 <h3>Respostas do Grupo:</h3>
-                <div class="lista-historico-scroll" id="linhas-historico-grupo">
-                    </div>
+                <div class="lista-historico-scroll" id="linhas-historico-grupo"></div>
             </div>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
@@ -508,16 +521,34 @@
                         
                         document.getElementById('titulo-boas-vindas').innerText = `${dadosConviteServidor.nomeCriador} te chamou para um rolê!`;
                         
-                        if (dadosConviteServidor.tipoConvite === 'grupo' && !dadosConviteServidor.permitirVotacao) {
-                            document.getElementById('btn-mudar-detalhes').style.display = 'none';
+                        // --- CORREÇÃO DO FLUXO DE TELAS DIRETAS ---
+                        if (dadosConviteServidor.tipoConvite === 'individual') {
+                            // Se for individual, ignora a tela 0 e 1 e renderiza diretamente a Tela 2 do "Sim" ou "Não"
+                            document.getElementById('emoji-tela2').innerText = configOcasiaoAtual.emojis;
+                            document.getElementById('titulo-tela2').innerText = configOcasiaoAtual.inviteText.replace('{criador}', dadosConviteServidor.nomeCriador);
+                            nextScreen(2);
+                        } else {
+                            // Se for grupo, mantém o fluxo tradicional começando na Tela 0
+                            if (!dadosConviteServidor.permitirVotacao) {
+                                document.getElementById('btn-mudar-detalhes').style.display = 'none';
+                            }
+                            nextScreen(0);
                         }
                     }
                 })
-                .catch(err => console.error("Erro ao puxar dados:", err));
+                .catch(err => {
+                    console.error("Erro ao puxar dados:", err);
+                    // Em caso de falha de rede, inicializa na tela 0 por segurança
+                    nextScreen(0);
+                });
         }
 
         function nextScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Remove o loading explicitamente se avançar
+            const loading = document.getElementById('loading-screen');
+            if (loading) loading.classList.remove('active');
+            
             document.getElementById(`screen-${screenNum}`).classList.add('active');
         }
 
@@ -531,14 +562,8 @@
                 return;
             }
 
-            if (dadosConviteServidor.tipoConvite === 'individual') {
-                document.getElementById('emoji-tela2').innerText = configOcasiaoAtual.emojis;
-                document.getElementById('titulo-tela2').innerText = configOcasiaoAtual.inviteText.replace('{criador}', dadosConviteServidor.nomeCriador);
-                nextScreen(2);
-            } else {
-                atualizarEMostrarPainelGrupo();
-                nextScreen(3);
-            }
+            atualizarEMostrarPainelGrupo();
+            nextScreen(3);
         }
 
         function proseguirParaPlanoIndividual() {
@@ -640,7 +665,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    nomeUser: guestName,
+                    nomeUser: dadosConviteServidor.tipoConvite === 'individual' ? 'Convidado' : guestName,
                     tipoConvite: dadosConviteServidor.tipoConvite,
                     dataHora: `${planoColetadoForm.date} às ${planoColetadoForm.time}`,
                     comida: planoColetadoForm.food,
@@ -660,7 +685,7 @@
         function finalizarFluxoEEnviarWhats() {
             let textoMensagem = "";
             if (dadosConviteServidor.tipoConvite === 'individual') {
-                textoMensagem = `Defini os detalhes do nosso encontro! 🌹\n\n📅 Data: ${planoColetadoForm.date} às ${planoColetadoForm.time}\n🍕 Comida: ${planoColetadoForm.food}\n🎸 Vibe: ${planoColetadoForm.activity}`;
+                textoMensagem = `Aceito o convite! Defini os detalhes do nosso encontro! 🌹\n\n📅 Data: ${planoColetadoForm.date} às ${planoColetadoForm.time}\n🍕 Comida: ${planoColetadoForm.food}\n🎸 Vibe: ${planoColetadoForm.activity}`;
             } else {
                 textoMensagem = `Enviei uma contraproposta para o grupo! Dá uma olhada lá no link.\n\nSugerido por: ${guestName}\n📅 Nova Data: ${planoColetadoForm.date} às ${planoColetadoForm.time}`;
             }
@@ -676,30 +701,26 @@
             }
         }
 
-        // --- NOVO SISTEMA CORRIGIDO DE FUGA DO BOTÃO "NÃO" ---
+        // --- SISTEMA DE FUGA DO BOTÃO "NÃO" ---
         const btnNao = document.getElementById('btn-grande-nao');
         const containerFuga = document.getElementById('btn-fuga-container');
 
         function fugir(e) {
-            if (e) e.preventDefault(); // Evita comportamentos padrão no mobile
+            if (e) e.preventDefault();
 
             const containerWidth = containerFuga.clientWidth;
-            // Expandimos a área de fuga verticalmente para fora do container original de forma dinâmica para tornar a fuga divertida
             const areaFugaAltura = 180; 
 
             const btnWidth = btnNao.clientWidth;
             const btnHeight = btnNao.clientHeight;
 
-            // Calcula limites calculados relativos ao topo original do container
             let novoTop = (Math.random() * areaFugaAltura) - (areaFugaAltura / 2);
             let novoLeft = (Math.random() * containerWidth) - (containerWidth / 2);
 
-            // Garante que o botão não sai completamente das bordas laterais da tela
             const limiteHorizontal = (containerWidth / 2) - (btnWidth / 2);
             if (novoLeft < -limiteHorizontal) novoLeft = -limiteHorizontal;
             if (novoLeft > limiteHorizontal) novoLeft = limiteHorizontal;
 
-            // Aplica as propriedades transformadas sem quebrar o fluxo relativo das outras caixas
             btnNao.style.top = `${novoTop}px`;
             btnNao.style.left = `calc(50% - ${btnWidth / 2}px + ${novoLeft}px)`;
         }
