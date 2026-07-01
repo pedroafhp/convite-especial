@@ -103,182 +103,212 @@
     </div>
 
     <script>
-        let conviteId = "";
-        let dadosConvite = null;
-        let nomeVisitante = "";
+       let conviteId = "";
+let dadosConvite = null;
+let nomeVisitante = "";
 
-        function obterIdDaUrl() {
-            const URLParams = new URLSearchParams(window.location.search);
-            const idQuery = URLParams.get('id');
-            if (idQuery) return idQuery;
+function obterIdDaUrl() {
+    const URLParams = new URLSearchParams(window.location.search);
+    const idQuery = URLParams.get('id');
+    if (idQuery) return idQuery;
 
-            const partesPath = window.location.pathname.split('/');
-            const idxConvite = partesPath.indexOf('convite');
-            if (idxConvite !== -1 && partesPath[idxConvite + 1]) {
-                return partesPath[idxConvite + 1];
+    const partesPath = window.location.pathname.split('/');
+    const idxConvite = partesPath.indexOf('convite');
+    if (idxConvite !== -1 && partesPath[idxConvite + 1]) {
+        return partesPath[idxConvite + 1];
+    }
+    return null;
+}
+
+window.onload = function() {
+    conviteId = obterIdDaUrl();
+    if (!conviteId) {
+        alert("Link de convite inválido.");
+        return;
+    }
+
+    fetch(`/api/convite/${conviteId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.sucesso) {
+                dadosConvite = data.convite;
+                configurarTelaRecepcao();
+            } else {
+                alert("Convite expirado ou não localizado.");
             }
-            return null;
-        }
+        })
+        .catch(() => alert("Erro ao conectar com o servidor."));
+};
 
-        window.onload = function() {
-            conviteId = obterIdDaUrl();
-            if (!conviteId) {
-                alert("Link de convite inválido.");
-                return;
-            }
+function transicaoTela(idDestino) {
+    document.querySelectorAll('.card-box').forEach(el => el.classList.remove('active'));
+    const alvo = document.getElementById(idDestino);
+    if (alvo) alvo.classList.add('active');
+}
 
-            fetch(`/api/convite/${conviteId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.sucesso) {
-                        dadosConvite = data.convite;
-                        configurarTelaRecepcao();
-                    } else {
-                        alert("Convite expirado ou não localizado.");
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Erro ao conectar com o servidor.");
-                });
-        };
+function configurarTelaRecepcao() {
+    const titulo = document.getElementById('recepcao-titulo');
+    const sub = document.getElementById('recepcao-sub');
+    const emoji = document.getElementById('recepcao-emoji');
 
-        function transicaoTela(idDestino) {
-            document.querySelectorAll('.card-box').forEach(el => el.classList.remove('active'));
-            const alvo = document.getElementById(idDestino);
-            if (alvo) alvo.classList.add('active');
-        }
+    if (dadosConvite.tipoConvite === 'grupo') {
+        if (emoji) emoji.innerText = "👥";
+        if (titulo) titulo.innerText = "VOTAÇÃO DE GRUPO ATIVA!";
+        if (sub) sub.innerText = `${dadosConvite.nomeCriador} criou um plano para a galera. Entre para votar ou propor ajustes!`;
+    } else {
+        if (emoji) emoji.innerText = "🥺";
+        if (titulo) titulo.innerText = "VOCÊ RECEBEU UM CONVITE ESPECIAL!";
+        if (sub) sub.innerText = `${dadosConvite.nomeCriador} te fez um convite exclusivo. Clique abaixo para ver!`;
+    }
+    setTimeout(() => transicaoTela('tela-recepcao'), 600);
+}
 
-        function configurarTelaRecepcao() {
-            const titulo = document.getElementById('recepcao-titulo');
-            const sub = document.getElementById('recepcao-sub');
-            const emoji = document.getElementById('recepcao-emoji');
+function prosseguirParaIdentificacao() {
+    transicaoTela('tela-identificacao');
+}
 
-            if (dadosConvite.tipoConvite === 'grupo') {
-                if (emoji) emoji.innerText = "👥";
-                if (titulo) titulo.innerText = "VOTAÇÃO DE GRUPO ATIVA!";
-                if (sub) sub.innerText = `${dadosConvite.nomeCriador} criou um plano para a galera. Entre para votar ou propor ajustes!`;
-            }
+function carregarDashboardProposta() {
+    const inputNome = document.getElementById('nome-visitante');
+    if (!inputNome || !inputNome.value.trim()) {
+        alert("Por favor, digite o seu nome para continuar! 😉");
+        return;
+    }
+    nomeVisitante = inputNome.value.trim();
+
+    const boasVindas = document.getElementById('titulo-boas-vindas');
+    if (boasVindas) boasVindas.innerText = `E AÍ, ${nomeVisitante.toUpperCase()}?`;
+
+    document.getElementById('detalhe-data').innerHTML = `<strong>🗓️ Data / Hora:</strong> ${dadosConvite.sugestaoAtual.dataHora}`;
+    document.getElementById('detalhe-comida').innerHTML = `<strong>🍕 Comida / Bebida:</strong> ${dadosConvite.sugestaoAtual.comidaBebida}`;
+    document.getElementById('detalhe-vibe').innerHTML = `<strong>🎸 Vibe do Rolê:</strong> ${dadosConvite.sugestaoAtual.vibe}`;
+
+    const containerBotoes = document.getElementById('botoes-acao-container');
+    const secaoGrupo = document.getElementById('secao-grupo-votos');
+
+    if (containerBotoes) {
+        containerBotoes.innerHTML = "";
+
+        if (dadosConvite.tipoConvite === 'grupo') {
+            if (secaoGrupo) secaoGrupo.style.display = 'block';
+            document.getElementById('proposta-emoji').innerText = "🔥";
             
-            setTimeout(() => transicaoTela('tela-recepcao'), 600);
-        }
+            containerBotoes.innerHTML = `
+                <button class="btn-action btn-pink" onclick="votarGrupo('Fechado! Topo 💙')">Fechado! Topo 💙</button>
+                <button class="btn-action btn-dark" onclick="proporAlternativa()">Mudar Detalhes 🗺️</button>
+            `;
+            atualizarListaVotosPainel(dadosConvite.respostas);
+        } else {
+            if (secaoGrupo) secaoGrupo.style.display = 'none';
+            document.getElementById('proposta-emoji').innerText = "🌹";
 
-        function prosseguirParaIdentificacao() {
-            transicaoTela('tela-identificacao');
+            containerBotoes.innerHTML = `
+                <button class="btn-action btn-pink" onclick="responderIndividual('SIM')">Aceitar Convite 💖</button>
+                <button class="btn-action btn-dark" onclick="responderIndividual('NÃO')">Não Posso 🥺</button>
+            `;
         }
+    }
+    transicaoTela('tela-proposta');
+}
 
-        function carregarDashboardProposta() {
-            const inputNome = document.getElementById('nome-visitante');
-            if (!inputNome || !inputNome.value.trim()) {
-                alert("Por favor, digite o seu nome para continuar! 😉");
-                return;
+function responderIndividual(resposta) {
+    fetch(`/api/convite/${conviteId}/responder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeVisitante, status: resposta })
+    }).then(() => {
+        if (resposta === 'SIM') {
+            alert("Convite aceito! Vamos adicionar o evento à sua agenda e abrir o WhatsApp.");
+            baixarCalendarioICS();
+            
+            const texto = encodeURIComponent(`Oi ${dadosConvite.nomeCriador}! Olhei o link aqui, achei top e eu ACEITO! Já salvei na minha agenda. ✨📅`);
+            window.open(`https://api.whatsapp.com/send?phone=${dadosConvite.whatsappCriador}&text=${texto}`, '_blank');
+        } else {
+            alert("Que pena! Resposta enviada.");
+        }
+    });
+}
+
+function votarGrupo(opcao) {
+    fetch(`/api/convite/${conviteId}/responder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeVisitante, status: opcao })
+    }).then(res => res.json()).then(data => {
+        if (data.sucesso) {
+            alert("Seu voto foi computado! Você também pode salvar esse horário sugerido na sua agenda.");
+            baixarCalendarioICS();
+            window.location.reload();
+        }
+    });
+}
+
+function proporAlternativa() {
+    const dataProposta = prompt("Qual o melhor dia e horário para você?");
+    if (!dataProposta || !dataProposta.trim()) return;
+
+    fetch(`/api/convite/${conviteId}/responder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nome: nomeVisitante,
+            status: 'Sugeriu Mudanças',
+            contraproposta: {
+                dataHora: dataProposta.trim(),
+                comidaBebida: dadosConvite.sugestaoAtual.comidaBebida,
+                vibe: dadosConvite.sugestaoAtual.vibe
             }
-            nomeVisitante = inputNome.value.trim();
-
-            const boasVindas = document.getElementById('titulo-boas-vindas');
-            if (boasVindas) boasVindas.innerText = `E AÍ, ${nomeVisitante.toUpperCase()}?`;
-
-            document.getElementById('detalhe-data').innerHTML = `<strong>🗓️ Data / Hora:</strong> ${dadosConvite.sugestaoAtual.dataHora}`;
-            document.getElementById('detalhe-comida').innerHTML = `<strong>🍕 Comida / Bebida:</strong> ${dadosConvite.sugestaoAtual.comidaBebida}`;
-            document.getElementById('detalhe-vibe').innerHTML = `<strong>🎸 Vibe do Rolê:</strong> ${dadosConvite.sugestaoAtual.vibe}`;
-
-            const containerBotoes = document.getElementById('botoes-acao-container');
-            const secaoGrupo = document.getElementById('secao-grupo-votos');
-
-            if (containerBotoes) {
-                containerBotoes.innerHTML = "";
-
-                if (dadosConvite.tipoConvite === 'grupo') {
-                    if (secaoGrupo) secaoGrupo.style.display = 'block';
-                    document.getElementById('proposta-emoji').innerText = "🔥";
-                    
-                    containerBotoes.innerHTML = `
-                        <button class="btn-action btn-pink" onclick="votarGrupo('Fechado! Topo 💙')">Fechado! Topo 💙</button>
-                        <button class="btn-action btn-dark" onclick="proporAlternativa()">Mudar Detalhes 🗺️</button>
-                    `;
-                    atualizarListaVotosPainel(dadosConvite.respostas);
-                } else {
-                    if (secaoGrupo) secaoGrupo.style.display = 'none';
-                    document.getElementById('proposta-emoji').innerText = "🌹";
-
-                    containerBotoes.innerHTML = `
-                        <button class="btn-action btn-pink" onclick="responderIndividual('SIM')">Aceitar Convite 💖</button>
-                        <button class="btn-action btn-dark" onclick="responderIndividual('NÃO')">Não Posso 🥺</button>
-                    `;
-                }
-            }
-            transicaoTela('tela-proposta');
+        })
+    }).then(res => res.json()).then(data => {
+        if (data.sucesso) {
+            alert("Sua sugestão de nova data foi adicionada ao painel do grupo! 🚀");
+            window.location.reload();
         }
+    });
+}
 
-        function responderIndividual(resposta) {
-            fetch(`/api/convite/${conviteId}/responder`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome: nomeVisitante, status: resposta })
-            }).then(() => {
-                if (resposta === 'SIM') {
-                    const texto = encodeURIComponent(`Oi ${dadosConvite.nomeCriador}! Conferi o convite e eu ACEITO! 💖✨`);
-                    window.open(`https://api.whatsapp.com/send?phone=${dadosConvite.whatsappCriador}&text=${texto}`, '_blank');
-                } else {
-                    alert("Resposta registrada. Que pena que não poderá ir! 🥺");
-                }
-            });
-        }
+function baixarCalendarioICS() {
+    const resumo = `Rolê do ${dadosConvite.nomeCriador} ✨`;
+    const descricao = `Comida: ${dadosConvite.sugestaoAtual.comidaBebida} | Vibe: ${dadosConvite.sugestaoAtual.vibe}`;
+    
+    // Gera arquivo ICS simples estruturado em texto plano nativo
+    const icsConteudo = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        `SUMMARY:${resumo}`,
+        `DESCRIPTION:${descricao}`,
+        "DTSTART:20260705T200000Z", // Data de fallback estruturada
+        "DTEND:20260705T230000Z",
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\n");
 
-        function votarGrupo(opcao) {
-            fetch(`/api/convite/${conviteId}/responder`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome: nomeVisitante, status: opcao })
-            }).then(res => res.json()).then(data => {
-                if (data.sucesso) {
-                    alert("Seu voto foi computado! 🗳️");
-                    window.location.reload();
-                }
-            });
-        }
+    const blob = new Blob([icsConteudo], { type: 'text/calendar;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', 'agenda-role.ics');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
-        function proporAlternativa() {
-            const dataProposta = prompt("Qual o melhor dia e horário para você?");
-            if (!dataProposta || !dataProposta.trim()) return;
+function atualizarListaVotosPainel(respostas) {
+    const lista = document.getElementById('lista-respostas-grupo');
+    if (!lista) return;
 
-            fetch(`/api/convite/${conviteId}/responder`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nome: nomeVisitante,
-                    status: 'Sugeriu Mudanças',
-                    contraproposta: {
-                        dataHora: dataProposta.trim(),
-                        comidaBebida: dadosConvite.sugestaoAtual.comidaBebida,
-                        vibe: dadosConvite.sugestaoAtual.vibe
-                    }
-                })
-            }).then(res => res.json()).then(data => {
-                if (data.sucesso) {
-                    alert("Sua sugestão foi adicionada ao grupo! 🚀");
-                    window.location.reload();
-                }
-            });
-        }
+    if (!respostas || respostas.length === 0) {
+        lista.innerHTML = `<div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Seja o primeiro!</div>`;
+        return;
+    }
 
-        function atualizarListaVotosPainel(respostas) {
-            const lista = document.getElementById('lista-respostas-grupo');
-            if (!lista) return;
-
-            if (!respostas || respostas.length === 0) {
-                lista.innerHTML = `<div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Seja o primeiro!</div>`;
-                return;
-            }
-
-            lista.innerHTML = "";
-            respostas.forEach(r => {
-                const row = document.createElement('div');
-                row.className = "voto-row";
-                row.innerHTML = `<span><strong>${r.nome}</strong></span> <span style="color: #ff2a6d; font-weight: bold;">(${r.status})</span>`;
-                lista.appendChild(row);
-            });
-        }
+    lista.innerHTML = "";
+    respostas.forEach(r => {
+        const row = document.createElement('div');
+        row.className = "voto-row";
+        row.innerHTML = `<span><strong>${r.nome}</strong></span> <span style="color: #ff2a6d; font-weight: bold;">(${r.status})</span>`;
+        lista.appendChild(row);
+    });
+}
     </script>
 </body>
 </html>

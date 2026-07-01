@@ -9,9 +9,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Banco de dados em memória temporário
 const convitesDB = {};
 
-// API para criar o convite
+// API para criar o convite (ATUALIZADA com recepção dos dados customizados)
 app.post('/api/criar-convite', (req, res) => {
-    const { nomeCriador, whatsappCriador, ocasiao, tipoConvite, permitirVotacao } = req.body;
+    const { nomeCriador, whatsappCriador, ocasiao, tipoConvite, permitirVotacao, sugestaoInicial } = req.body;
     
     if (!nomeCriador || !whatsappCriador) {
         return res.status(400).json({ sucesso: false, erro: 'Nome e WhatsApp são obrigatórios.' });
@@ -23,14 +23,14 @@ app.post('/api/criar-convite', (req, res) => {
         id,
         nomeCriador,
         whatsappCriador,
-        ocasiao,
-        tipoConvite,
-        permitirVotacao,
+        ocasiao: ocasiao || "outros",
+        tipoConvite: tipoConvite || "individual",
+        permitirVotacao: permitirVotacao !== undefined ? permitirVotacao : true,
         respostas: [], // Guarda quem votou e o que escolheu
         sugestaoAtual: {
-            dataHora: "Sexta às 20h",
-            comidaBebida: "Pizzas e Bebidas",
-            vibe: "Conversar e Curtir Som"
+            dataHora: (sugestaoInicial && sugestaoInicial.dataHora) ? sugestaoInicial.dataHora : "A combinar",
+            comidaBebida: (sugestaoInicial && sugestaoInicial.comidaBebida) ? sugestaoInicial.comidaBebida : "Pizzas e Bebidas",
+            vibe: (sugestaoInicial && sugestaoInicial.vibe) ? sugestaoInicial.vibe : "Conversar e Curtir Som"
         }
     };
 
@@ -46,7 +46,7 @@ app.get('/api/convite/:id', (req, res) => {
     res.json({ sucesso: true, convite });
 });
 
-// API para responder/votar no convite
+// API para responder/votar no convite (CORRIGIDA para ler o status 'Sugeriu Mudanças')
 app.post('/api/convite/:id/responder', (req, res) => {
     const convite = convitesDB[req.params.id];
     if (!convite) return res.status(404).json({ sucesso: false, erro: 'Convite não encontrado.' });
@@ -55,8 +55,8 @@ app.post('/api/convite/:id/responder', (req, res) => {
     
     convite.respostas.push({ nome, status, contraproposta });
     
-    // Se for uma contraproposta válida, atualiza a sugestão principal do grupo
-    if (status === 'contraproposta' && contraproposta) {
+    // Se for uma contraproposta válida (quando clicam em Mudar Detalhes), atualiza a sugestão do grupo
+    if ((status === 'contraproposta' || status === 'Sugeriu Mudanças') && contraproposta) {
         convite.sugestaoAtual = {
             dataHora: contraproposta.dataHora || convite.sugestaoAtual.dataHora,
             comidaBebida: contraproposta.comidaBebida || convite.sugestaoAtual.comidaBebida,
@@ -72,4 +72,4 @@ app.get('/convite/:id', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`Servidor rodando a porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

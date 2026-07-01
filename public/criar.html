@@ -5,293 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Criar Convite Especial</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #0d0614;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            min-height: 100dvh;
-            color: #ffffff;
-            padding: 15px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background: linear-gradient(135deg, #250c31 0%, #0c0410 100%);
-            border-radius: 30px;
-            padding: 30px 20px;
-            box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255, 42, 109, 0.2);
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(90deg, #ff2a6d, #9b00e8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header p {
-            font-size: 14px;
-            color: #ccb9d1;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-
-        .card {
-            background-color: rgba(25, 12, 36, 0.65);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px 16px;
-            border: 1px solid rgba(255, 42, 109, 0.1);
-            text-align: left;
-        }
-
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 11px;
-            color: #b59cb8;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .input-field {
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 42, 109, 0.2);
-            padding: 14px;
-            border-radius: 12px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        select.input-field {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23ff2a6d' d='M0 0l5 5 5-5z'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            padding-right: 40px;
-        }
-
-        select.input-field option {
-            background-color: #250c31;
-            color: white;
-        }
-
-        .input-field:focus {
-            border-color: #ff2a6d;
-            box-shadow: 0 0 8px rgba(255, 42, 109, 0.3);
-        }
-
-        .radio-cards-container {
-            display: flex;
-            gap: 12px;
-            margin-top: 6px;
-        }
-
-        .radio-card {
-            flex: 1;
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 42, 109, 0.15);
-            border-radius: 14px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .radio-card input[type="radio"] {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            accent-color: #ff2a6d;
-        }
-
-        .radio-card:hover {
-            border-color: rgba(255, 42, 109, 0.4);
-        }
-
-        .radio-card:has(input[type="radio"]:checked) {
-            border-color: #ff2a6d;
-            background: linear-gradient(135deg, rgba(255, 42, 109, 0.1) 0%, rgba(155, 0, 232, 0.05) 100%);
-            box-shadow: 0 0 10px rgba(255, 42, 109, 0.15);
-        }
-
-        .card-title {
-            font-weight: 700;
-            font-size: 13px;
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .card-description {
-            font-size: 11px;
-            color: #b59cb8;
-            line-height: 1.3;
-        }
-
-        .grupo-options-box {
-            display: none;
-            margin-top: 10px;
-            margin-bottom: 16px;
-            border-left: 3px solid #9b00e8;
-            padding-left: 12px;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            cursor: pointer;
-            margin-bottom: 5px;
-            user-select: none;
-        }
-
-        .checkbox-container input {
-            margin-top: 2px;
-            accent-color: #ff2a6d;
-        }
-
-        .checkbox-label-text {
-            font-size: 13px;
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        .checkbox-subtext {
-            display: block;
-            font-size: 11px;
-            color: #b59cb8;
-            margin-top: 2px;
-        }
-
-        .info-whatsapp-grupo {
-            font-size: 12px;
-            color: #ccb9d1;
-            line-height: 1.4;
-            margin-top: 12px;
-            background: rgba(155, 0, 232, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px dashed rgba(155, 0, 232, 0.3);
-        }
-
-        .btn-gerar {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%);
-            color: white;
-            border: none;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4);
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        .btn-gerar:active {
-            transform: scale(0.98);
-        }
-
-        .resultado-container {
-            display: none;
-            margin-top: 20px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .link-box {
-            background-color: rgba(0, 0, 0, 0.4);
-            border: 1px dashed #ff2a6d;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #ff2a6d;
-            word-break: break-all;
-            margin-bottom: 10px;
-            user-select: all;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .link-box:hover {
-            background-color: rgba(255, 42, 109, 0.05);
-        }
-
-        .btn-whatsapp-share {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 14px;
-            background-color: #25D366;
-            color: white;
-            border: none;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-top: 15px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-            transition: background-color 0.2s, transform 0.2s;
-        }
-
-        .btn-whatsapp-share:hover {
-            background-color: #1ebd58;
-        }
-
-        .btn-whatsapp-share:active {
-            transform: scale(0.98);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0d0614; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; color: #ffffff; padding: 15px; }
+        .container { width: 100%; max-width: 420px; background: linear-gradient(135deg, #250c31 0%, #0c0410 100%); border-radius: 30px; padding: 30px 20px; box-shadow: 0 25px 50px -12px rgba(255, 42, 109, 0.15), 0 30px 60px -15px rgba(0,0,0,0.8); border: 1px solid rgba(255, 42, 109, 0.2); text-align: center; }
+        .header h1 { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 8px; background: linear-gradient(90deg, #ff2a6d, #9b00e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { font-size: 14px; color: #ccb9d1; margin-bottom: 25px; line-height: 1.4; }
+        .card { background-color: rgba(25, 12, 36, 0.65); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 16px; border: 1px solid rgba(255, 42, 109, 0.1); text-align: left; }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 11px; color: #b59cb8; margin-bottom: 6px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .input-field { width: 100%; background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 42, 109, 0.2); padding: 14px; border-radius: 12px; color: white; font-size: 14px; outline: none; transition: all 0.3s; }
+        .row-inputs { display: flex; gap: 10px; }
+        .row-inputs .input-group { flex: 1; }
+        select.input-field { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23ff2a6d' d='M0 0l5 5 5-5z'/></svg>"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+        select.input-field option { background-color: #250c31; color: white; }
+        .input-field:focus { border-color: #ff2a6d; box-shadow: 0 0 8px rgba(255, 42, 109, 0.3); }
+        .radio-cards-container { display: flex; gap: 12px; margin-top: 6px; }
+        .radio-card { flex: 1; background-color: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 42, 109, 0.15); border-radius: 14px; padding: 12px; cursor: pointer; transition: all 0.2s ease; position: relative; display: flex; flex-direction: column; }
+        .radio-card input[type="radio"] { position: absolute; top: 12px; right: 12px; accent-color: #ff2a6d; }
+        .radio-card:has(input[type="radio"]:checked) { border-color: #ff2a6d; background: linear-gradient(135deg, rgba(255, 42, 109, 0.1) 0%, rgba(155, 0, 232, 0.05) 100%); }
+        .card-title { font-weight: 700; font-size: 13px; color: #ffffff; margin-bottom: 4px; }
+        .card-description { font-size: 11px; color: #b59cb8; line-height: 1.3; }
+        .grupo-options-box { display: none; margin-top: 10px; margin-bottom: 16px; border-left: 3px solid #9b00e8; padding-left: 12px; }
+        .checkbox-container { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none; }
+        .checkbox-container input { margin-top: 2px; accent-color: #ff2a6d; }
+        .checkbox-label-text { font-size: 13px; color: #ffffff; font-weight: 500; }
+        .checkbox-subtext { display: block; font-size: 11px; color: #b59cb8; margin-top: 2px; }
+        .btn-gerar { width: 100%; padding: 15px; background: linear-gradient(90deg, #ff2a6d 0%, #9b00e8 100%); color: white; border: none; font-size: 15px; font-weight: bold; border-radius: 50px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255, 42, 109, 0.4); margin-top: 10px; }
+        .resultado-container { display: none; margin-top: 20px; }
+        .link-box { background-color: rgba(0, 0, 0, 0.4); border: 1px dashed #ff2a6d; padding: 12px; border-radius: 12px; font-size: 13px; color: #ff2a6d; word-break: break-all; margin-bottom: 10px; cursor: pointer; }
+        .btn-whatsapp-share { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background-color: #25D366; color: white; border: none; font-size: 14px; font-weight: bold; border-radius: 50px; text-decoration: none; margin-top: 15px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header">
             <h1>Gerador de Convites ✨</h1>
-            <p>Crie um link personalizado e viva dias especiais!</p>
+            <p>Monte o plano perfeito e convide quem importa!</p>
         </div>
 
         <div class="card">
@@ -301,17 +50,41 @@
             </div>
 
             <div class="input-group">
-                <label>Seu WhatsApp (para receber o aviso do SIM)</label>
+                <label>Seu WhatsApp (com DDD)</label>
                 <input type="text" id="contato-criador" class="input-field" placeholder="Ex: 11999999999">
             </div>
 
+            <div class="row-inputs">
+                <div class="input-group">
+                    <label>Data Sugerida</label>
+                    <input type="date" id="data-sugerida" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label>Horário</label>
+                    <input type="time" id="hora-sugerida" class="input-field">
+                </div>
+            </div>
+
             <div class="input-group">
-                <label>Qual é a ocasião?</label>
-                <select id="ocasiao-convite" class="input-field">
-                    <option value="date">Encontro Romântico (Date) 🌹</option>
-                    <option value="resenha">Resenha / Rolê com Amigos 🍻</option>
-                    <option value="girls-night">Noite das Meninas 💖</option>
-                    <option value="outros">Outro Rolê ✨</option>
+                <label>O que comer / beber?</label>
+                <select id="comida-sugerida" class="input-field">
+                    <option value="🍕 Pizzas & Bebidas">🍕 Pizzas & Bebidas</option>
+                    <option value="🍔 Hambúrguer Artesanal">🍔 Hambúrguer Artesanal</option>
+                    <option value="🥩 Churrasco Completo">🥩 Churrasco Completo</option>
+                    <option value="🍣 Combinado de Sushi">🍣 Combinado de Sushi</option>
+                    <option value="☕ Café da Manhã / Brunch">☕ Café da Manhã / Brunch</option>
+                    <option value="🍹 Apenas Drinks e Petiscos">🍹 Apenas Drinks e Petiscos</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Qual a vibe do rolê?</label>
+                <select id="vibe-sugerida" class="input-field">
+                    <option value="🎸 Conversar e Curtir um Som">🎸 Conversar e Curtir um Som</option>
+                    <option value="🎬 Noite de Filmes / Séries">🎬 Noite de Filmes / Séries</option>
+                    <option value="🎮 Madrugada de Jogos / Games">🎮 Madrugada de Jogos / Games</option>
+                    <option value="💃 Sair para Dançar / Balada">💃 Sair para Dançar / Balada</option>
+                    <option value="✨ Algo calmo e reservado">✨ Algo calmo e reservado</option>
                 </select>
             </div>
 
@@ -321,13 +94,12 @@
                     <label class="radio-card">
                         <input type="radio" name="tipo_convite" value="individual" checked onchange="toggleGrupoOptions()">
                         <span class="card-title">👤 Individual</span>
-                        <span class="card-description">Apenas uma pessoa. Agendamento direto.</span>
+                        <span class="card-description">Date ou amigo único.</span>
                     </label>
-
                     <label class="radio-card">
                         <input type="radio" name="tipo_convite" value="grupo" onchange="toggleGrupoOptions()">
                         <span class="card-title">👥 Em Grupo</span>
-                        <span class="card-description">Múltiplos amigos com votação de sugestões.</span>
+                        <span class="card-description">Votação coletiva da galera.</span>
                     </label>
                 </div>
             </div>
@@ -336,14 +108,10 @@
                 <label class="checkbox-container">
                     <input type="checkbox" id="permitir_votacao" name="permitir_votacao" value="true" checked>
                     <div class="checkbox-label-text">
-                        Permitir votação e contraproposta?
-                        <span class="checkbox-subtext">Se alguém discordar, poderá propor uma alternativa de horário/local.</span>
+                        Permitir contrapropostas?
+                        <span class="checkbox-subtext">Amigos podem sugerir outro horário se não puderem neste.</span>
                     </div>
                 </label>
-                
-                <div class="info-whatsapp-grupo">
-                    📢 <strong>Fluxo do Grupo ativado:</strong> O sistema gerará um link de votação coletiva para você disparar direto no grupo de WhatsApp dos seus amigos!
-                </div>
             </div>
 
             <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
@@ -352,99 +120,78 @@
         <div class="resultado-container" id="resultado">
             <div class="header" style="margin-top: 15px;">
                 <h1 style="font-size: 18px;" id="titulo-sucesso">Seu Link está Pronto! ✨</h1>
-                <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para a pessoa especial:</p>
+                <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para os convidados:</p>
             </div>
-            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
+            <div class="link-box" id="link-gerado" onclick="copiarLink()">Aguardando...</div>
             <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
-            
-            <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">
-                📲 Compartilhar no WhatsApp
-            </a>
+            <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">📲 Compartilhar no WhatsApp</a>
         </div>
     </div>
 
     <script>
         function toggleGrupoOptions() {
             const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
-            const opcoesGrupo = document.getElementById('opcoes_grupo');
-            if (tipoConvite === 'grupo') {
-                opcoesGrupo.style.display = 'block';
-            } else {
-                opcoesGrupo.style.display = 'none';
-            }
+            document.getElementById('opcoes_grupo').style.display = tipoConvite === 'grupo' ? 'block' : 'none';
+        }
+
+        function formatarDataParaExibicao(dataBruta) {
+            if(!dataBruta) return "A combinar";
+            const partes = dataBruta.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
         function gerarLink() {
             const nome = document.getElementById('nome-criador').value.trim();
             let contato = document.getElementById('contato-criador').value.trim();
-            const ocasiao = document.getElementById('ocasiao-convite').value;
-            
+            const dataSugerida = document.getElementById('data-sugerida').value;
+            const horaSugerida = document.getElementById('hora-sugerida').value;
+            const comida = document.getElementById('comida-sugerida').value;
+            const vibe = document.getElementById('vibe-sugerida').value;
             const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
             const permitirVotacao = document.getElementById('permitir_votacao').checked;
 
-            if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
-            if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
-
+            if (!nome || !contato) return alert('Por favor, preencha o seu Nome e WhatsApp! 😉');
             contato = contato.replace(/\D/g, '');
+
+            const dataFormatada = formatarDataParaExibicao(dataSugerida);
+            const dataHoraFinal = `${dataFormatada} às ${horaSugerida || 'A combinar'}`;
 
             fetch('/api/criar-convite', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nomeCriador: nome,
-                    whatsappCriador: contato,
-                    ocasiao: ocasiao,
-                    tipoConvite: tipoConvite,
-                    permitirVotacao: permitirVotacao,
-                    emailsGrupo: "" 
+                body: JSON.stringify({ 
+                    nomeCriador: nome, 
+                    whatsappCriador: contato, 
+                    tipoConvite, 
+                    permitirVotacao,
+                    sugestaoInicial: {
+                        dataHora: dataHoraFinal,
+                        comidaBebida: comida,
+                        vibe: vibe
+                    }
                 })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.sucesso && data.id) {
-                    const baseURl = window.location.origin;
-                    const linkFinal = `${baseURl}/index.html?id=${data.id}`;
-                    
+                    const linkFinal = `${window.location.origin}/index.html?id=${data.id}`;
                     document.getElementById('link-gerado').innerText = linkFinal;
                     
-                    const titulo = document.getElementById('titulo-sucesso');
-                    const subtitulo = document.getElementById('subtitulo-sucesso');
-                    const btnWhats = document.getElementById('btn-whatsapp');
-                    let mensagemWhats = "";
-                    
+                    let mensagemWhats = `Ei! Preparei um convite especial para o nosso rolê. Veja os detalhes aqui e confirme sua presença: ${linkFinal}`;
                     if (tipoConvite === 'grupo') {
-                        titulo.innerText = "Votação do Grupo Criada! 🔥";
-                        subtitulo.innerText = "Envie este link no grupo para a galera votar:";
-                        mensagemWhats = `Bora decidir o nosso próximo rolê?\nO primeiro a acessar monta a proposta inicial e os outros votam! Acesse aqui: ${linkFinal}`;
-                    } else {
-                        titulo.innerText = "Seu Link está Pronto! ✨";
-                        subtitulo.innerText = "Copie e envie para a pessoa especial:";
-                        mensagemWhats = `Criei um convite especial para você, olha só: ${linkFinal}`;
+                        mensagemWhats = `Fala galera! Criei a votação para o nosso próximo rolê. Acessem o link para escolher a melhor opção: ${linkFinal}`;
                     }
-                    
-                    btnWhats.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
+
+                    document.getElementById('btn-whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
                     document.getElementById('resultado').style.display = 'block';
-                    
-                    document.getElementById('feedback-copiar').innerText = "Toque no link acima para copiar";
-                    document.getElementById('feedback-copiar').style.color = "#b59cb8";
-                } else {
-                    alert('Erro ao gerar o convite no servidor: ' + (data.erro || 'Desconhecido'));
                 }
-            })
-            .catch(err => {
-                alert('Erro de conexão com o servidor do app.');
-                console.error(err);
-            });
+            }).catch(() => alert('Erro ao processar convite.'));
         }
 
         function copiarLink() {
-            const linkText = document.getElementById('link-gerado').innerText;
-            navigator.clipboard.writeText(linkText).then(() => {
-                const feedback = document.getElementById('feedback-copiar');
-                feedback.innerText = "✓ Link copiado com sucesso!";
-                feedback.style.color = "#00ff88";
-            }).catch(err => {
-                console.error('Erro ao copiar o link: ', err);
+            navigator.clipboard.writeText(document.getElementById('link-gerado').innerText).then(() => {
+                document.getElementById('feedback-copiar').innerText = "✓ Link copiado com sucesso!";
+                document.getElementById('feedback-copiar').style.color = "#00ff88";
             });
         }
     </script>
