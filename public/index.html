@@ -14,6 +14,8 @@
             --text-muted: #b5a4be;
             --card-bg: rgba(23, 11, 39, 0.6);
             --border-color: rgba(255, 255, 255, 0.08);
+            --button-roxe: #3a1c58;
+            --button-border: #5a3d66;
         }
 
         * {
@@ -32,9 +34,9 @@
             align-items: center;
             overflow-x: hidden;
             position: relative;
+            padding: 20px 0;
         }
 
-        /* Fundo de Elementos Flutuantes */
         #hearts-bg {
             position: absolute;
             top: 0;
@@ -59,7 +61,6 @@
             100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Container que simula a tela do celular */
         .container {
             width: 100%;
             max-width: 420px;
@@ -81,11 +82,13 @@
             padding: 35px 24px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
         }
 
         .screen.active {
             display: block;
             animation: fadeIn 0.4s ease-out forwards;
+            pointer-events: auto;
         }
 
         @keyframes fadeIn {
@@ -93,7 +96,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Tipografia */
         .emoji-header {
             font-size: 3.5rem;
             margin-bottom: 20px;
@@ -118,26 +120,9 @@
             line-height: 1.5;
         }
 
-        /* Caixa de Sugestão de Grupo */
-        .box-sugestao {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: left;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .box-sugestao strong {
-            color: #ffffff;
-        }
-
-        /* Inputs */
         .input-group {
             margin-bottom: 20px;
-            text-align: text-left;
+            text-align: left;
         }
 
         .input-group label {
@@ -158,14 +143,11 @@
             color: white;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
+            text-align: center;
         }
 
-        .input-field:focus {
-            border-color: var(--primary-color);
-        }
+        .input-field:focus { border-color: var(--primary-color); }
 
-        /* Botões */
         .btn {
             width: 100%;
             background: var(--primary-color);
@@ -183,50 +165,108 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
+            margin-bottom: 10px;
         }
 
         .btn:hover { background: var(--primary-hover); }
         .btn:active { transform: scale(0.98); }
 
-        /* Container de Votação */
-        .votacao-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        #btn-fuga-container {
+            position: relative;
+            width: 100%;
+            height: 90px;
             margin-top: 15px;
+            pointer-events: none;
         }
 
-        .btn-voto-sim {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 10px;
+        #btn-grande-não {
+            background: none;
+            border: 2px solid var(--button-border);
             border-radius: 50px;
-            font-size: 0.85rem;
+            padding: 14px 28px;
+            width: 140px;
+            font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 42, 116, 0.3);
-            transition: opacity 0.2s;
+            color: #ffffff;
+            cursor: default;
+            position: absolute;
+            left: calc(50% - 70px);
+            transition: all 0.15s ease-out;
+            pointer-events: auto;
         }
 
-        .btn-voto-nao {
-            background: rgba(255, 255, 255, 0.05);
+        .container-opcoes-votacao {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 20px 0;
+            text-align: left;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .card-opcao-proposta {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+        }
+
+        .autor-badge {
+            font-size: 0.75rem;
+            background: var(--button-roxe);
+            border: 1px solid var(--button-border);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #d4a5ff;
+        }
+
+        .votos-contador {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .detalhes-linhas-proposta {
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .btn-votar-nesta {
+            width: 100%;
+            background: rgba(255, 42, 116, 0.15);
+            border: 1px solid var(--primary-color);
+            padding: 10px;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px 10px;
             border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.8rem;
+            font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
             transition: background 0.2s;
         }
+        .btn-votar-nesta:hover { background: var(--primary-color); }
 
-        .btn-voto-sim:hover { opacity: 0.9; }
-        .btn-voto-nao:hover { background: rgba(255, 255, 255, 0.1); }
+        .sem-opcoes {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
+            padding: 20px 0;
+        }
 
-        /* Grids de Opções */
         .grid-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -260,16 +300,12 @@
         .option-box .icon { font-size: 1.8rem; }
         .option-box .label { font-size: 0.85rem; font-weight: 500; }
 
-        /* Histórico de Respostas */
         .historico-votos {
             margin-top: 25px;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 16px;
             padding: 16px;
             text-align: left;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .historico-votos h3 {
@@ -280,15 +316,19 @@
             color: var(--text-muted);
         }
 
+        .lista-historico-scroll {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
         .voto-linha {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             padding: 6px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #ffffff;
         }
         .voto-linha:last-child { border-bottom: none; }
+        .voto-linha .status-badge { color: #73f1b4; font-weight: bold; }
 
-        /* Resumo da Última Tela */
         .summary-box {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -298,11 +338,7 @@
             margin-bottom: 25px;
         }
 
-        .summary-item {
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-        .summary-item:last-child { margin-bottom: 0; }
+        .summary-item { margin-bottom: 10px; font-size: 0.9rem; }
         .summary-item strong { color: var(--text-muted); }
 
         .footer-interact {
@@ -320,56 +356,52 @@
 
     <div class="container">
 
-        <div id="screen-0" class="screen active">
-            <div class="emoji-header" id="emoji-tela0">👋</div>
-            <h2 id="titulo-dinamico">Carregando...</h2>
-            <p id="subtitulo-dinamico">Aguarde enquanto preparamos os detalhes do convite.</p>
+        <div id="screen-1" class="screen active">
+            <div class="emoji-header">👋</div>
+            <h2>Você recebeu um convite!</h2>
+            <p>Aguarde um momento enquanto preparamos o ambiente.</p>
             
-            <div class="input-group" id="wrapper-input-nome">
+            <div class="input-group">
                 <label for="nome-participante-input">SEU NOME:</label>
                 <input type="text" id="nome-participante-input" class="input-field" placeholder="Escreva seu nome aqui...">
             </div>
 
-            <div id="container-botoes-tela1"></div>
-
-            <div id="lista-outros-votos" class="historico-votos" style="display: none;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box"></div>
-            </div>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
-
-        <div id="screen-1" class="screen">
-            <div class="emoji-header" id="emoji-tela1">🥺</div>
-            <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
-            <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
-            <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
+            <button class="btn" onclick="salvarNomeParticipante()">Prosseguir 🗓️</button>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
         <div id="screen-2" class="screen">
-            <div class="emoji-header" id="emoji-tela2">🍿💖</div>
-            <h2 id="titulo-tela2">O que você acha?</h2>
-            
-            <div id="box-sugestao-container" class="box-sugestao" style="display: none;"></div>
-
-            <p id="pergunta-voto-texto">O que você acha da proposta?</p>
-            
-            <div id="wrapper-votacao-grupo" class="votacao-container" style="display: none;"></div>
-
-            <button id="btn-avancar-fluxo-padrao" class="btn" onclick="nextScreen(3)">Avançar 🗓️</button>
-            
-            <div id="lista-outros-votos-tela2" class="historico-votos" style="display: none; margin-top: 20px;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box-tela2"></div>
+            <div class="emoji-header" id="emoji-tela2">🥺😏🌹</div>
+            <h2 id="titulo-tela2">Alguém te chamou pra um date! Você aceita?</h2>
+            <button class="btn" onclick="direcionarFluxoPosAceite()">Sim</button>
+            <div id="btn-fuga-container">
+                <button id="btn-grande-não" onmouseover="fugir()">Não</button>
             </div>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
         <div id="screen-3" class="screen">
+            <div class="emoji-header" id="emoji-tela3">🍿💖</div>
+            <h2>E AÍ, <span id="nome-titulo-grupo">CONVIDADO</span>?</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Escolha a melhor proposta ou sugira uma nova:</p>
+            
+            <div class="container-opcoes-votacao" id="lista-opcoes-grupo">
+                </div>
+
+            <button class="btn" style="background: transparent; border: 2px solid var(--button-border); box-shadow: none;" onclick="nextScreen(4)">Sugerir nova opção 🗺️</button>
+            
+            <div class="historico-votos">
+                <h3>Votos e ações recentes:</h3>
+                <div class="lista-historico-scroll" id="linhas-historico-grupo">
+                    </div>
+            </div>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-4" class="screen">
             <div class="emoji-header">📅</div>
             <h2>Quando fica melhor?</h2>
-            <p>Escolha a melhor data e horário para o rolê acontecer.</p>
+            <p>Escolha a melhor data e horário para a sua sugestão.</p>
             
             <div class="input-group">
                 <label for="date-input">DATA:</label>
@@ -380,30 +412,30 @@
                 <input type="time" id="time-input" class="input-field">
             </div>
 
-            <button class="btn" onclick="validateScreen3()">Definir Horário 🚀</button>
+            <button class="btn" onclick="validateScreen4()">Definir Horário 🚀</button>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
-        <div id="screen-4" class="screen">
-            <div class="emoji-header" id="emoji-tela4">🍔</div>
-            <h2 id="titulo-tela4">O que vamos comer?</h2>
-            <p>Selecione uma ou mais opções da lista.</p>
+        <div id="screen-5" class="screen">
+            <div class="emoji-header" id="emoji-tela5">🍔</div>
+            <h2 id="titulo-tela5">O que vamos comer?</h2>
+            <p>Selecione opções para a sua proposta.</p>
             
             <div class="grid-options" id="grid-comida"></div>
 
             <div class="input-group" id="campo-outros-comida" style="display: none;">
                 <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
-                <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Comida Mexicana, Pastel...">
+                <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Comida Mexicana...">
             </div>
 
-            <button class="btn" onclick="validateScreen4()">Confirmar Opções 🍕</button>
+            <button class="btn" onclick="validateScreen5()">Confirmar Opções 🍕</button>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
-        <div id="screen-5" class="screen">
-            <div class="emoji-header" id="emoji-tela5">✨</div>
-            <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
-            <p>Escolha as atividades perfeitas para a ocasião.</p>
+        <div id="screen-6" class="screen">
+            <div class="emoji-header" id="emoji-tela6">✨</div>
+            <h2 id="titulo-tela6">Qual vai ser a vibe?</h2>
+            <p>Escolha as atividades ideais para esse plano.</p>
             
             <div class="grid-options" id="grid-atividade"></div>
 
@@ -412,13 +444,13 @@
                 <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Boliche, Luau...">
             </div>
 
-            <button class="btn" onclick="validateScreen5()">Concluir Detalhes 🎸</button>
+            <button class="btn" onclick="validateScreen6()">Concluir Detalhes 🎸</button>
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
-        <div id="screen-6" class="screen">
+        <div id="screen-7" class="screen">
             <div class="emoji-header" id="emoji-final">🥳</div>
-            <h2 id="titulo-final">Tudo Combinado!</h2>
+            <h2 id="titulo-final">Proposta Criada!</h2>
             <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
             
             <div class="summary-box">
@@ -428,35 +460,23 @@
                 <div class="summary-item">✨ <strong>Vibe:</strong> <span id="sum-activity">--</span></div>
             </div>
 
-            <p id="status-texto" style="font-size: 0.85rem; font-weight: bold; color: var(--primary-color); margin-bottom: 20px;"></p>
-
-            <button class="btn" onclick="criarEventoAgenda()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: white; margin-bottom: 12px; box-shadow: none;">Salvar na Agenda 🗓️</button>
-            <button class="btn" onclick="abrirJanelaWhatsApp()">Enviar via WhatsApp 💬</button>
+            <button class="btn" onclick="salvarEEnviarNovaSugestao()">Salvar Proposta e Enviar 💬</button>
         </div>
 
     </div>
 
     <script>
-        let selectedFoods = [];        
-        let selectedActivities = [];   
-        let dateSelections = { date: '', time: '', food: '', activity: '' }; 
-        let tipoOcasiao = 'date';      
-        let nomeDonoDoLink = 'Alguém'; 
-        let whatsappCriadorLink = '';
-        let configTipoConvite = 'individual'; 
-        let nomeDoParticipanteAtual = '';
-        let propostaPrincipalSalva = null; 
-        let ehPrimeiroAcessoGrupo = false;
-
+        // --- BANCO DE DADOS DE CONFIGURAÇÃO DE EVENTOS ---
         const configuracoesOcasiao = {
             'date': {
-                tituloTela1: "te chamou para um date! Você aceitaria?",
-                emojiTela1: "🥺", emojiTela2: "😏🌹",
-                tituloTela2: "Você disse sim? 🥺",
-                tituloTela4: "O que está afim de comer? 🤔",
-                tituloTela5: "Qual é a vibe do encontro? ✨",
-                emojiFinal: "🌹✨", tituloFinal: "Tô contigo! 💙", subtituloFinal: "Prepara a roupa que já está combinado!",
-                textoWhats: "Oi {nome}, aceitei o seu convite de date!",
+                emojis: '🥺😏🌹',
+                inviteText: '(Nome) te chamou pra um date! Você aceita?',
+                proposalEmojis: '🍿💖',
+                tituloTela5: "O que está afim de comer? 🤔",
+                tituloTela6: "Qual é a vibe do encontro? ✨",
+                emojiFinal: "🌹✨", tituloFinal: "Tô contigo! 💙", subtituloFinal: "Nova proposta gerada com sucesso!",
+                textoWhats: "Oi {dono}, votei na proposta do nosso Date!",
+                textoWhatsNova: "Oi {dono}, montei uma nova proposta pro nosso Date!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍣', label: 'Sushi'}, {icon: '🍝', label: 'Massas'},
                     {icon: '🍕', label: 'Pizza'}, {icon: '🍸', label: 'Drinks'}, {icon: '🍽️', label: 'Outros'}
@@ -467,13 +487,14 @@
                 ]
             },
             'resenha': {
-                tituloTela1: "está armando uma resenha! Bora encostar?",
-                emojiTela1: "😎🔥", emojiTela2: "🍻🔥",
-                tituloTela2: "Confirmadíssimo! 🚀",
-                tituloTela4: "O que vamos comer/beber? 🍻",
-                tituloTela5: "Qual vai ser a programação? 🎲",
-                emojiFinal: "🍻🤠", tituloFinal: "Rolê Confirmado! 🔥", subtituloFinal: "Garante o consumo e bora encostar!",
-                textoWhats: "Oi {nome}, confirmei minha presença na resenha!",
+                emojis: '😎🍻🔥',
+                inviteText: '(Nome) te chamou pra uma resenha! Bora encostar?',
+                proposalEmojis: '🍻🔥',
+                tituloTela5: "O que vamos comer/beber? 🍻",
+                tituloTela6: "Qual vai ser a programação? 🎲",
+                emojiFinal: "🍻🤠", tituloFinal: "Proposta Pronta! 🔥", subtituloFinal: "Nova opção adicionada com sucesso!",
+                textoWhats: "Oi {dono}, votei na proposta da Resenha!",
+                textoWhatsNova: "Oi {dono}, montei uma nova proposta para a Resenha!",
                 comidas: [
                     {icon: '🥩', label: 'Churrasco'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍻', label: 'Cerveja/Drinks'},
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍿', label: 'Petiscos'}, {icon: '🍽️', label: 'Outros'}
@@ -484,13 +505,14 @@
                 ]
             },
             'girls-night': {
-                tituloTela1: "te chamou para a Noite das Meninas! Vamos?",
-                emojiTela1: "💅✨", emojiTela2: "🍿💖",
-                tituloTela2: "Gostamos assim! ✨👭",
-                tituloTela4: "Qual vai ser o cardápio? 🍫",
-                tituloTela5: "Qual vai ser a nossa vibe? 💆‍♀️",
-                emojiFinal: "💅🥂", tituloFinal: "Noite das Garotas! 💖", subtituloFinal: "Pijama ou look babado pronto!",
-                textoWhats: "Oi {nome}, presença confirmada na Noite das Meninas! 💅",
+                emojis: '💅✨🍿',
+                inviteText: '(Nome) te chamou pra Noite das Meninas! Vamos?',
+                proposalEmojis: '💅🥂',
+                tituloTela5: "Qual vai ser o cardápio? 🍫",
+                tituloTela6: "Qual vai ser a nossa vibe? 💆‍♀️",
+                emojiFinal: "💅🥂", tituloFinal: "Plano Traçado! 💖", subtituloFinal: "Nova sugestão adicionada à votação!",
+                textoWhats: "Oi {dono}, dei meu voto para a Noite das Meninas!",
+                textoWhatsNova: "Oi {dono}, montei uma nova proposta para a Noite das Meninas!",
                 comidas: [
                     {icon: '🍕', label: 'Pizza'}, {icon: '🍫', label: 'Doces/Chocolates'}, {icon: '🍣', label: 'Sushi'},
                     {icon: '🥂', label: 'Vinho/Drinks'}, {icon: '🍿', label: 'Pipoca'}, {icon: '🍽️', label: 'Outros'}
@@ -501,13 +523,14 @@
                 ]
             },
             'outros': {
-                tituloTela1: "te enviou um convite para um rolê especial! Topa?",
-                emojiTela1: "🚀✨", emojiTela2: "✌️😎",
-                tituloTela2: "Aí sim! Rolê aceito. 🙌",
-                tituloTela4: "O que seria bom comer? 😋",
-                tituloTela5: "Qual é o plano principal? 🗺️",
-                emojiFinal: "🌟🎯", tituloFinal: "Tudo Certo! 🗺️", subtituloFinal: "Combinado, nos vemos em breve!",
-                textoWhats: "Oi {nome}, aceitei seu convite para o rolê!",
+                emojis: '🚀🗺️💙',
+                inviteText: '(Nome) te enviou um convite especial! Topa?',
+                proposalEmojis: '🌟🎯',
+                tituloTela5: "O que seria bom comer? 😋",
+                tituloTela6: "Qual é o plano principal? 🗺️",
+                emojiFinal: "🌟🎯", tituloFinal: "Tudo Pronto! 🗺️", subtituloFinal: "Proposta adicionada ao mural!",
+                textoWhats: "Oi {dono}, votei na proposta do Rolê!",
+                textoWhatsNova: "Oi {dono}, montei uma nova proposta para o Rolê!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍦', label: 'Sorvete/Açaí'},
                     {icon: '🍽️', label: 'Restaurante'}, {icon: '🍿', label: 'Besteiras'}, {icon: '🍽️', label: 'Outros'}
@@ -519,42 +542,23 @@
             }
         };
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const idConvite = urlParams.get('id');
+        // --- ESTADO E VARIÁVEIS ---
+        let hostName = "Pedro"; 
+        let guestName = "Alguém";
+        let selectedFoods = [];
+        let selectedActivities = [];
+        let novaSugestaoData = { date: '', time: '', food: '', activity: '' };
 
-        if (idConvite) {
-            fetch(`/api/convite/${idConvite}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.nomeCriador) {
-                        nomeDonoDoLink = data.nomeCriador; 
-                        tipoOcasiao = data.ocasiao || 'date'; 
-                        configTipoConvite = data.tipoConvite || 'grupo';
-                        whatsappCriadorLink = data.whatsappCriador || '';
-                        
-                        aplicarConfiguracaoOcasiao(tipoOcasiao);
-                        
-                        if (configTipoConvite === 'grupo') {
-                            const propostaOriginal = data.respostas ? data.respostas.find(r => r.votoConcorda === true && r.ehPropostaBase === true) : null;
-                            
-                            if (!propostaOriginal && (!data.respostas || data.respostas.length === 0)) {
-                                ehPrimeiroAcessoGrupo = true;
-                                configurarInterfacePrimeiroAcesso();
-                            } else {
-                                propostaPrincipalSalva = propostaOriginal || data.respostas[0];
-                                configurarInterfaceGrupo(data.respostas || []);
-                            }
-                        } else {
-                            nextScreen(1);
-                        }
-                    }
-                }).catch(err => {
-                    console.error("Erro ao carregar dados do convite:", err);
-                    aplicarConfiguracaoOcasiao('date');
-                });
-        } else {
-            aplicarConfiguracaoOcasiao('date');
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        let tipoOcasiao = urlParams.get('type') || 'date';
+        let configTipoConvite = urlParams.get('mode') || 'grupo'; 
+        
+        if (!configuracoesOcasiao[tipoOcasiao]) tipoOcasiao = 'date';
+        const currentConfig = configuracoesOcasiao[tipoOcasiao];
+
+        // Chaves exclusivas baseadas no tipo de evento para o LocalStorage
+        const STORAGE_KEY_PROP = `propostas_${tipoOcasiao}`;
+        const STORAGE_KEY_HIST = `historico_${tipoOcasiao}`;
 
         function nextScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -562,167 +566,126 @@
             if (targetScreen) targetScreen.classList.add('active');
         }
 
-        function configurarInterfacePrimeiroAcesso() {
-            nextScreen(0);
-            document.getElementById('titulo-dinamico').innerText = `Crie a proposta do Grupo!`;
-            document.getElementById('subtitulo-dinamico').innerText = `Você é o primeiro a chegar. Insira seu nome para montar as opções iniciais.`;
-            document.getElementById('container-botoes-tela1').innerHTML = `
-                <button class="btn" onclick="salvarNomeParticipante()">Montar Opções 🗓️</button>
-            `;
-            document.getElementById('lista-outros-votos').style.display = 'none';
+        // TELA 1: SALVAR NOME
+        function salvarNomeParticipante() {
+            const nomeInput = document.getElementById('nome-participante-input').value.trim();
+            guestName = nomeInput || "Alguém";
+
+            if (configTipoConvite === 'individual') {
+                document.getElementById('titulo-tela2').innerText = currentConfig.inviteText.replace('(Nome)', hostName);
+                document.getElementById('emoji-tela2').innerText = currentConfig.emojis;
+                nextScreen(2);
+            } else {
+                renderizarPainelVotacaoGrupo();
+                nextScreen(3);
+            }
         }
 
-        function configurarInterfaceGrupo(respostasAnteriores) {
-            nextScreen(0);
-            document.getElementById('titulo-dinamico').innerText = `${nomeDonoDoLink} chamou o grupo!`;
-            document.getElementById('subtitulo-dinamico').innerText = `O grupo está organizando os detalhes do evento. Escolha a sua opção:`;
-            
-            document.getElementById('container-botoes-tela1').innerHTML = `
-                <button class="btn" onclick="salvarNomeParticipante()">Interagir no Grupo 🗓️</button>
-            `;
+        function direcionarFluxoPosAceite() {
+            renderizarPainelVotacaoGrupo();
+            nextScreen(3);
+        }
 
-            if (respostasAnteriores.length > 0) {
-                const boxesLista = ['linhas-votos-box', 'linhas-votos-box-tela2'];
-                const divsLista = ['lista-outros-votos', 'lista-outros-votos-tela2'];
-                
-                divsLista.forEach(id => document.getElementById(id).style.display = 'block');
-                
-                boxesLista.forEach(boxId => {
-                    const container = document.getElementById(boxId);
-                    container.innerHTML = '';
-                    respostasAnteriores.forEach(voto => {
-                        if (voto.ocultarNaLista) return;
-                        const statusIcon = voto.votoConcorda ? '✅ Concordou' : '🔄 Sugeriu Mudanças';
-                        const div = document.createElement('div');
-                        div.className = 'voto-linha';
-                        div.innerHTML = `<strong>${voto.nomeParticipante} (${statusIcon}):</strong> Aprovou ou propôs detalhes do rolê.`;
-                        container.appendChild(div);
-                    });
+        // CARREGAR E RENDERIZAR PROPOSTAS DO LOCALSTORAGE
+        function renderizarPainelVotacaoGrupo() {
+            document.getElementById('nome-titulo-grupo').innerText = guestName.toUpperCase();
+            document.getElementById('emoji-tela3').innerText = currentConfig.proposalEmojis;
+
+            // Obter do LocalStorage ou iniciar vazio
+            let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
+            let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
+
+            const boxOpcoes = document.getElementById('lista-opcoes-grupo');
+            boxOpcoes.innerHTML = '';
+
+            if (propostasSalvas.length === 0) {
+                boxOpcoes.innerHTML = `<div class="sem-opcoes">Nenhuma proposta criada ainda. Seja o primeiro a sugerir clicando abaixo! 👇</div>`;
+            } else {
+                propostasSalvas.forEach((prop, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card-opcao-proposta';
+                    card.innerHTML = `
+                        <div class="autor-badge">Sugestão de: ${prop.autor}</div>
+                        <div class="votos-contador">👍 ${prop.votos || 0}</div>
+                        <div class="detalhes-linhas-proposta">
+                            <div>📅 <strong>Data:</strong> ${prop.date} às ${prop.time}</div>
+                            <div>🍽️ <strong>Comida:</strong> ${prop.food}</div>
+                            <div>✨ <strong>Vibe:</strong> ${prop.vibe}</div>
+                        </div>
+                        <button class="btn-votar-nesta" onclick="computarVotoExistente(${index})">
+                            Votar nesta opção ✅
+                        </button>
+                    `;
+                    boxOpcoes.appendChild(card);
+                });
+            }
+
+            const boxHistorico = document.getElementById('linhas-historico-grupo');
+            boxHistorico.innerHTML = '';
+            if (historicoSalvo.length === 0) {
+                boxHistorico.innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">Nenhuma atividade recente.</div>`;
+            } else {
+                historicoSalvo.forEach(hist => {
+                    const linha = document.createElement('div');
+                    linha.className = 'voto-linha';
+                    linha.innerHTML = `<span class="status-badge">✅ ${hist.nome}</span>: ${hist.texto}`;
+                    boxHistorico.appendChild(linha);
                 });
             }
         }
 
-        function salvarNomeParticipante() {
-            const nomeInput = document.getElementById('nome-participante-input').value.trim();
-            if (!nomeInput) {
-                alert('Escreva seu nome para podermos continuar!');
-                return;
-            }
-            nomeDoParticipanteAtual = nomeInput;
+        // COMPUTAR VOTO EM OPÇÃO EXISTENTE
+        function computarVotoExistente(index) {
+            let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
+            let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
 
-            if (ehPrimeiroAcessoGrupo) {
-                nextScreen(3); 
-            } else {
-                prosseguirGrupoComVoto();
-            }
-        }
-
-        function prosseguirGrupoComVoto() {
-            nextScreen(2);
-            document.getElementById('wrapper-votacao-grupo').style.display = 'grid';
-            document.getElementById('btn-avancar-fluxo-padrao').style.display = 'none';
-            document.getElementById('titulo-tela2').innerText = `E AÍ, ${nomeDoParticipanteAtual.toUpperCase()}?`;
+            // Incrementar voto
+            propostasSalvas[index].votos = (propostasSalvas[index].votos || 0) + 1;
             
-            if (propostaPrincipalSalva) {
-                const dFormat = propostaPrincipalSalva.date ? propostaPrincipalSalva.date.split('-').reverse().join('/') : '';
-                const boxSugestao = document.getElementById('box-sugestao-container');
-                boxSugestao.style.display = 'block';
-                boxSugestao.innerHTML = `
-                    📌 <strong>Sugestão Atual:</strong><br>
-                    📅 Data/Hora: ${dFormat} às ${propostaPrincipalSalva.time}<br>
-                    🍕 Comida/Bebida: ${propostaPrincipalSalva.food}<br>
-                    🎸 Vibe: ${propostaPrincipalSalva.activity}
-                `;
-            }
+            // Adicionar ao histórico
+            historicoSalvo.unshift({
+                nome: guestName,
+                texto: `Votou na proposta de ${propostasSalvas[index].autor} (${propostasSalvas[index].date})`
+            });
 
-            document.getElementById('wrapper-votacao-grupo').innerHTML = `
-                <button class="btn-voto-sim" onclick="votarGrupoSim()">FECHADO! TOPO 💙</button>
-                <button class="btn-voto-nao" onclick="votarGrupoNao()">MUDAR DETALHES 🗺️</button>
-            `;
-        }
+            localStorage.setItem(STORAGE_KEY_PROP, JSON.stringify(propostasSalvas));
+            localStorage.setItem(STORAGE_KEY_HIST, JSON.stringify(historicoSalvo));
 
-        function votarGrupoSim() {
-            const payload = {
-                nomeParticipante: nomeDoParticipanteAtual,
-                votoConcorda: true,
-                sugestaoAlternativa: 'Aprovou a sugestão base',
-                ehPropostaBase: false,
-                date: propostaPrincipalSalva ? propostaPrincipalSalva.date : '',
-                time: propostaPrincipalSalva ? propostaPrincipalSalva.time : '',
-                food: propostaPrincipalSalva ? propostaPrincipalSalva.food : '',
-                activity: propostaPrincipalSalva ? propostaPrincipalSalva.activity : ''
-            };
+            renderizarPainelVotacaoGrupo();
 
-            document.getElementById('status-texto').innerText = "Computando voto...";
-
-            fetch(`/api/salvar-date/${idConvite}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('Voto positivo enviado com sucesso!');
-                const dFormated = payload.date ? payload.date.split('-').reverse().join('/') : '--/--/----';
-                document.getElementById('sum-date').innerText = dFormated;
-                document.getElementById('sum-time').innerText = payload.time;
-                document.getElementById('sum-food').innerText = payload.food;
-                document.getElementById('sum-activity').innerText = payload.activity;
-                nextScreen(6);
-                abrirJanelaWhatsAppDiretoVotoSim(payload);
-            }).catch(err => console.error(err));
-        }
-
-        function abrirJanelaWhatsAppDiretoVotoSim(dadosVoto) {
+            // Disparar WhatsApp
+            let headlineWhats = currentConfig.textoWhats.replace('{dono}', hostName);
             const textoFormatado = 
-                `Oi ${nomeDonoDoLink}, aceitei o seu convite de date!\n\n` +
-                `📅 Data: ${dadosVoto.date.split('-').reverse().join('/')}\n` +
-                `⏰ Horário: ${dadosVoto.time}\n` +
-                `🍽️ Comida: ${dadosVoto.food}\n` +
-                `✨ Vibe: ${dadosVoto.activity}`;
+                `*${headlineWhats}*\n\n` +
+                `📅 Data: ${propostasSalvas[index].date} às ${propostasSalvas[index].time}\n` +
+                `🍽️ Comida: ${propostasSalvas[index].food}\n` +
+                `✨ Vibe: ${propostasSalvas[index].vibe}`;
 
-            const numeroComDdd = whatsappCriadorLink.replace(/\D/g, '');
-            const urlWhats = numeroComDdd 
-                ? `https://api.whatsapp.com/send?phone=${numeroComDdd}&text=${encodeURIComponent(textoFormatado)}`
-                : `https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`;
-            window.open(urlWhats, '_blank');
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`, '_blank');
         }
 
-        function votarGrupoNao() {
-            nextScreen(3); 
+        // ETAPA DE CRIAÇÃO (TELA 4, 5, 6)
+        function validateScreen4() {
+            const dateVal = document.getElementById('date-input').value;
+            const timeVal = document.getElementById('time-input').value;
+            if (!dateVal || !timeVal) { alert('Preencha a data e o horário!'); return; }
+            
+            novaSugestaoData.date = dateVal;
+            novaSugestaoData.time = timeVal;
+            
+            const [ano, mes, dia] = dateVal.split('-');
+            document.getElementById('sum-date').innerText = `${dia}/${mes}/${ano}`;
+            document.getElementById('sum-time').innerText = timeVal;
+
+            document.getElementById('titulo-tela5').innerText = currentConfig.tituloTela5;
+            renderizarGridEstatico('grid-comida', currentConfig.comidas, 'food');
+            nextScreen(5);
         }
 
-        function aplicarConfiguracaoOcasiao(ocasiao) {
-            const config = configuracoesOcasiao[ocasiao] || configuracoesOcasiao['date'];
-            selectedFoods = [];
-            selectedActivities = [];
-
-            if (configTipoConvite !== 'grupo') {
-                document.getElementById('titulo-dinamico').innerText = `${nomeDonoDoLink} ${config.tituloTela1}`;
-            }
-            document.getElementById('emoji-tela1').innerText = config.emojiTela1;
-            document.getElementById('emoji-tela2').innerText = config.emojiTela2;
-
-            if (configTipoConvite !== 'grupo') {
-                document.getElementById('titulo-tela2').innerText = config.tituloTela2;
-            }
-
-            document.getElementById('titulo-tela4').innerText = config.tituloTela4;
-            renderizarGrid('grid-comida', config.comidas, 'food');
-
-            document.getElementById('titulo-tela5').innerText = config.tituloTela5;
-            renderizarGrid('grid-atividade', config.atividades, 'activity');
-
-            document.getElementById('emoji-final').innerText = config.emojiFinal;
-            document.getElementById('titulo-final').innerText = config.tituloFinal;
-            document.getElementById('subtitulo-final').innerText = config.subtituloFinal;
-        }
-
-        function renderizarGrid(elementId, itens, tipo) {
+        function renderizarGridEstatico(elementId, itens, tipo) {
             const grid = document.getElementById(elementId);
-            if (!grid) return;
             grid.innerHTML = '';
-            itens.forEach((item) => {
+            itens.forEach(item => {
                 const box = document.createElement('div');
                 box.className = 'option-box';
                 box.onclick = () => alternarSelecaoItem(box, tipo, item.label);
@@ -735,7 +698,6 @@
             elemento.classList.toggle('selected');
             const arr = tipo === 'food' ? selectedFoods : selectedActivities;
             const index = arr.indexOf(label);
-            
             if (index > -1) { arr.splice(index, 1); } else { arr.push(label); }
 
             if (label === 'Outros') {
@@ -744,110 +706,101 @@
             }
         }
 
-        function validateScreen3() {
-            const dateVal = document.getElementById('date-input').value;
-            const timeVal = document.getElementById('time-input').value;
-            if (!dateVal || !timeVal) { alert('Preencha a data e o horário!'); return; }
-            
-            dateSelections.date = dateVal;
-            dateSelections.time = timeVal;
-            
-            const [ano, mes, dia] = dateVal.split('-');
-            document.getElementById('sum-date').innerText = `${dia}/${mes}/${ano}`;
-            document.getElementById('sum-time').innerText = timeVal;
-            nextScreen(4);
-        }
-
-        function validateScreen4() {
+        function validateScreen5() {
             if (selectedFoods.length === 0) { alert('Selecione ao menos uma opção!'); return; }
             let displayTexto = [...selectedFoods];
             if (selectedFoods.includes('Outros')) {
                 const extra = document.getElementById('comida-outros-input').value.trim();
                 if (extra) displayTexto[displayTexto.indexOf('Outros')] = `Outros (${extra})`;
             }
-            dateSelections.food = displayTexto.join(', ');
-            document.getElementById('sum-food').innerText = dateSelections.food;
-            nextScreen(5);
+            novaSugestaoData.food = displayTexto.join(', ');
+            document.getElementById('sum-food').innerText = novaSugestaoData.food;
+
+            document.getElementById('titulo-tela6').innerText = currentConfig.tituloTela6;
+            renderizarGridEstatico('grid-atividade', currentConfig.atividades, 'activity');
+            nextScreen(6);
         }
 
-        function validateScreen5() {
+        function validateScreen6() {
             if (selectedActivities.length === 0) { alert('Selecione ao menos uma atividade!'); return; }
             let displayTexto = [...selectedActivities];
             if (selectedActivities.includes('Outros')) {
                 const extra = document.getElementById('vibe-outros-input').value.trim();
                 if (extra) displayTexto[displayTexto.indexOf('Outros')] = `Outros (${extra})`;
             }
-            dateSelections.activity = displayTexto.join(', ');
-            document.getElementById('sum-activity').innerText = dateSelections.activity;
-            nextScreen(6);
-            enviarDadosBackend();
+            novaSugestaoData.activity = displayTexto.join(', ');
+            document.getElementById('sum-activity').innerText = novaSugestaoData.activity;
+
+            document.getElementById('emoji-final').innerText = currentConfig.emojiFinal;
+            document.getElementById('titulo-final').innerText = currentConfig.tituloFinal;
+            document.getElementById('subtitulo-final').innerText = currentConfig.subtituloFinal;
+            nextScreen(7);
         }
 
-        function criarEventoAgenda() {
-            if(!dateSelections.date || !dateSelections.time) return;
-            const dataString = dateSelections.date.replace(/-/g, '');
-            const horaString = dateSelections.time.replace(/:/g, '') + '00';
-            const icsConteudo = ["BEGIN:VCALENDAR","VERSION:2.0","BEGIN:VEVENT",`DTSTART:${dataString}T${horaString}`,`SUMMARY:Rolê Confirmado!`,`DESCRIPTION:Comida: ${dateSelections.food} | Vibe: ${dateSelections.activity}`,"END:VEVENT","END:VCALENDAR"].join("\n");
-            const blob = new Blob([icsConteudo], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'evento-role.ics';
-            link.click();
-        }
+        // SALVAR NOVA PROPOSTA NO LOCALSTORAGE E MANDAR WHATSAPP
+        function salvarEEnviarNovaSugestao() {
+            let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
+            let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
 
-        function enviarDadosBackend() {
-            const statusBox = document.getElementById('status-texto');
-            statusBox.innerText = "Registrando escolha...";
-
-            const payload = {
-                nomeParticipante: configTipoConvite === 'grupo' ? nomeDoParticipanteAtual : 'Convidado Individual',
-                votoConcorda: ehPrimeiroAcessoGrupo, 
-                sugestaoAlternativa: ehPrimeiroAcessoGrupo ? 'Criou Proposta Base' : 'Sugeriu Alterações',
-                ehPropostaBase: ehPrimeiroAcessoGrupo,
-                date: dateSelections.date,
-                time: dateSelections.time,
-                food: dateSelections.food,
-                activity: dateSelections.activity
+            const novaProp = {
+                autor: guestName,
+                date: document.getElementById('sum-date').innerText,
+                time: novaSugestaoData.time,
+                food: novaSugestaoData.food,
+                vibe: novaSugestaoData.activity,
+                votos: 1 // Já começa com o voto de quem criou
             };
 
-            const endpoint = idConvite ? `/api/salvar-date/${idConvite}` : '/api/salvar-date';
+            propostasSalvas.push(novaProp);
+            historicoSalvo.unshift({
+                nome: guestName,
+                texto: `Criou e votou em uma nova proposta (${novaProp.date})`
+            });
 
-            fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(() => { statusBox.innerText = "Escolha salva! Tudo pronto para enviar."; })
-            .catch(() => { statusBox.innerText = "Pronto para enviar por WhatsApp."; });
-        }
+            localStorage.setItem(STORAGE_KEY_PROP, JSON.stringify(propostasSalvas));
+            localStorage.setItem(STORAGE_KEY_HIST, JSON.stringify(historicoSalvo));
 
-        function abrirJanelaWhatsApp() {
-            const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
-            
-            // Substitui de forma dinâmica o marcador {nome} pelo nome real do criador do link
-            let headlineWhats = config.textoWhats.replace('{nome}', nomeDonoDoLink);
-            
-            if (configTipoConvite === 'grupo') {
-                headlineWhats = ehPrimeiroAcessoGrupo 
-                    ? `Oi ${nomeDonoDoLink}, montei a proposta do nosso grupo! 🚀` 
-                    : `Oi ${nomeDonoDoLink}, sugeri alterações na proposta do grupo! 🔄`;
-            }
+            // Reset de arrays para futuras adições
+            selectedFoods = [];
+            selectedActivities = [];
 
+            // Formatação do WhatsApp de acordo com o exemplo
+            let prefixoWhats = currentConfig.textoWhatsNova.replace('{dono}', hostName);
             const textoFormatado = 
-                `*${headlineWhats}*\n\n` +
-                `📅 Data: ${document.getElementById('sum-date').innerText}\n` +
-                `⏰ Horário: ${dateSelections.time}\n` +
-                `🍽️ Comida: ${dateSelections.food}\n` +
-                `✨ Vibe: ${dateSelections.activity}`;
+                `${prefixoWhats} 🚀\n\n` +
+                `📅 Data: ${novaProp.date}\n` +
+                `⏰ Horário: ${novaProp.time}\n` +
+                `🍽️ Comida: ${novaProp.food}\n` +
+                `✨ Vibe: ${novaProp.vibe}`;
 
-            const numeroComDdd = whatsappCriadorLink.replace(/\D/g, '');
-            const urlWhats = numeroComDdd 
-                ? `https://api.whatsapp.com/send?phone=${numeroComDdd}&text=${encodeURIComponent(textoFormatado)}`
-                : `https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`;
-            window.open(urlWhats, '_blank');
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`, '_blank');
+            
+            // Retorna para o painel de votações atualizado
+            renderizarPainelVotacaoGrupo();
+            nextScreen(3);
         }
 
+        // --- LÓGICA DE FUGA DO BOTÃO "NÃO" ---
+        const btnNão = document.getElementById('btn-grande-não');
+        const container = document.getElementById('btn-fuga-container');
+
+        function fugir() {
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            const btnWidth = btnNão.clientWidth;
+            const btnHeight = btnNão.clientHeight;
+
+            let nextTop = Math.random() * (containerHeight - btnHeight);
+            let nextLeft = Math.random() * (containerWidth - btnWidth);
+
+            if (nextLeft < 0) nextLeft = 0;
+            if (nextTop < 0) nextTop = 0;
+
+            btnNão.style.top = `${nextTop}px`;
+            btnNão.style.left = `${nextLeft}px`;
+        }
+
+        // Corações decorativos de fundo
         function initCoracoesNoBackground() {
             const bg = document.getElementById('hearts-bg');
             if(!bg) return;
