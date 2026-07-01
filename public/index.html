@@ -57,30 +57,32 @@
 
     <div id="tela-loading" class="card-box active">
         <span class="emoji">✨</span>
-        <h1>A Carregar...</h1>
-        <p>A preparar a tua experiência exclusiva.</p>
+        <h1>A ABRIR CONVITE...</h1>
+        <p>Por favor, aguarde um momento.</p>
     </div>
 
     <div id="tela-recepcao" class="card-box">
         <span class="emoji" id="recepcao-emoji">🥺</span>
-        <h1 id="recepcao-titulo">Carregando...</h1>
-        <p id="recepcao-sub">Um convite muito especial foi gerado e está à tua espera.</p>
-        <button class="btn-action btn-pink" onclick="prosseguirParaIdentificacao()">Bora Ver! 🔥</button>
-        <div class="subtext-footer">Interaja para avançar</div>
+        <h1 id="recepcao-titulo">VOCÊ RECEBEU UM CONVITE ESPECIAL!</h1>
+        <p id="recepcao-sub">Clique abaixo para ver a proposta e confirmar os detalhes do rolê.</p>
+        <button class="btn-action btn-pink" onclick="prosseguirParaIdentificacao()">BORA VER! 🔥</button>
+        <div class="subtext-footer">INTERAJA PARA AVANÇAR</div>
     </div>
 
     <div id="tela-identificacao" class="card-box">
         <span class="emoji">👋</span>
-        <h1>Quem está aí?</h1>
-        <p>Insere o teu nome abaixo para veres os detalhes e dares o teu feedback.</p>
-        <input type="text" id="nome-visitante" class="input-text" placeholder="Escreve o teu nome...">
-        <button class="btn-action btn-pink" onclick="carregarDashboardProposta()">Ver Proposta 🚀</button>
+        <h1>ALGUÉM TE CHAMOU PARA UM ROLÊ!</h1>
+        <p>Aguarde um momento enquanto preparamos o ambiente.</p>
+        <div style="text-align: left; font-size: 11px; color: #b59cb8; margin-bottom: 6px; font-weight: 600;">SEU NOME:</div>
+        <input type="text" id="nome-visitante" class="input-text" placeholder="Escreva seu nome aqui...">
+        <button class="btn-action btn-pink" onclick="carregarDashboardProposta()">PROSSEGUIR 🚀</button>
+        <div class="subtext-footer">INTERAJA PARA AVANÇAR</div>
     </div>
 
     <div id="tela-proposta" class="card-box">
         <span class="emoji" id="proposta-emoji">🍕</span>
         <h1 id="titulo-boas-vindas">E AÍ?</h1>
-        <p id="subtitulo-proposta">Confere o plano atual elaborado para este momento:</p>
+        <p id="subtitulo-proposta">Confira a proposta atual configurada para o rolê:</p>
         
         <div class="info-panel">
             <div class="info-row" id="detalhe-data"><strong>🗓️ Data / Hora:</strong> Carregando...</div>
@@ -88,17 +90,16 @@
             <div class="info-row" id="detalhe-vibe"><strong>🎸 Vibe do Rolê:</strong> Carregando...</div>
         </div>
 
-        <div id="botoes-acao-container">
-            </div>
+        <div id="botoes-acao-container"></div>
 
         <div class="votos-box" id="secao-grupo-votos" style="display: none;">
-            <div class="votos-title">Respostas e Decisões do Grupo:</div>
+            <div class="votos-title">Respostas da Galera:</div>
             <div class="votos-list" id="lista-respostas-grupo">
-                <div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Sê o primeiro!</div>
+                <div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Seja o primeiro!</div>
             </div>
         </div>
         
-        <div class="subtext-footer" id="rodape-status">Aguardando decisão</div>
+        <div class="subtext-footer">Confirmação Instantânea</div>
     </div>
 
     <script>
@@ -106,22 +107,26 @@
         let dadosConvite = null;
         let nomeVisitante = "";
 
-        // Captura o ID do caminho limpo (/convite/ID) ou da query (?id=ID) sem quebrar
         function obterIdDaUrl() {
+            const URLParams = new URLSearchParams(window.location.search);
+            const idQuery = URLParams.get('id');
+            if (idQuery) return idQuery;
+
             const partesPath = window.location.pathname.split('/');
-            const idPath = partesPath[partesPath.indexOf('convite') + 1];
-            if (idPath && idPath.trim() !== "") return idPath;
-            return new URLSearchParams(window.location.search).get('id');
+            const idxConvite = partesPath.indexOf('convite');
+            if (idxConvite !== -1 && partesPath[idxConvite + 1]) {
+                return partesPath[idxConvite + 1];
+            }
+            return null;
         }
 
         window.onload = function() {
             conviteId = obterIdDaUrl();
             if (!conviteId) {
-                alert("Link Inválido!");
+                alert("Link de convite inválido.");
                 return;
             }
 
-            // Faz o fetch para recolher as informações originais do back-end
             fetch(`/api/convite/${conviteId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -129,14 +134,19 @@
                         dadosConvite = data.convite;
                         configurarTelaRecepcao();
                     } else {
-                        alert("Convite expirado ou inexistente.");
+                        alert("Convite expirado ou não localizado.");
                     }
-                }).catch(() => alert("Erro ao conectar com o servidor."));
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Erro ao conectar com o servidor.");
+                });
         };
 
         function transicaoTela(idDestino) {
             document.querySelectorAll('.card-box').forEach(el => el.classList.remove('active'));
-            document.getElementById(idDestino).classList.add('active');
+            const alvo = document.getElementById(idDestino);
+            if (alvo) alvo.classList.add('active');
         }
 
         function configurarTelaRecepcao() {
@@ -145,16 +155,12 @@
             const emoji = document.getElementById('recepcao-emoji');
 
             if (dadosConvite.tipoConvite === 'grupo') {
-                emoji.innerText = "👥";
-                titulo.innerText = "Votação de Grupo Ativa!";
-                sub.innerText = `${dadosConvite.nomeCriador} criou um plano coletivo. Entra para veres e votares na tua opção favorita!`;
-            } else {
-                emoji.innerText = "🌹";
-                titulo.innerText = "Um convite só para ti!";
-                sub.innerText = `${dadosConvite.nomeCriador} preparou uma surpresa incrível e quer saber a tua resposta.`;
+                if (emoji) emoji.innerText = "👥";
+                if (titulo) titulo.innerText = "VOTAÇÃO DE GRUPO ATIVA!";
+                if (sub) sub.innerText = `${dadosConvite.nomeCriador} criou um plano para a galera. Entre para votar ou propor ajustes!`;
             }
             
-            setTimeout(() => transicaoTela('tela-recepcao'), 800);
+            setTimeout(() => transicaoTela('tela-recepcao'), 600);
         }
 
         function prosseguirParaIdentificacao() {
@@ -162,41 +168,45 @@
         }
 
         function carregarDashboardProposta() {
-            const nomeInput = document.getElementById('nome-visitante').value.trim();
-            if (!nomeInput) return alert("Precisas de inserir o teu nome para continuar! 😉");
-            nomeVisitante = nomeInput;
+            const inputNome = document.getElementById('nome-visitante');
+            if (!inputNome || !inputNome.value.trim()) {
+                alert("Por favor, digite o seu nome para continuar! 😉");
+                return;
+            }
+            nomeVisitante = inputNome.value.trim();
 
-            document.getElementById('titulo-boas-vindas').innerText = `E AÍ, ${nomeVisitante.toUpperCase()}?`;
-            
-            // Injeta os dados da sugestão recuperados do back-end
+            const boasVindas = document.getElementById('titulo-boas-vindas');
+            if (boasVindas) boasVindas.innerText = `E AÍ, ${nomeVisitante.toUpperCase()}?`;
+
             document.getElementById('detalhe-data').innerHTML = `<strong>🗓️ Data / Hora:</strong> ${dadosConvite.sugestaoAtual.dataHora}`;
             document.getElementById('detalhe-comida').innerHTML = `<strong>🍕 Comida / Bebida:</strong> ${dadosConvite.sugestaoAtual.comidaBebida}`;
             document.getElementById('detalhe-vibe').innerHTML = `<strong>🎸 Vibe do Rolê:</strong> ${dadosConvite.sugestaoAtual.vibe}`;
 
-            const botoesContainer = document.getElementById('botoes-acao-container');
-            botoesContainer.innerHTML = ""; // Limpa
+            const containerBotoes = document.getElementById('botoes-acao-container');
+            const secaoGrupo = document.getElementById('secao-grupo-votos');
 
-            if (dadosConvite.tipoConvite === 'grupo') {
-                document.getElementById('secao-grupo-votos').style.display = 'block';
-                document.getElementById('proposta-emoji').innerText = "🔥";
-                
-                // Botões de Voto do Fluxo Coletivo
-                botoesContainer.innerHTML = `
-                    <button class="btn-action btn-pink" onclick="votarGrupo('Fechado! Topo 💙')">Fechado! Topo 💙</button>
-                    <button class="btn-action btn-dark" onclick="proporAlternativa()">Mudar Detalhes 🗺️</button>
-                `;
-                atualizarListaVotosPainel(dadosConvite.respostas);
-            } else {
-                document.getElementById('secao-grupo-votos').style.display = 'none';
-                document.getElementById('proposta-emoji').innerText = "🌹";
-                
-                // Botões do Fluxo Individual (Sim / Não)
-                botoesContainer.innerHTML = `
-                    <button class="btn-action btn-pink" onclick="responderIndividual('SIM')">Aceitar Convite 💖</button>
-                    <button class="btn-action btn-dark" onclick="responderIndividual('NÃO')">Não Posso 🥺</button>
-                `;
+            if (containerBotoes) {
+                containerBotoes.innerHTML = "";
+
+                if (dadosConvite.tipoConvite === 'grupo') {
+                    if (secaoGrupo) secaoGrupo.style.display = 'block';
+                    document.getElementById('proposta-emoji').innerText = "🔥";
+                    
+                    containerBotoes.innerHTML = `
+                        <button class="btn-action btn-pink" onclick="votarGrupo('Fechado! Topo 💙')">Fechado! Topo 💙</button>
+                        <button class="btn-action btn-dark" onclick="proporAlternativa()">Mudar Detalhes 🗺️</button>
+                    `;
+                    atualizarListaVotosPainel(dadosConvite.respostas);
+                } else {
+                    if (secaoGrupo) secaoGrupo.style.display = 'none';
+                    document.getElementById('proposta-emoji').innerText = "🌹";
+
+                    containerBotoes.innerHTML = `
+                        <button class="btn-action btn-pink" onclick="responderIndividual('SIM')">Aceitar Convite 💖</button>
+                        <button class="btn-action btn-dark" onclick="responderIndividual('NÃO')">Não Posso 🥺</button>
+                    `;
+                }
             }
-
             transicaoTela('tela-proposta');
         }
 
@@ -207,10 +217,10 @@
                 body: JSON.stringify({ nome: nomeVisitante, status: resposta })
             }).then(() => {
                 if (resposta === 'SIM') {
-                    const textoMsg = encodeURIComponent(`Oi ${dadosConvite.nomeCriador}! Eu li o teu convite especial e eu ACEITO! 💖✨`);
-                    window.open(`https://api.whatsapp.com/send?phone=${dadosConvite.whatsappCriador}&text=${textoMsg}`, '_blank');
+                    const texto = encodeURIComponent(`Oi ${dadosConvite.nomeCriador}! Conferi o convite e eu ACEITO! 💖✨`);
+                    window.open(`https://api.whatsapp.com/send?phone=${dadosConvite.whatsappCriador}&text=${texto}`, '_blank');
                 } else {
-                    alert("Resposta enviada. Que pena que não podes ir! 🥺");
+                    alert("Resposta registrada. Que pena que não poderá ir! 🥺");
                 }
             });
         }
@@ -222,40 +232,51 @@
                 body: JSON.stringify({ nome: nomeVisitante, status: opcao })
             }).then(res => res.json()).then(data => {
                 if (data.sucesso) {
-                    alert("Voto registado com sucesso no grupo! 🗳️");
+                    alert("Seu voto foi computado! 🗳️");
                     window.location.reload();
                 }
             });
         }
 
         function proporAlternativa() {
-            const novaData = prompt("Qual o melhor dia/hora para ti?");
-            if (!novaData) return;
-            
+            const dataProposta = prompt("Qual o melhor dia e horário para você?");
+            if (!dataProposta || !dataProposta.trim()) return;
+
             fetch(`/api/convite/${conviteId}/responder`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    nome: nomeVisitante, 
-                    status: 'contraproposta',
-                    contraproposta: { dataHora: novaData, comidaBebida: "Alterado pelo grupo", vibe: "Discutindo detalhes" }
+                body: JSON.stringify({
+                    nome: nomeVisitante,
+                    status: 'Sugeriu Mudanças',
+                    contraproposta: {
+                        dataHora: dataProposta.trim(),
+                        comidaBebida: dadosConvite.sugestaoAtual.comidaBebida,
+                        vibe: dadosConvite.sugestaoAtual.vibe
+                    }
                 })
-            }).then(() => {
-                alert("A tua contraproposta foi lançada no painel do grupo! 🚀");
-                window.location.reload();
+            }).then(res => res.json()).then(data => {
+                if (data.sucesso) {
+                    alert("Sua sugestão foi adicionada ao grupo! 🚀");
+                    window.location.reload();
+                }
             });
         }
 
         function atualizarListaVotosPainel(respostas) {
             const lista = document.getElementById('lista-respostas-grupo');
-            if (!respostas || respostas.length === 0) return;
-            
+            if (!lista) return;
+
+            if (!respostas || respostas.length === 0) {
+                lista.innerHTML = `<div style="color: #6a5872; font-size: 12px; text-align: center; padding: 10px;">Ninguém votou ainda. Seja o primeiro!</div>`;
+                return;
+            }
+
             lista.innerHTML = "";
             respostas.forEach(r => {
-                const item = document.createElement('div');
-                item.className = "voto-row";
-                item.innerHTML = `<span>👤 <strong>${r.nome}</strong></span> <span style="color: #ff2a6d">${r.status}</span>`;
-                lista.appendChild(item);
+                const row = document.createElement('div');
+                row.className = "voto-row";
+                row.innerHTML = `<span><strong>${r.nome}</strong></span> <span style="color: #ff2a6d; font-weight: bold;">(${r.status})</span>`;
+                lista.appendChild(row);
             });
         }
     </script>

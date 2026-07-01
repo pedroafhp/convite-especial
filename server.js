@@ -4,10 +4,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-// Servir arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Banco de dados temporário em memória (Substitua por MongoDB/PostgreSQL em produção)
+// Banco de dados em memória temporário
 const convitesDB = {};
 
 // API para criar o convite
@@ -27,18 +26,18 @@ app.post('/api/criar-convite', (req, res) => {
         ocasiao,
         tipoConvite,
         permitirVotacao,
-        respostas: [],
+        respostas: [], // Guarda quem votou e o que escolheu
         sugestaoAtual: {
-            dataHora: "01/07/2026 às 21:00",
-            comidaBebida: "Churrasco, Cerveja/Drinks",
-            vibe: "Ouvir Som, Assistir Jogo"
+            dataHora: "Sexta às 20h",
+            comidaBebida: "Pizzas e Bebidas",
+            vibe: "Conversar e Curtir Som"
         }
     };
 
     res.json({ sucesso: true, id });
 });
 
-// API para buscar detalhes de um convite específico
+// API para buscar os detalhes do convite
 app.get('/api/convite/:id', (req, res) => {
     const convite = convitesDB[req.params.id];
     if (!convite) {
@@ -47,30 +46,30 @@ app.get('/api/convite/:id', (req, res) => {
     res.json({ sucesso: true, convite });
 });
 
-// API para salvar respostas/votações
+// API para responder/votar no convite
 app.post('/api/convite/:id/responder', (req, res) => {
     const convite = convitesDB[req.params.id];
-    if (!convite) return res.status(404).json({ sucesso: false });
+    if (!convite) return res.status(404).json({ sucesso: false, erro: 'Convite não encontrado.' });
     
     const { nome, status, contraproposta } = req.body;
+    
     convite.respostas.push({ nome, status, contraproposta });
+    
+    // Se for uma contraproposta válida, atualiza a sugestão principal do grupo
+    if (status === 'contraproposta' && contraproposta) {
+        convite.sugestaoAtual = {
+            dataHora: contraproposta.dataHora || convite.sugestaoAtual.dataHora,
+            comidaBebida: contraproposta.comidaBebida || convite.sugestaoAtual.comidaBebida,
+            vibe: contraproposta.vibe || convite.sugestaoAtual.vibe
+        };
+    }
     
     res.json({ sucesso: true });
 });
 
-// Rota Inteligente: Direciona para o fluxo correto com base no tipo do convite
+// Rota Amigável: Qualquer acesso a /convite/ID abre o index.html original com estilo intacto
 app.get('/convite/:id', (req, res) => {
-    const convite = convitesDB[req.params.id];
-    if (!convite) {
-        return res.status(404).send('<h1>Convite não encontrado ou expirado! ??</h1>');
-    }
-
-    // Entrega o HTML correto dependendo do tipo guardado no banco
-    if (convite.tipoConvite === 'grupo') {
-        res.sendFile(path.join(__dirname, 'public', 'grupo.html'));
-    } else {
-        res.sendFile(path.join(__dirname, 'public', 'individual.html'));
-    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando a porta ${PORT}`));
