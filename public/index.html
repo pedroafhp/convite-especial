@@ -373,7 +373,7 @@
         <div id="screen-2" class="screen">
             <div class="emoji-header" id="emoji-tela2">🥺😏🌹</div>
             <h2 id="titulo-tela2">Alguém te chamou pra um date! Você aceita?</h2>
-            <button class="btn" onclick="direcionarFluxoPosAceite()">Sim</button>
+            <button class="btn" onclick="finalizarAceiteIndividual()">Sim</button>
             <div id="btn-fuga-container">
                 <button id="btn-grande-não" onmouseover="fugir()">Não</button>
             </div>
@@ -466,7 +466,7 @@
     </div>
 
     <script>
-        // --- BANCO DE DADOS DE CONFIGURAÇÃO DE EVENTOS ---
+        // --- CONFIGURAÇÃO E CONFIGURAÇÃO DE EVENTOS ---
         const configuracoesOcasiao = {
             'date': {
                 emojis: '🥺😏🌹',
@@ -475,7 +475,8 @@
                 tituloTela5: "O que está afim de comer? 🤔",
                 tituloTela6: "Qual é a vibe do encontro? ✨",
                 emojiFinal: "🌹✨", tituloFinal: "Tô contigo! 💙", subtituloFinal: "Nova proposta gerada com sucesso!",
-                textoWhats: "Oi {dono}, votei na proposta do nosso Date!",
+                textoWhatsIndividual: "Oi {dono}, aceitei o seu convite de date! 🌹",
+                textoWhatsVoto: "Oi {dono}, votei na proposta do nosso Date!",
                 textoWhatsNova: "Oi {dono}, montei uma nova proposta pro nosso Date!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍣', label: 'Sushi'}, {icon: '🍝', label: 'Massas'},
@@ -493,7 +494,8 @@
                 tituloTela5: "O que vamos comer/beber? 🍻",
                 tituloTela6: "Qual vai ser a programação? 🎲",
                 emojiFinal: "🍻🤠", tituloFinal: "Proposta Pronta! 🔥", subtituloFinal: "Nova opção adicionada com sucesso!",
-                textoWhats: "Oi {dono}, votei na proposta da Resenha!",
+                textoWhatsIndividual: "Oi {dono}, confirmei minha presença na resenha! 🍻",
+                textoWhatsVoto: "Oi {dono}, votei na proposta da Resenha!",
                 textoWhatsNova: "Oi {dono}, montei uma nova proposta para a Resenha!",
                 comidas: [
                     {icon: '🥩', label: 'Churrasco'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍻', label: 'Cerveja/Drinks'},
@@ -511,7 +513,8 @@
                 tituloTela5: "Qual vai ser o cardápio? 🍫",
                 tituloTela6: "Qual vai ser a nossa vibe? 💆‍♀️",
                 emojiFinal: "💅🥂", tituloFinal: "Plano Traçado! 💖", subtituloFinal: "Nova sugestão adicionada à votação!",
-                textoWhats: "Oi {dono}, dei meu voto para a Noite das Meninas!",
+                textoWhatsIndividual: "Oi {dono}, presença confirmada na Noite das Meninas! 💅",
+                textoWhatsVoto: "Oi {dono}, dei meu voto para a Noite das Meninas!",
                 textoWhatsNova: "Oi {dono}, montei uma nova proposta para a Noite das Meninas!",
                 comidas: [
                     {icon: '🍕', label: 'Pizza'}, {icon: '🍫', label: 'Doces/Chocolates'}, {icon: '🍣', label: 'Sushi'},
@@ -529,7 +532,8 @@
                 tituloTela5: "O que seria bom comer? 😋",
                 tituloTela6: "Qual é o plano principal? 🗺️",
                 emojiFinal: "🌟🎯", tituloFinal: "Tudo Pronto! 🗺️", subtituloFinal: "Proposta adicionada ao mural!",
-                textoWhats: "Oi {dono}, votei na proposta do Rolê!",
+                textoWhatsIndividual: "Oi {dono}, confirmei minha presença no rolê! 🚀",
+                textoWhatsVoto: "Oi {dono}, votei na proposta do Rolê!",
                 textoWhatsNova: "Oi {dono}, montei uma nova proposta para o Rolê!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍦', label: 'Sorvete/Açaí'},
@@ -542,7 +546,7 @@
             }
         };
 
-        // --- ESTADO E VARIÁVEIS ---
+        // --- VARIÁVEIS DE ESTADO ---
         let hostName = "Pedro"; 
         let guestName = "Alguém";
         let selectedFoods = [];
@@ -551,12 +555,12 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         let tipoOcasiao = urlParams.get('type') || 'date';
-        let configTipoConvite = urlParams.get('mode') || 'grupo'; 
+        let configTipoConvite = urlParams.get('mode') || 'grupo'; // 'individual' ou 'grupo'
         
         if (!configuracoesOcasiao[tipoOcasiao]) tipoOcasiao = 'date';
         const currentConfig = configuracoesOcasiao[tipoOcasiao];
 
-        // Chaves exclusivas baseadas no tipo de evento para o LocalStorage
+        // Chaves do LocalStorage
         const STORAGE_KEY_PROP = `propostas_${tipoOcasiao}`;
         const STORAGE_KEY_HIST = `historico_${tipoOcasiao}`;
 
@@ -566,32 +570,34 @@
             if (targetScreen) targetScreen.classList.add('active');
         }
 
-        // TELA 1: SALVAR NOME
+        // TELA 1: SALVAR NOME E ROTEAR SEPARADAMENTE PELO MODE
         function salvarNomeParticipante() {
             const nomeInput = document.getElementById('nome-participante-input').value.trim();
             guestName = nomeInput || "Alguém";
 
             if (configTipoConvite === 'individual') {
+                // FLUXO INDIVIDUAL: Vai para a tela do botão fugitivo
                 document.getElementById('titulo-tela2').innerText = currentConfig.inviteText.replace('(Nome)', hostName);
                 document.getElementById('emoji-tela2').innerText = currentConfig.emojis;
                 nextScreen(2);
             } else {
+                // FLUXO GRUPO: Pula direto para o Painel de Votação
                 renderizarPainelVotacaoGrupo();
                 nextScreen(3);
             }
         }
 
-        function direcionarFluxoPosAceite() {
-            renderizarPainelVotacaoGrupo();
-            nextScreen(3);
+        // FINALIZAR FLUXO SE FOR INDIVIDUAL
+        function finalizarAceiteIndividual() {
+            let msgWhats = currentConfig.textoWhatsIndividual.replace('{dono}', hostName);
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msgWhats)}`, '_blank');
         }
 
-        // CARREGAR E RENDERIZAR PROPOSTAS DO LOCALSTORAGE
+        // RENDEREZAR TELA DE VOTAÇÃO (EXCLUSIVA DE GRUPO)
         function renderizarPainelVotacaoGrupo() {
             document.getElementById('nome-titulo-grupo').innerText = guestName.toUpperCase();
             document.getElementById('emoji-tela3').innerText = currentConfig.proposalEmojis;
 
-            // Obter do LocalStorage ou iniciar vazio
             let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
             let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
 
@@ -634,15 +640,12 @@
             }
         }
 
-        // COMPUTAR VOTO EM OPÇÃO EXISTENTE
+        // VOTAR EM UMA SUGESTÃO DO GRUPO
         function computarVotoExistente(index) {
             let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
             let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
 
-            // Incrementar voto
             propostasSalvas[index].votos = (propostasSalvas[index].votos || 0) + 1;
-            
-            // Adicionar ao histórico
             historicoSalvo.unshift({
                 nome: guestName,
                 texto: `Votou na proposta de ${propostasSalvas[index].autor} (${propostasSalvas[index].date})`
@@ -653,8 +656,7 @@
 
             renderizarPainelVotacaoGrupo();
 
-            // Disparar WhatsApp
-            let headlineWhats = currentConfig.textoWhats.replace('{dono}', hostName);
+            let headlineWhats = currentConfig.textoWhatsVoto.replace('{dono}', hostName);
             const textoFormatado = 
                 `*${headlineWhats}*\n\n` +
                 `📅 Data: ${propostasSalvas[index].date} às ${propostasSalvas[index].time}\n` +
@@ -664,7 +666,7 @@
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`, '_blank');
         }
 
-        // ETAPA DE CRIAÇÃO (TELA 4, 5, 6)
+        // ETAPA CRIAR OPÇÃO (SELETORES DO GRUPO)
         function validateScreen4() {
             const dateVal = document.getElementById('date-input').value;
             const timeVal = document.getElementById('time-input').value;
@@ -737,7 +739,7 @@
             nextScreen(7);
         }
 
-        // SALVAR NOVA PROPOSTA NO LOCALSTORAGE E MANDAR WHATSAPP
+        // SALVAR E GERAR TEXTO CORRETO DE NOVA ALTERAÇÃO
         function salvarEEnviarNovaSugestao() {
             let propostasSalvas = JSON.parse(localStorage.getItem(STORAGE_KEY_PROP)) || [];
             let historicoSalvo = JSON.parse(localStorage.getItem(STORAGE_KEY_HIST)) || [];
@@ -748,7 +750,7 @@
                 time: novaSugestaoData.time,
                 food: novaSugestaoData.food,
                 vibe: novaSugestaoData.activity,
-                votos: 1 // Já começa com o voto de quem criou
+                votos: 1
             };
 
             propostasSalvas.push(novaProp);
@@ -760,11 +762,9 @@
             localStorage.setItem(STORAGE_KEY_PROP, JSON.stringify(propostasSalvas));
             localStorage.setItem(STORAGE_KEY_HIST, JSON.stringify(historicoSalvo));
 
-            // Reset de arrays para futuras adições
             selectedFoods = [];
             selectedActivities = [];
 
-            // Formatação do WhatsApp de acordo com o exemplo
             let prefixoWhats = currentConfig.textoWhatsNova.replace('{dono}', hostName);
             const textoFormatado = 
                 `${prefixoWhats} 🚀\n\n` +
@@ -775,7 +775,6 @@
 
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(textoFormatado)}`, '_blank');
             
-            // Retorna para o painel de votações atualizado
             renderizarPainelVotacaoGrupo();
             nextScreen(3);
         }
@@ -800,7 +799,7 @@
             btnNão.style.left = `${nextLeft}px`;
         }
 
-        // Corações decorativos de fundo
+        // Corações de fundo
         function initCoracoesNoBackground() {
             const bg = document.getElementById('hearts-bg');
             if(!bg) return;
