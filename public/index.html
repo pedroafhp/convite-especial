@@ -118,7 +118,7 @@
             line-height: 1.5;
         }
 
-        /* Caixa de Sugestão de Grupo (Visual das Imagens) */
+        /* Caixa de Sugestão de Grupo */
         .box-sugestao {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -137,7 +137,7 @@
         /* Inputs */
         .input-group {
             margin-bottom: 20px;
-            text-align: left;
+            text-align: text-left;
         }
 
         .input-group label {
@@ -188,7 +188,7 @@
         .btn:hover { background: var(--primary-hover); }
         .btn:active { transform: scale(0.98); }
 
-        /* Container de Votação Unificado */
+        /* Container de Votação */
         .votacao-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -226,7 +226,7 @@
         .btn-voto-sim:hover { opacity: 0.9; }
         .btn-voto-nao:hover { background: rgba(255, 255, 255, 0.1); }
 
-        /* Grids de Opções Gastronômicas / Vibes */
+        /* Grids de Opções */
         .grid-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -260,7 +260,7 @@
         .option-box .icon { font-size: 1.8rem; }
         .option-box .label { font-size: 0.85rem; font-weight: 500; }
 
-        /* Histórico de Respostas Fixado Abaixo */
+        /* Histórico de Respostas */
         .historico-votos {
             margin-top: 25px;
             background: rgba(0, 0, 0, 0.2);
@@ -456,7 +456,7 @@
                 tituloTela4: "O que está afim de comer? 🤔",
                 tituloTela5: "Qual é a vibe do encontro? ✨",
                 emojiFinal: "🌹✨", tituloFinal: "Tô contigo! 💙", subtituloFinal: "Prepara a roupa que já está combinado!",
-                textoWhats: "Aceitei o seu convite de date!",
+                textoWhats: "Oi {nome}, aceitei o seu convite de date!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍣', label: 'Sushi'}, {icon: '🍝', label: 'Massas'},
                     {icon: '🍕', label: 'Pizza'}, {icon: '🍸', label: 'Drinks'}, {icon: '🍽️', label: 'Outros'}
@@ -473,7 +473,7 @@
                 tituloTela4: "O que vamos comer/beber? 🍻",
                 tituloTela5: "Qual vai ser a programação? 🎲",
                 emojiFinal: "🍻🤠", tituloFinal: "Rolê Confirmado! 🔥", subtituloFinal: "Garante o consumo e bora encostar!",
-                textoWhats: "Confirmei minha presença na resenha!",
+                textoWhats: "Oi {nome}, confirmei minha presença na resenha!",
                 comidas: [
                     {icon: '🥩', label: 'Churrasco'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍻', label: 'Cerveja/Drinks'},
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍿', label: 'Petiscos'}, {icon: '🍽️', label: 'Outros'}
@@ -490,7 +490,7 @@
                 tituloTela4: "Qual vai ser o cardápio? 🍫",
                 tituloTela5: "Qual vai ser a nossa vibe? 💆‍♀️",
                 emojiFinal: "💅🥂", tituloFinal: "Noite das Garotas! 💖", subtituloFinal: "Pijama ou look babado pronto!",
-                textoWhats: "Presença confirmada na Noite das Meninas! 💅",
+                textoWhats: "Oi {nome}, presença confirmada na Noite das Meninas! 💅",
                 comidas: [
                     {icon: '🍕', label: 'Pizza'}, {icon: '🍫', label: 'Doces/Chocolates'}, {icon: '🍣', label: 'Sushi'},
                     {icon: '🥂', label: 'Vinho/Drinks'}, {icon: '🍿', label: 'Pipoca'}, {icon: '🍽️', label: 'Outros'}
@@ -507,13 +507,13 @@
                 tituloTela4: "O que seria bom comer? 😋",
                 tituloTela5: "Qual é o plano principal? 🗺️",
                 emojiFinal: "🌟🎯", tituloFinal: "Tudo Certo! 🗺️", subtituloFinal: "Combinado, nos vemos em breve!",
-                textoWhats: "Aceitei seu convite para o rolê!",
+                textoWhats: "Oi {nome}, aceitei seu convite para o rolê!",
                 comidas: [
                     {icon: '🍔', label: 'Hambúrguer'}, {icon: '🍕', label: 'Pizza'}, {icon: '🍦', label: 'Sorvete/Açaí'},
                     {icon: '🍽️', label: 'Restaurante'}, {icon: '🍿', label: 'Besteiras'}, {icon: '🍽️', label: 'Outros'}
                 ],
                 atividades: [
-                    {icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍', label: 'Shopping'}, {icon: '🎳', label: 'Jogar Boliche'},
+                    {icon: '🌳', label: 'Parque/Passeio'}, {icon: '🛍️', label: 'Shopping'}, {icon: '🎳', label: 'Jogar Boliche'},
                     {icon: '☕', label: 'Passar num Café'}, {icon: '🏠', label: 'Rolê Caseiro'}, {icon: '✨', label: 'Outros'}
                 ]
             }
@@ -581,7 +581,6 @@
                 <button class="btn" onclick="salvarNomeParticipante()">Interagir no Grupo 🗓️</button>
             `;
 
-            // Montagem da listagem de respostas antigas do grupo
             if (respostasAnteriores.length > 0) {
                 const boxesLista = ['linhas-votos-box', 'linhas-votos-box-tela2'];
                 const divsLista = ['lista-outros-votos', 'lista-outros-votos-tela2'];
@@ -676,8 +675,7 @@
 
         function abrirJanelaWhatsAppDiretoVotoSim(dadosVoto) {
             const textoFormatado = 
-                `*Fechado! Topei o rolê do grupo! 💙*\n\n` +
-                `👤 Nome: *${dadosVoto.nomeParticipante}*\n` +
+                `Oi ${nomeDonoDoLink}, aceitei o seu convite de date!\n\n` +
                 `📅 Data: ${dadosVoto.date.split('-').reverse().join('/')}\n` +
                 `⏰ Horário: ${dadosVoto.time}\n` +
                 `🍽️ Comida: ${dadosVoto.food}\n` +
@@ -826,15 +824,18 @@
 
         function abrirJanelaWhatsApp() {
             const config = configuracoesOcasiao[tipoOcasiao] || configuracoesOcasiao['date'];
-            let headlineWhats = config.textoWhats;
+            
+            // Substitui de forma dinâmica o marcador {nome} pelo nome real do criador do link
+            let headlineWhats = config.textoWhats.replace('{nome}', nomeDonoDoLink);
+            
             if (configTipoConvite === 'grupo') {
-                headlineWhats = ehPrimeiroAcessoGrupo ? 'Montei a proposta do nosso grupo! 🚀' : 'Sugeri alterações na proposta do grupo! 🔄';
+                headlineWhats = ehPrimeiroAcessoGrupo 
+                    ? `Oi ${nomeDonoDoLink}, montei a proposta do nosso grupo! 🚀` 
+                    : `Oi ${nomeDonoDoLink}, sugeri alterações na proposta do grupo! 🔄`;
             }
 
-            const identificador = configTipoConvite === 'grupo' ? `Membro: *${nomeDoParticipanteAtual}*` : 'Fui eu!';
             const textoFormatado = 
                 `*${headlineWhats}*\n\n` +
-                `👤 ${identificador}\n` +
                 `📅 Data: ${document.getElementById('sum-date').innerText}\n` +
                 `⏰ Horário: ${dateSelections.time}\n` +
                 `🍽️ Comida: ${dateSelections.food}\n` +
