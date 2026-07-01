@@ -186,12 +186,24 @@
         }
         .btn-outline:hover { background: rgba(255, 42, 109, 0.1); }
 
-        /* Area controlada do botão fugitivo para não quebrar o design */
-        #btn-fuga-container {
-            position: relative;
+        /* Estrutura de botões Sim e Não empilhados perfeitamente */
+        .wrapper-botoes-aceite {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            height: 90px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        /* Container de fuga seguro que mantém o botão posicionado inicialmente */
+        #btn-fuga-container {
+            width: 100%;
+            height: 50px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #btn-grande-nao {
@@ -207,9 +219,8 @@
             color: #ffffff;
             cursor: pointer;
             position: absolute;
-            left: calc(50% - 70px);
-            top: 15px;
-            transition: all 0.15s ease-out;
+            transition: all 0.1s ease-out;
+            z-index: 10;
         }
 
         .box-sugestao-atual {
@@ -345,13 +356,15 @@
         <div id="screen-2" class="screen">
             <div class="emoji-header" id="emoji-tela2">🥺😏🌹</div>
             <h2 id="titulo-tela2">Carregando convite...</h2>
-            <p style="margin-bottom: 20px;">Você aceitaria?</p>
             
-            <button class="btn btn-gradient" onclick="proseguirParaPlanoIndividual()">Sim, com certeza! ❤️</button>
-            
-            <div id="btn-fuga-container">
-                <button id="btn-grande-nao" onmouseover="fugir()" onclick="fugir()">Não</button>
+            <div class="wrapper-botoes-aceite">
+                <button class="btn btn-gradient" style="margin-bottom:0;" onclick="proseguirParaPlanoIndividual()">Sim</button>
+                
+                <div id="btn-fuga-container">
+                    <button id="btn-grande-nao" onmouseover="fugir()" onclick="fugir()" ontouchstart="fugir(event)">Não</button>
+                </div>
             </div>
+            
             <div class="footer-interact">Interaja para avançar</div>
         </div>
 
@@ -433,7 +446,7 @@
         const dicionarioOcasioes = {
             'date': {
                 emojis: '🥺😏🌹',
-                inviteText: '{criador} te chamou para um date! Você aceitaria?',
+                inviteText: '{criador} te chamou para um date! Você aceita?',
                 proposalEmojis: '🍿💖',
                 tituloTela5: "O que está a fim de comer? 🤔",
                 tituloTela6: "Qual é a vibe do encontro? ✨",
@@ -663,22 +676,32 @@
             }
         }
 
-        // --- SISTEMA FUGITIVO DO BOTÃO "NÃO" ---
+        // --- NOVO SISTEMA CORRIGIDO DE FUGA DO BOTÃO "NÃO" ---
         const btnNao = document.getElementById('btn-grande-nao');
         const containerFuga = document.getElementById('btn-fuga-container');
 
-        function fugir() {
+        function fugir(e) {
+            if (e) e.preventDefault(); // Evita comportamentos padrão no mobile
+
             const containerWidth = containerFuga.clientWidth;
-            const containerHeight = containerFuga.clientHeight;
+            // Expandimos a área de fuga verticalmente para fora do container original de forma dinâmica para tornar a fuga divertida
+            const areaFugaAltura = 180; 
+
             const btnWidth = btnNao.clientWidth;
             const btnHeight = btnNao.clientHeight;
 
-            // Gera posições randômicas mantendo o botão restrito ao contêiner interno
-            let novoTop = Math.random() * (containerHeight - btnHeight);
-            let novoLeft = Math.random() * (containerWidth - btnWidth);
+            // Calcula limites calculados relativos ao topo original do container
+            let novoTop = (Math.random() * areaFugaAltura) - (areaFugaAltura / 2);
+            let novoLeft = (Math.random() * containerWidth) - (containerWidth / 2);
 
-            btnNao.style.top = `${Math.max(0, novoTop)}px`;
-            btnNao.style.left = `${Math.max(0, novoLeft)}px`;
+            // Garante que o botão não sai completamente das bordas laterais da tela
+            const limiteHorizontal = (containerWidth / 2) - (btnWidth / 2);
+            if (novoLeft < -limiteHorizontal) novoLeft = -limiteHorizontal;
+            if (novoLeft > limiteHorizontal) novoLeft = limiteHorizontal;
+
+            // Aplica as propriedades transformadas sem quebrar o fluxo relativo das outras caixas
+            btnNao.style.top = `${novoTop}px`;
+            btnNao.style.left = `calc(50% - ${btnWidth / 2}px + ${novoLeft}px)`;
         }
 
         function dispararAnimacaoDeFundo() {
