@@ -289,168 +289,1057 @@
 <body>
 
     <div class="container">
+
+        <!-- =====================================================
+             CABEÇALHO PRINCIPAL
+        ====================================================== -->
         <div class="header">
             <h1>Gerador de Convites ✨</h1>
             <p>Crie um link personalizado e viva dias especiais!</p>
         </div>
 
+
+        <!-- =====================================================
+             CARD PRINCIPAL DE CONFIGURAÇÃO
+        ====================================================== -->
         <div class="card">
+
+
+            <!-- =====================================================
+                 NOME DO CRIADOR
+            ====================================================== -->
             <div class="input-group">
+
                 <label>Seu Nome</label>
-                <input type="text" id="nome-criador" class="input-field" placeholder="Ex: Lucas">
+
+                <input
+                    type="text"
+                    id="nome-criador"
+                    class="input-field"
+                    placeholder="Ex: Lucas"
+                >
+
             </div>
 
+
+            <!-- =====================================================
+                 WHATSAPP DO CRIADOR
+            ====================================================== -->
             <div class="input-group">
-                <label>Seu WhatsApp (para receber o aviso do SIM)</label>
-                <input type="text" id="contato-criador" class="input-field" placeholder="Ex: 11999999999">
+
+                <label>
+                    Seu WhatsApp
+                    (para receber o aviso do SIM)
+                </label>
+
+                <input
+                    type="text"
+                    id="contato-criador"
+                    class="input-field"
+                    placeholder="Ex: 11999999999"
+                >
+
             </div>
 
+
+            <!-- =====================================================
+                 SELEÇÃO DA OCASIÃO
+            ====================================================== -->
             <div class="input-group">
+
                 <label>Qual é a ocasião?</label>
-                <select id="ocasiao-convite" class="input-field">
-                    <option value="date">Encontro Romântico (Date) 🌹</option>
-                    <option value="resenha">Resenha / Rolê com Amigos 🍻</option>
-                    <option value="girls-night">Noite das Meninas 💖</option>
-                    <option value="outros">Outro Rolê ✨</option>
+
+                <select
+                    id="ocasiao-convite"
+                    class="input-field"
+                    onchange="toggleTituloPersonalizado()"
+                >
+
+                    <option value="date">
+                        Encontro Romântico (Date) 🌹
+                    </option>
+
+                    <option value="resenha">
+                        Resenha / Rolê com Amigos 🍻
+                    </option>
+
+                    <option value="girls-night">
+                        Noite das Meninas 💖
+                    </option>
+
+                    <option value="outros">
+                        Outro Rolê ✨
+                    </option>
+
                 </select>
+
             </div>
+
+
+            <!-- =====================================================
+                 TÍTULO PERSONALIZADO
+                 (APENAS PARA A OPÇÃO "OUTROS")
+            ====================================================== -->
+
+            <div
+                class="input-group"
+                id="grupo-titulo-personalizado"
+                style="display:none;"
+            >
+
+                <label>
+                    Título do Rolê
+                </label>
+
+                <input
+                    type="text"
+                    id="titulo-personalizado"
+                    class="input-field"
+                    placeholder="Ex: 🎳 Boliche dos amigos"
+                >
+
+            </div>
+
+
+            <!-- =====================================================
+                 TIPO DE CONVITE
+            ====================================================== -->
 
             <div class="input-group">
-                <label>Formato do Convite</label>
+
+                <label>
+                    Formato do Convite
+                </label>
+
                 <div class="radio-cards-container">
-                    <label class="radio-card">
-                        <input type="radio" name="tipo_convite" value="individual" checked onchange="toggleGrupoOptions()">
-                        <span class="card-title">👤 Individual</span>
-                        <span class="card-description">Apenas uma pessoa. Agendamento direto.</span>
-                    </label>
+
+
+                    <!-- ==========================================
+                         CONVITE INDIVIDUAL
+                    =========================================== -->
 
                     <label class="radio-card">
-                        <input type="radio" name="tipo_convite" value="grupo" onchange="toggleGrupoOptions()">
-                        <span class="card-title">👥 Em Grupo</span>
-                        <span class="card-description">Múltiplos amigos com votação de sugestões.</span>
+
+                        <input
+                            type="radio"
+                            name="tipo_convite"
+                            value="individual"
+                            checked
+                            onchange="toggleGrupoOptions()"
+                        >
+
+                        <span class="card-title">
+                            👤 Individual
+                        </span>
+
+                        <span class="card-description">
+
+                            Apenas uma pessoa.
+
+                            O convidado escolhe:
+
+                            • data
+
+                            • horário
+
+                            • comidas
+
+                            • atividades
+
+                        </span>
+
                     </label>
+
+
+                    <!-- ==========================================
+                         CONVITE EM GRUPO
+                    =========================================== -->
+
+                    <label class="radio-card">
+
+                        <input
+                            type="radio"
+                            name="tipo_convite"
+                            value="grupo"
+                            onchange="toggleGrupoOptions()"
+                        >
+
+                        <span class="card-title">
+                            👥 Em Grupo
+                        </span>
+
+                        <span class="card-description">
+
+                            Crie uma proposta inicial
+                            e permita que os amigos
+                            votem ou criem novas
+                            sugestões.
+
+                        </span>
+
+                    </label>
+
+
                 </div>
+
             </div>
+                        <!-- =====================================================
+                 OPÇÕES EXCLUSIVAS PARA GRUPOS
+            ====================================================== -->
 
             <div id="opcoes_grupo" class="grupo-options-box">
+
+                <!-- ==========================================
+                     PERMITIR VOTAÇÃO
+                =========================================== -->
                 <label class="checkbox-container">
-                    <input type="checkbox" id="permitir_votacao" name="permitir_votacao" value="true" checked>
+
+                    <input
+                        type="checkbox"
+                        id="permitir_votacao"
+                        name="permitir_votacao"
+                        value="true"
+                        checked
+                    >
+
                     <div class="checkbox-label-text">
+
                         Permitir votação e contraproposta?
-                        <span class="checkbox-subtext">Se alguém discordar, poderá propor uma alternativa de horário/local.</span>
+
+                        <span class="checkbox-subtext">
+
+                            Se alguém discordar da sugestão,
+                            poderá criar uma nova opção
+                            para o grupo votar.
+
+                        </span>
+
                     </div>
+
                 </label>
-                
+
+
+                <!-- ==========================================
+                     INFORMAÇÃO DO FLUXO
+                =========================================== -->
                 <div class="info-whatsapp-grupo">
-                    📢 <strong>Fluxo do Grupo ativado:</strong> O sistema gerará um link de votação coletiva para você disparar direto no grupo de WhatsApp dos seus amigos!
+
+                    📢 <strong>Fluxo do Grupo ativado:</strong>
+
+                    O sistema gerará um link de votação
+                    coletiva para você enviar diretamente
+                    no grupo do WhatsApp.
+
                 </div>
+
+
+                <!-- =====================================================
+                     PROPOSTA INICIAL DO GRUPO
+                ====================================================== -->
+
+                <div
+                    id="proposta-inicial-grupo"
+                    style="margin-top:20px;"
+                >
+
+                    <div class="input-group">
+
+                        <label>
+                            📅 Data da proposta inicial
+                        </label>
+
+                        <input
+                            type="date"
+                            id="grupo-date"
+                            class="input-field"
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label>
+                            🕒 Horário da proposta inicial
+                        </label>
+
+                        <input
+                            type="time"
+                            id="grupo-time"
+                            class="input-field"
+                        >
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         COMIDAS E BEBIDAS
+                    =========================================== -->
+
+                    <div class="input-group">
+
+                        <label>
+                            🍕 Comidas e Bebidas
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-food"
+                                value="Pizza"
+                            >
+                            <span>Pizza</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-food"
+                                value="Hambúrguer"
+                            >
+                            <span>Hambúrguer</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-food"
+                                value="Churrasco"
+                            >
+                            <span>Churrasco</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-food"
+                                value="Japonesa"
+                            >
+                            <span>Comida Japonesa</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-food"
+                                value="Sorvete"
+                            >
+                            <span>Sorvete</span>
+                        </label>
+
+
+                        <!-- CAMPO OUTROS -->
+
+                        <input
+                            type="text"
+                            id="grupo-food-outros"
+                            class="input-field"
+                            placeholder="Outro alimento ou bebida..."
+                            style="margin-top:10px;"
+                        >
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         VIBE DO ROLÊ
+                    =========================================== -->
+
+                    <div class="input-group">
+
+                        <label>
+                            🎯 Vibe do Rolê
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-activity"
+                                value="Cinema"
+                            >
+                            <span>Cinema</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-activity"
+                                value="Karaokê"
+                            >
+                            <span>Karaokê</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-activity"
+                                value="Barzinho"
+                            >
+                            <span>Barzinho</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-activity"
+                                value="Boliche"
+                            >
+                            <span>Boliche</span>
+                        </label>
+
+
+                        <label class="checkbox-container">
+                            <input
+                                type="checkbox"
+                                class="grupo-activity"
+                                value="Trilha"
+                            >
+                            <span>Trilha</span>
+                        </label>
+
+
+                        <!-- CAMPO OUTROS -->
+
+                        <input
+                            type="text"
+                            id="grupo-activity-outros"
+                            class="input-field"
+                            placeholder="Outra atividade..."
+                            style="margin-top:10px;"
+                        >
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <button class="btn-gerar" onclick="gerarLink()">Gerar Meu Link Especial 🚀</button>
+
+            <!-- =====================================================
+                 BOTÃO DE GERAÇÃO
+            ====================================================== -->
+
+            <button
+                class="btn-gerar"
+                onclick="gerarLink()"
+            >
+
+                Gerar Meu Link Especial 🚀
+
+            </button>
+
         </div>
 
-        <div class="resultado-container" id="resultado">
-            <div class="header" style="margin-top: 15px;">
-                <h1 style="font-size: 18px;" id="titulo-sucesso">Seu Link está Pronto! ✨</h1>
-                <p style="font-size: 12px; margin-bottom: 10px;" id="subtitulo-sucesso">Copie e envie para a pessoa especial:</p>
+
+        <!-- =====================================================
+             BLOCO DE RESULTADO
+        ====================================================== -->
+
+        <div
+            class="resultado-container"
+            id="resultado"
+        >
+
+            <div
+                class="header"
+                style="margin-top:15px;"
+            >
+
+                <h1
+                    style="font-size:18px;"
+                    id="titulo-sucesso"
+                >
+
+                    Seu Link está Pronto! ✨
+
+                </h1>
+
+
+                <p
+                    style="font-size:12px; margin-bottom:10px;"
+                    id="subtitulo-sucesso"
+                >
+
+                    Copie e envie para a pessoa especial:
+
+                </p>
+
             </div>
-            <div class="link-box" id="link-gerado" onclick="copiarLink()">https://seusite.com/convite?id=12345</div>
-            <p style="font-size: 11px; color: #b59cb8;" id="feedback-copiar">Toque no link acima para copiar</p>
-            
-            <a href="#" id="btn-whatsapp" target="_blank" class="btn-whatsapp-share">
+
+
+            <div
+                class="link-box"
+                id="link-gerado"
+                onclick="copiarLink()"
+            >
+
+                https://seusite.com/convite?id=12345
+
+            </div>
+
+
+            <p
+                style="font-size:11px; color:#b59cb8;"
+                id="feedback-copiar"
+            >
+
+                Toque no link acima para copiar
+
+            </p>
+
+
+            <a
+                href="#"
+                id="btn-whatsapp"
+                target="_blank"
+                class="btn-whatsapp-share"
+            >
+
                 📲 Compartilhar no WhatsApp
+
             </a>
+
         </div>
+
     </div>
 
     <script>
-        function toggleGrupoOptions() {
-            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
-            const opcoesGrupo = document.getElementById('opcoes_grupo');
-            
-            if (tipoConvite === 'grupo') {
-                opcoesGrupo.style.display = 'block';
-            } else {
-                opcoesGrupo.style.display = 'none';
+
+    // =====================================================
+    // MOSTRA OU OCULTA OPÇÕES EXCLUSIVAS DE GRUPO
+    // =====================================================
+    function toggleGrupoOptions() {
+
+        const tipoConvite =
+            document.querySelector(
+                'input[name="tipo_convite"]:checked'
+            ).value;
+
+        const opcoesGrupo =
+            document.getElementById(
+                'opcoes_grupo'
+            );
+
+
+        if (tipoConvite === 'grupo') {
+
+            opcoesGrupo.style.display = 'block';
+
+        } else {
+
+            opcoesGrupo.style.display = 'none';
+
+        }
+
+    }
+
+
+    // =====================================================
+    // EXIBE O CAMPO DE TÍTULO PERSONALIZADO
+    // APENAS QUANDO A OPÇÃO "OUTROS" FOR SELECIONADA
+    // =====================================================
+    function toggleTituloPersonalizado() {
+
+        const ocasiao =
+            document.getElementById(
+                'ocasiao-convite'
+            ).value;
+
+
+        const blocoTitulo =
+            document.getElementById(
+                'grupo-titulo-personalizado'
+            );
+
+
+        if (ocasiao === 'outros') {
+
+            blocoTitulo.style.display = 'block';
+
+        } else {
+
+            blocoTitulo.style.display = 'none';
+
+            document.getElementById(
+                'titulo-personalizado'
+            ).value = '';
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // FUNÇÃO PRINCIPAL DE GERAÇÃO DO LINK
+    // =====================================================
+    function gerarLink() {
+
+        // ==========================================
+        // DADOS DO CRIADOR
+        // ==========================================
+        const nome =
+            document.getElementById(
+                'nome-criador'
+            ).value.trim();
+
+
+        let contato =
+            document.getElementById(
+                'contato-criador'
+            ).value.trim();
+
+
+        const ocasiao =
+            document.getElementById(
+                'ocasiao-convite'
+            ).value;
+
+
+        const tituloPersonalizado =
+            document.getElementById(
+                'titulo-personalizado'
+            ).value.trim();
+
+
+        const tipoConvite =
+            document.querySelector(
+                'input[name="tipo_convite"]:checked'
+            ).value;
+
+
+        const permitirVotacao =
+            document.getElementById(
+                'permitir_votacao'
+            ).checked;
+
+
+
+        // ==========================================
+        // VALIDAÇÕES
+        // ==========================================
+        if (!nome) {
+
+            alert(
+                'Por favor, digite o seu nome! 😉'
+            );
+
+            return;
+        }
+
+
+        if (!contato) {
+
+            alert(
+                'Por favor, preencha o seu WhatsApp!'
+            );
+
+            return;
+        }
+
+
+        // ==========================================
+        // REMOVE CARACTERES NÃO NUMÉRICOS
+        // ==========================================
+        contato =
+            contato.replace(/\D/g, '');
+
+
+
+        // =====================================================
+        // MONTA A PROPOSTA INICIAL
+        // SOMENTE PARA CONVITES EM GRUPO
+        // =====================================================
+
+        let propostaInicial = null;
+
+
+        if (tipoConvite === 'grupo') {
+
+            // -----------------------------
+            // DATA E HORÁRIO
+            // -----------------------------
+            const dataGrupo =
+                document.getElementById(
+                    'grupo-date'
+                ).value;
+
+
+            const horarioGrupo =
+                document.getElementById(
+                    'grupo-time'
+                ).value;
+
+
+
+            // -----------------------------
+            // COMIDAS MARCADAS
+            // -----------------------------
+            const comidasSelecionadas =
+                Array.from(
+                    document.querySelectorAll(
+                        '.grupo-food:checked'
+                    )
+                )
+                .map(item => item.value);
+
+
+
+            const comidaExtra =
+                document.getElementById(
+                    'grupo-food-outros'
+                ).value.trim();
+
+
+
+            if (comidaExtra) {
+
+                comidasSelecionadas.push(
+                    comidaExtra
+                );
+
             }
+
+
+
+            // -----------------------------
+            // ATIVIDADES MARCADAS
+            // -----------------------------
+            const atividadesSelecionadas =
+                Array.from(
+                    document.querySelectorAll(
+                        '.grupo-activity:checked'
+                    )
+                )
+                .map(item => item.value);
+
+
+
+            const atividadeExtra =
+                document.getElementById(
+                    'grupo-activity-outros'
+                ).value.trim();
+
+
+
+            if (atividadeExtra) {
+
+                atividadesSelecionadas.push(
+                    atividadeExtra
+                );
+
+            }
+
+
+
+            // -----------------------------
+            // VALIDAÇÕES DA PROPOSTA
+            // -----------------------------
+            if (!dataGrupo) {
+
+                alert(
+                    'Informe uma data para o grupo.'
+                );
+
+                return;
+            }
+
+
+            if (!horarioGrupo) {
+
+                alert(
+                    'Informe um horário para o grupo.'
+                );
+
+                return;
+            }
+
+
+
+            // -----------------------------
+            // OBJETO FINAL
+            // -----------------------------
+            propostaInicial = {
+
+                date: dataGrupo,
+
+                time: horarioGrupo,
+
+                food: comidasSelecionadas,
+
+                activity: atividadesSelecionadas
+
+            };
         }
+                // =====================================================
+        // ENVIA OS DADOS PARA O BACKEND
+        // =====================================================
+        fetch('/api/criar-convite', {
 
-        function gerarLink() {
-            const nome = document.getElementById('nome-criador').value.trim();
-            let contato = document.getElementById('contato-criador').value.trim();
-            const ocasiao = document.getElementById('ocasiao-convite').value;
-            
-            const tipoConvite = document.querySelector('input[name="tipo_convite"]:checked').value;
-            const permitirVotacao = document.getElementById('permitir_votacao').checked;
+            method: 'POST',
 
-            if (!nome) { alert('Por favor, digite o seu nome! 😉'); return; }
-            if (!contato) { alert('Por favor, preencha o seu WhatsApp!'); return; }
+            headers: {
+                'Content-Type': 'application/json'
+            },
 
-            contato = contato.replace(/\D/g, '');
+            body: JSON.stringify({
 
-            fetch('/api/criar-convite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nomeCriador: nome,
-                    whatsappCriador: contato,
-                    ocasiao: ocasiao,
-                    tipoConvite: tipoConvite,
-                    permitirVotacao: permitirVotacao,
-                    emailsGrupo: "" 
-                })
+                // ==========================================
+                // DADOS DO CRIADOR
+                // ==========================================
+                nomeCriador: nome,
+
+                whatsappCriador: contato,
+
+                ocasiao: ocasiao,
+
+                tituloPersonalizado: tituloPersonalizado,
+
+
+
+                // ==========================================
+                // CONFIGURAÇÕES DO CONVITE
+                // ==========================================
+                tipoConvite: tipoConvite,
+
+                permitirVotacao: permitirVotacao,
+
+
+
+                // ==========================================
+                // PROPOSTA INICIAL
+                // (APENAS PARA GRUPOS)
+                // ==========================================
+                propostaInicial: propostaInicial
+
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.sucesso && data.id) {
-                    const baseURl = window.location.origin;
-                    const linkFinal = `${baseURl}/index.html?id=${data.id}`;
-                    
-                    document.getElementById('link-gerado').innerText = linkFinal;
-                    
-                    const titulo = document.getElementById('titulo-sucesso');
-                    const subtitulo = document.getElementById('subtitulo-sucesso');
-                    const btnWhats = document.getElementById('btn-whatsapp');
-                    
-                    let mensagemWhats = "";
-                    
-                    if (tipoConvite === 'grupo') {
-                        titulo.innerText = "Votação do Grupo Criada! 🔥";
-                        subtitulo.innerText = "Envie este link no grupo para a galera votar:";
-                        // AJUSTADO: Texto da mensagem alterado para indicar que quem entrar primeiro propõe
-                        mensagemWhats = `Bora decidir o nosso próximo rolê? O primeiro a acessar monta a proposta inicial e os outros votam! Acesse aqui: ${linkFinal}`;
-                    } else {
-                        titulo.innerText = "Seu Link está Pronto! ✨";
-                        subtitulo.innerText = "Copie e envie para a pessoa especial:";
-                        mensagemWhats = `Criei um convite especial para você, olha só: ${linkFinal}`;
-                    }
-                    
-                    btnWhats.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagemWhats)}`;
-                    
-                    document.getElementById('resultado').style.display = 'block';
-                    
-                    document.getElementById('feedback-copiar').innerText = "Toque no link acima para copiar";
-                    document.getElementById('feedback-copiar').style.color = "#b59cb8";
-                } else {
-                    alert('Erro ao gerar o convite no servidor: ' + (data.erro || 'Desconhecido'));
+
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if (data.sucesso && data.id) {
+
+                // ==========================================
+                // MONTA O LINK FINAL
+                // ==========================================
+                const baseURL =
+                    window.location.origin;
+
+
+                const linkFinal =
+                    `${baseURL}/index.html?id=${data.id}`;
+
+
+
+                // ==========================================
+                // EXIBE O LINK
+                // ==========================================
+                document.getElementById(
+                    'link-gerado'
+                ).innerText = linkFinal;
+
+
+
+                // ==========================================
+                // REFERÊNCIAS DA TELA
+                // ==========================================
+                const titulo =
+                    document.getElementById(
+                        'titulo-sucesso'
+                    );
+
+
+                const subtitulo =
+                    document.getElementById(
+                        'subtitulo-sucesso'
+                    );
+
+
+                const btnWhats =
+                    document.getElementById(
+                        'btn-whatsapp'
+                    );
+
+
+
+                let mensagemWhats = '';
+
+
+
+                // =====================================================
+                // FLUXO DE CONVITE EM GRUPO
+                // =====================================================
+                if (tipoConvite === 'grupo') {
+
+                    titulo.innerText =
+                        'Votação do Grupo Criada! 🔥';
+
+
+                    subtitulo.innerText =
+                        'Envie este link no grupo para a galera votar:';
+
+
+
+                    mensagemWhats =
+                        `🎉 Bora decidir nosso próximo rolê?\n\n` +
+                        `Criei uma sugestão inicial, mas todos podem votar ou criar novas propostas!\n\n` +
+                        `${linkFinal}`;
+
+
+
+                    // ==========================================
+                    // NÃO DEFINE UM NÚMERO
+                    // O USUÁRIO ESCOLHE O CONTATO OU GRUPO
+                    // ==========================================
+                    btnWhats.href =
+                        `https://wa.me/?text=${encodeURIComponent(mensagemWhats)}`;
+
                 }
-            })
-            .catch(err => {
-                alert('Erro de conexão com o servidor do app.');
-                console.error(err);
-            });
-        }
 
-        function copiarLink() {
-            const linkText = document.getElementById('link-gerado').innerText;
-            navigator.clipboard.writeText(linkText).then(() => {
-                const feedback = document.getElementById('feedback-copiar');
-                feedback.innerText = "✓ Link copiado com sucesso!";
-                feedback.style.color = "#00ff88";
-            }).catch(err => {
-                console.error('Erro ao copiar o link: ', err);
+
+                // =====================================================
+                // FLUXO DE CONVITE INDIVIDUAL
+                // =====================================================
+                else {
+
+                    titulo.innerText =
+                        'Seu Link está Pronto! ✨';
+
+
+                    subtitulo.innerText =
+                        'Copie e envie para a pessoa especial:';
+
+
+
+                    mensagemWhats =
+                        `💌 Criei um convite especial para você!\n\n${linkFinal}`;
+
+
+
+                    // ==========================================
+                    // ABRE DIRETAMENTE A CONVERSA DO CRIADOR
+                    // ==========================================
+                    btnWhats.href =
+                        `https://wa.me/55${contato}?text=${encodeURIComponent(mensagemWhats)}`;
+
+                }
+
+
+
+                // ==========================================
+                // EXIBE A ÁREA DE RESULTADO
+                // ==========================================
+                document.getElementById(
+                    'resultado'
+                ).style.display = 'block';
+
+
+
+                // ==========================================
+                // RESET DO TEXTO DE CÓPIA
+                // ==========================================
+                document.getElementById(
+                    'feedback-copiar'
+                ).innerText =
+                    'Toque no link acima para copiar';
+
+
+
+                document.getElementById(
+                    'feedback-copiar'
+                ).style.color =
+                    '#b59cb8';
+
+            }
+
+            else {
+
+                alert(
+                    'Erro ao gerar o convite no servidor: ' +
+                    (data.erro || 'Desconhecido')
+                );
+
+            }
+
+        })
+
+        .catch(err => {
+
+            alert(
+                'Erro de conexão com o servidor do app.'
+            );
+
+            console.error(err);
+
+        });
+
+    }
+
+
+
+    // =====================================================
+    // COPIA O LINK GERADO
+    // =====================================================
+    function copiarLink() {
+
+        const linkText =
+            document.getElementById(
+                'link-gerado'
+            ).innerText;
+
+
+
+        navigator.clipboard
+            .writeText(linkText)
+
+            .then(() => {
+
+                const feedback =
+                    document.getElementById(
+                        'feedback-copiar'
+                    );
+
+
+                feedback.innerText =
+                    '✓ Link copiado com sucesso!';
+
+
+                feedback.style.color =
+                    '#00ff88';
+
+            })
+
+            .catch(err => {
+
+                console.error(
+                    'Erro ao copiar o link:',
+                    err
+                );
+
             });
-        }
-    </script>
+
+    }
+    
+    // =====================================================
+    // INICIALIZA O ESTADO DA TELA
+    // =====================================================
+    toggleGrupoOptions();
+
+    toggleTituloPersonalizado();
+
+</script>
+
 </body>
 </html>
