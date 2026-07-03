@@ -947,6 +947,24 @@ END:VCALENDAR`;
       console.log("Ocasião:", tipoOcasiao);
       console.log("Título:", tituloPersonalizado);
       console.log("================================");
+
+      // Cole isso no final do seu script principal
+      function nextScreen(fase) {
+        console.log("Avançando para a tela: " + fase);
+        // Aqui vai a sua lógica antiga de esconder o loading e mostrar o convite
+        // Exemplo comum:
+        const loadingScreen =
+          document.querySelector(".loading-screen") ||
+          document.getElementById("loading");
+        if (loadingScreen) {
+          loadingScreen.style.display = "none";
+        }
+      }
+
+      function aplicarConfiguracaoOcasiao(tipo) {
+        console.log("Aplicando tema da ocasião: " + tipo);
+        // Aqui vai a lógica que muda os textos/fotos se for 'date', 'aniversario', etc.
+      }
     </script>
   </body>
 </html>
