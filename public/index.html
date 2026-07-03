@@ -532,11 +532,32 @@
     </div>
 
     <script>
-      // ======================================================
-      // VARIÁVEIS GLOBAIS ADICIONAIS
-      // ======================================================
+      let selectedFoods = [];
+      let selectedActivities = [];
 
+      let dateSelections = {
+        date: "",
+        time: "",
+        food: "",
+        activity: "",
+      };
+
+      let tipoOcasiao = "date";
+      let nomeDonoDoLink = "Alguém";
+      let whatsappCriadorLink = "";
+      let configTipoConvite = "individual";
+      let nomeDoParticipanteAtual = "";
+      let propostaPrincipalSalva = null;
+      let ehPrimeiroAcessoGrupo = false;
       let tituloPersonalizado = "";
+
+      // ==========================
+      // URL
+      // ==========================
+
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const idConvite = urlParams.get("id");
 
       // ======================================================
       // TELA INICIAL DO CONVITE INDIVIDUAL
