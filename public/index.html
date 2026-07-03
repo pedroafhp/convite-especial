@@ -501,6 +501,7 @@
       </div>
     </div>
     <script>
+      // ENUMS DE CONFIGURAÇÃO DE ACORDO COM A OCASIÃO
       const OPCOES_COMIDA = {
         date: [
           { id: "japones", nome: "Japonês", emoji: "🍣" },
@@ -510,11 +511,23 @@
           { id: "fondue", nome: "Fondue", emoji: "🫕" },
           { id: "outros", nome: "Outro...", emoji: "❓" },
         ],
-        role: [
+        resenha: [
           { id: "churrasco", nome: "Churrasco", emoji: "🍖" },
           { id: "pizza", nome: "Pizza", emoji: "🍕" },
           { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
           { id: "comidaboteco", nome: "Comida de Boteco", emoji: "🍟" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        noite_das_meninas: [
+          { id: "pizza", nome: "Pizza e Doces", emoji: "🍕🍫" },
+          { id: "japones", nome: "Japonês", emoji: "🍣" },
+          { id: "fondue", nome: "Fondue de Chocolate", emoji: "🫕" },
+          { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        outros: [
+          { id: "pizza", nome: "Pizza", emoji: "🍕" },
+          { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
           { id: "outros", nome: "Outro...", emoji: "❓" },
         ],
       };
@@ -528,11 +541,23 @@
           { id: "jogos", nome: "Jogos / Arcade", emoji: "🎮" },
           { id: "outros", nome: "Outro...", emoji: "❓" },
         ],
-        role: [
+        resenha: [
           { id: "festa", nome: "Festa / Balada", emoji: "🎉" },
           { id: "barzinho", nome: "Barzinho", emoji: "🍻" },
           { id: "jogos", nome: "Noite de Jogos", emoji: "🎲" },
           { id: "resenha", nome: "Resenha em Casa", emoji: "🏡" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        noite_das_meninas: [
+          { id: "fofoca", nome: "Skincare & Fofoca", emoji: "💆‍♀️💬" },
+          { id: "filme", nome: "Filmes / Séries", emoji: "🎬" },
+          { id: "drinks", nome: "Drinks & Coquetéis", emoji: "🍸" },
+          { id: "jogos", nome: "Jogos de Tabuleiro", emoji: "🎲" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        outros: [
+          { id: "resenha", nome: "Conversar e Curtir", emoji: "✨" },
+          { id: "jogos", nome: "Jogos", emoji: "🎮" },
           { id: "outros", nome: "Outro...", emoji: "❓" },
         ],
       };
@@ -541,14 +566,13 @@
       let selectedActivities = [];
       let dateSelections = { date: "", time: "", food: "", activity: "" };
 
-      let tipoOcasiao = "date";
+      let tipoOcasiao = "date"; // Valores: date, resenha, noite_das_meninas, outros
       let nomeDonoDoLink = "Alguém";
       let whatsappCriadorLink = "";
       let configTipoConvite = "individual";
       let nomeDoParticipanteAtual = "";
       let propostaPrincipalSalva = null;
       let tituloPersonalizado = "";
-
       let conviteId = "";
       let dadosConvite = null;
 
@@ -616,27 +640,39 @@
         }
       }
 
+      // RETORNA O TEXTO FORMATADO DA OCASIÃO COMPATÍVEL COM O BANCO DE DADOS
+      function obterTextoOcasiao() {
+        switch (tipoOcasiao) {
+          case "date":
+            return "um encontro super especial 👩‍❤️‍👨";
+          case "resenha":
+            return "uma resenha incrível com a galera 🏡🍻";
+          case "noite_das_meninas":
+            return "uma Noite das Meninas imperdível 💆‍♀️✨";
+          default:
+            return "um rolê sensacional 🚀";
+        }
+      }
+
+      // FLUXO INDIVIDUAL COMPLETAMENTE ISOLADO
       function configurarConviteIndividual() {
         configTipoConvite = "individual";
 
-        // Define cabeçalhos da Tela 0 com nome e ocasião
-        const acaoTexto =
-          tipoOcasiao === "date"
-            ? "um encontro inesquecível"
-            : "um rolê sensacional";
-        document.getElementById("titulo-dinamico").innerHTML =
-          `<strong>${nomeDonoDoLink}</strong> te convidou para ${acaoTexto}! <br><br> ${tituloPersonalizado || "Vamos nessa? ✨"}`;
-        document.getElementById("subtitulo-dinamico").innerText =
-          "Escolha com sabedoria. 😏";
-
+        // Oculta completamente elementos visuais e botões de avanço do grupo
         document.getElementById("wrapper-input-nome").style.display = "none";
         document.getElementById("lista-outros-votos").style.display = "none";
         document.getElementById("lista-outros-votos-tela2").style.display =
           "none";
         document.getElementById("wrapper-votacao-grupo").style.display = "none";
+        document.getElementById("btn-avancar-fluxo-padrao").style.display =
+          "none";
 
-        const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
-        if (btnAvancar) btnAvancar.style.display = "block";
+        // Aplica os nomes e as ocasiões dinâmicas coletadas
+        document.getElementById("emoji-tela0").innerText = "💌";
+        document.getElementById("titulo-dinamico").innerHTML =
+          `<strong>${nomeDonoDoLink}</strong> te convidou para ${obterTextoOcasiao()}!<br><br><em>${tituloPersonalizado || "Você aceita?"}</em>`;
+        document.getElementById("subtitulo-dinamico").innerText =
+          "Só existe uma resposta correta aqui. 😏";
 
         document.getElementById("container-botoes-tela1").innerHTML = `
                 <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
@@ -649,36 +685,46 @@
 
       function aceitarConvite() {
         console.log(
-          "Individual aceito. Alterando Tela 2 com frase divertida e pulando direto.",
+          "[Individual] Transicionando para a Tela 2 Divertida e pulando a Tela 1.",
         );
 
-        // Aplica os textos divertidos pedidos para a Tela 2 do Individual
+        // Força a customização da Tela 2 com a frase divertida que você pediu
         document.getElementById("emoji-tela2").innerText = "😜💥";
         document.getElementById("titulo-tela2").innerText = "Você disse sim?!";
         document.getElementById("pergunta-voto-texto").innerText =
-          "Esperava que você dissesse não... Mas já que aceitou, clica em avançar!";
+          "Esperava que você dissesse não... Mas já que aceitou, vamos preparar os detalhes! 🚀";
 
-        // PULA A TELA 1 DIRETO PARA A TELA 2 MODIFICADA!
+        // Esconde o botão padrão para evitar cliques indesejados e gerar automação limpa
+        document.getElementById("btn-avancar-fluxo-padrao").style.display =
+          "none";
+
+        // Vai para a Tela 2
         nextScreen(2);
+
+        // Aguarda 3 segundos exibindo a frase engraçada e joga automaticamente para Data e Horário (Tela 3)
+        setTimeout(() => {
+          nextScreen(3);
+        }, 3500);
       }
 
+      // FLUXO DE GRUPO COMPLETAMENTE ISOLADO
       function configurarInterfaceGrupo(respostas) {
         configTipoConvite = "grupo";
 
-        const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
-        if (btnAvancar) btnAvancar.style.display = "none";
-
-        document.getElementById("titulo-dinamico").innerHTML =
-          `Participe do evento de <strong>${nomeDonoDoLink}</strong>!`;
-        document.getElementById("subtitulo-dinamico").innerText =
-          "Entre com seu nome para votar nas opções com o grupo.";
-
+        // Ajusta visibilidade do fluxo padrão de votação coletiva
+        document.getElementById("btn-avancar-fluxo-padrao").style.display =
+          "none";
         document.getElementById("wrapper-input-nome").style.display = "block";
         document.getElementById("lista-outros-votos").style.display = "block";
         document.getElementById("lista-outros-votos-tela2").style.display =
           "block";
         document.getElementById("wrapper-votacao-grupo").style.display =
           "block";
+
+        document.getElementById("titulo-dinamico").innerHTML =
+          `Participe do evento de <strong>${nomeDonoDoLink}</strong>!`;
+        document.getElementById("subtitulo-dinamico").innerText =
+          "Insira o seu nome abaixo para entrar no grupo e votar nas opções.";
 
         document.getElementById("container-botoes-tela1").innerHTML = `
                 <button class="btn" onclick="validarIngressoGrupo()">Entrar e Ver Propostas 🚀</button>
@@ -695,8 +741,7 @@
           return;
         }
         nomeDoParticipanteAtual = inputNome.value.trim();
-
-        // Grupo passa pela Tela 1 tradicional normalmente
+        // Grupo segue a ordem correta para a Tela 1
         nextScreen(1);
       }
 
@@ -758,7 +803,7 @@
           document.getElementById("voto-grupo-nao").classList.add("selected");
 
         if (!conviteId) {
-          setTimeout(() => nextScreen(3), 1500);
+          setTimeout(() => nextScreen(3), 1200);
           return;
         }
 
@@ -780,7 +825,7 @@
             dadosConvite.respostas = dadosAtualizados.respostas;
             calcularContagemVotosGrupo();
           }
-          setTimeout(() => nextScreen(3), 2000);
+          setTimeout(() => nextScreen(3), 1500);
         } catch (err) {
           console.error(err);
           nextScreen(3);
@@ -820,18 +865,27 @@
         const atividadeGrid = document.getElementById("grid-atividade");
         if (!comidaGrid || !atividadeGrid) return;
 
+        // Busca os Enums mapeados dinamicamente baseados na ocasião do Render
         const listaComidas =
           OPCOES_COMIDA[tipoOcasiao] || OPCOES_COMIDA["date"];
         const listaAtividades =
           OPCOES_ATIVIDADE[tipoOcasiao] || OPCOES_ATIVIDADE["date"];
 
-        if (tipoOcasiao === "role") {
-          document.getElementById("emoji-tela4").innerText = "🍻";
+        // Customizações de Título com foco em Resenha e Noite das Meninas
+        if (tipoOcasiao === "resenha" || tipoOcasiao === "noite_das_meninas") {
+          document.getElementById("emoji-tela4").innerText = "🍹🍽️";
           document.getElementById("titulo-tela4").innerText =
-            "O que vamos mandar de rango?";
-          document.getElementById("emoji-tela5").innerText = "🎸";
+            "O que vamos mandar de rango e bebidas?";
+          document.getElementById("emoji-tela5").innerText = "🎉";
           document.getElementById("titulo-tela5").innerText =
-            "Qual vai ser a programação?";
+            "Qual vai ser a programação perfeita?";
+        } else {
+          document.getElementById("emoji-tela4").innerText = "🍔";
+          document.getElementById("titulo-tela4").innerText =
+            "O que vamos comer?";
+          document.getElementById("emoji-tela5").innerText = "✨";
+          document.getElementById("titulo-tela5").innerText =
+            "Qual vai ser a vibe?";
         }
 
         comidaGrid.innerHTML = listaComidas
@@ -897,7 +951,7 @@
 
       function validateScreen4() {
         if (selectedFoods.length === 0) {
-          alert("Selecione pelo menos um rango! 🍕");
+          alert("Selecione pelo menos uma opção! 🍕");
           return;
         }
         let renderList = [...selectedFoods];
