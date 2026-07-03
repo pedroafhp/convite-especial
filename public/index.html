@@ -338,6 +338,126 @@
     </style>
   </head>
   <body>
+    <div id="hearts-bg"></div>
+
+    <div class="container">
+
+        <div id="screen-0" class="screen active">
+            <div class="emoji-header" id="emoji-tela0">👋</div>
+            <h2 id="titulo-dinamico">Carregando...</h2>
+            <p id="subtitulo-dinamico">Aguarde enquanto preparamos os detalhes do convite.</p>
+            
+            <div class="input-group" id="wrapper-input-nome">
+                <label for="nome-participante-input">SEU NOME:</label>
+                <input type="text" id="nome-participante-input" class="input-field" placeholder="Escreva seu nome aqui...">
+            </div>
+
+            <div id="container-botoes-tela1"></div>
+
+            <div id="lista-outros-votos" class="historico-votos" style="display: none;">
+                <h3>Respostas do Grupo:</h3>
+                <div id="linhas-votos-box"></div>
+            </div>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-1" class="screen">
+            <div class="emoji-header" id="emoji-tela1">🥺</div>
+            <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
+            <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
+            <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-2" class="screen">
+            <div class="emoji-header" id="emoji-tela2">🍿💖</div>
+            <h2 id="titulo-tela2">O que você acha?</h2>
+            
+            <div id="box-sugestao-container" class="box-sugestao" style="display: none;"></div>
+
+            <p id="pergunta-voto-texto">O que você acha da proposta?</p>
+            
+            <div id="wrapper-votacao-grupo" class="votacao-container" style="display: none;"></div>
+
+            <button id="btn-avancar-fluxo-padrao" class="btn" onclick="nextScreen(3)">Avançar 🗓️</button>
+            
+            <div id="lista-outros-votos-tela2" class="historico-votos" style="display: none; margin-top: 20px;">
+                <h3>Respostas do Grupo:</h3>
+                <div id="linhas-votos-box-tela2"></div>
+            </div>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-3" class="screen">
+            <div class="emoji-header">📅</div>
+            <h2>Quando fica melhor?</h2>
+            <p>Escolha a melhor data e horário para o rolê acontecer.</p>
+            
+            <div class="input-group">
+                <label for="date-input">DATA:</label>
+                <input type="date" id="date-input" class="input-field">
+            </div>
+            <div class="input-group">
+                <label for="time-input">HORÁRIO:</label>
+                <input type="time" id="time-input" class="input-field">
+            </div>
+
+            <button class="btn" onclick="validateScreen3()">Definir Horário 🚀</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-4" class="screen">
+            <div class="emoji-header" id="emoji-tela4">🍔</div>
+            <h2 id="titulo-tela4">O que vamos comer?</h2>
+            <p>Selecione uma ou mais opções da lista.</p>
+            
+            <div class="grid-options" id="grid-comida"></div>
+
+            <div class="input-group" id="campo-outros-comida" style="display: none;">
+                <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
+                <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Comida Mexicana, Pastel...">
+            </div>
+
+            <button class="btn" onclick="validateScreen4()">Confirmar Opções 🍕</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-5" class="screen">
+            <div class="emoji-header" id="emoji-tela5">✨</div>
+            <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
+            <p>Escolha as atividades perfeitas para a ocasião.</p>
+            
+            <div class="grid-options" id="grid-atividade"></div>
+
+            <div class="input-group" id="campo-outros-vibe" style="display: none;">
+                <label for="vibe-outros-input">OUTRA PROGRAMAÇÃO:</label>
+                <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Boliche, Luau...">
+            </div>
+
+            <button class="btn" onclick="validateScreen5()">Concluir Detalhes 🎸</button>
+            <div class="footer-interact">Interaja para avançar</div>
+        </div>
+
+        <div id="screen-6" class="screen">
+            <div class="emoji-header" id="emoji-final">🥳</div>
+            <h2 id="titulo-final">Tudo Combinado!</h2>
+            <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
+            
+            <div class="summary-box">
+                <div class="summary-item">📅 <strong>Data:</strong> <span id="sum-date">--</span></div>
+                <div class="summary-item">⏰ <strong>Horário:</strong> <span id="sum-time">--</span></div>
+                <div class="summary-item">🍽️ <strong>Cardápio:</strong> <span id="sum-food">--</span></div>
+                <div class="summary-item">✨ <strong>Vibe:</strong> <span id="sum-activity">--</span></div>
+            </div>
+
+            <p id="status-texto" style="font-size: 0.85rem; font-weight: bold; color: var(--primary-color); margin-bottom: 20px;"></p>
+
+            <button class="btn" onclick="criarEventoAgenda()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: white; margin-bottom: 12px; box-shadow: none;">Salvar na Agenda 🗓️</button>
+            <button class="btn" onclick="abrirJanelaWhatsApp()">Enviar via WhatsApp 💬</button>
+        </div>
+
+    </div>
+
     <script>
       // ==========================================
       // TELA INICIAL DO CONVITE INDIVIDUAL
