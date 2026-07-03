@@ -948,24 +948,23 @@ END:VCALENDAR`;
       console.log("Título:", tituloPersonalizado);
       console.log("================================");
 
-      function nextScreen(faseAtual) {
-        console.log("Tentando avançar da fase: " + faseAtual);
+      function nextScreen(proximaFase) {
+        console.log("Avançando para a tela: screen-" + proximaFase);
 
-        // Procura os elementos na tela
-        const telas = document.querySelectorAll(
-          '.card, .container, .screen, [id^="tela"]',
-        );
+        // 1. Remove a classe 'active' de TODAS as telas para escondê-las
+        const telas = document.querySelectorAll(".screen");
+        telas.forEach((tela) => {
+          tela.classList.remove("active");
+        });
 
-        if (telas.length > 0) {
-          if (telas[faseAtual]) {
-            telas[faseAtual].style.display = "none";
-          }
-
-          const proximaFase = faseAtual + 1;
-          if (telas[proximaFase]) {
-            // Se o seu layout quebrar ao avançar, mude 'block' para 'flex' abaixo:
-            telas[proximaFase].style.display = "block";
-          }
+        // 2. Encontra a próxima tela pelo ID exato e adiciona 'active' para ela aparecer
+        const proximaTela = document.getElementById("screen-" + proximaFase);
+        if (proximaTela) {
+          proximaTela.classList.add("active");
+        } else {
+          console.error(
+            "Erro: A tela 'screen-" + proximaFase + "' não existe no seu HTML.",
+          );
         }
       }
     </script>
