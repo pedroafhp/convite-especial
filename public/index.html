@@ -341,133 +341,214 @@
     <div id="hearts-bg"></div>
 
     <div class="container">
+      <div id="screen-0" class="screen active">
+        <div class="emoji-header" id="emoji-tela0">👋</div>
+        <h2 id="titulo-dinamico">Carregando...</h2>
+        <p id="subtitulo-dinamico">
+          Aguarde enquanto preparamos os detalhes do convite.
+        </p>
 
-        <div id="screen-0" class="screen active">
-            <div class="emoji-header" id="emoji-tela0">👋</div>
-            <h2 id="titulo-dinamico">Carregando...</h2>
-            <p id="subtitulo-dinamico">Aguarde enquanto preparamos os detalhes do convite.</p>
-            
-            <div class="input-group" id="wrapper-input-nome">
-                <label for="nome-participante-input">SEU NOME:</label>
-                <input type="text" id="nome-participante-input" class="input-field" placeholder="Escreva seu nome aqui...">
-            </div>
-
-            <div id="container-botoes-tela1"></div>
-
-            <div id="lista-outros-votos" class="historico-votos" style="display: none;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box"></div>
-            </div>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div class="input-group" id="wrapper-input-nome">
+          <label for="nome-participante-input">SEU NOME:</label>
+          <input
+            type="text"
+            id="nome-participante-input"
+            class="input-field"
+            placeholder="Escreva seu nome aqui..."
+          />
         </div>
 
-        <div id="screen-1" class="screen">
-            <div class="emoji-header" id="emoji-tela1">🥺</div>
-            <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
-            <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
-            <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div id="container-botoes-tela1"></div>
+
+        <div
+          id="lista-outros-votos"
+          class="historico-votos"
+          style="display: none"
+        >
+          <h3>Respostas do Grupo:</h3>
+          <div id="linhas-votos-box"></div>
+        </div>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-1" class="screen">
+        <div class="emoji-header" id="emoji-tela1">🥺</div>
+        <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
+        <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
+        <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-2" class="screen">
+        <div class="emoji-header" id="emoji-tela2">🍿💖</div>
+        <h2 id="titulo-tela2">O que você acha?</h2>
+
+        <div
+          id="box-sugestao-container"
+          class="box-sugestao"
+          style="display: none"
+        ></div>
+
+        <p id="pergunta-voto-texto">O que você acha da proposta?</p>
+
+        <div
+          id="wrapper-votacao-grupo"
+          class="votacao-container"
+          style="display: none"
+        ></div>
+
+        <button
+          id="btn-avancar-fluxo-padrao"
+          class="btn"
+          onclick="nextScreen(3)"
+        >
+          Avançar 🗓️
+        </button>
+
+        <div
+          id="lista-outros-votos-tela2"
+          class="historico-votos"
+          style="display: none; margin-top: 20px"
+        >
+          <h3>Respostas do Grupo:</h3>
+          <div id="linhas-votos-box-tela2"></div>
+        </div>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-3" class="screen">
+        <div class="emoji-header">📅</div>
+        <h2>Quando fica melhor?</h2>
+        <p>Escolha a melhor data e horário para o rolê acontecer.</p>
+
+        <div class="input-group">
+          <label for="date-input">DATA:</label>
+          <input type="date" id="date-input" class="input-field" />
+        </div>
+        <div class="input-group">
+          <label for="time-input">HORÁRIO:</label>
+          <input type="time" id="time-input" class="input-field" />
         </div>
 
-        <div id="screen-2" class="screen">
-            <div class="emoji-header" id="emoji-tela2">🍿💖</div>
-            <h2 id="titulo-tela2">O que você acha?</h2>
-            
-            <div id="box-sugestao-container" class="box-sugestao" style="display: none;"></div>
+        <button class="btn" onclick="validateScreen3()">
+          Definir Horário 🚀
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
 
-            <p id="pergunta-voto-texto">O que você acha da proposta?</p>
-            
-            <div id="wrapper-votacao-grupo" class="votacao-container" style="display: none;"></div>
+      <div id="screen-4" class="screen">
+        <div class="emoji-header" id="emoji-tela4">🍔</div>
+        <h2 id="titulo-tela4">O que vamos comer?</h2>
+        <p>Selecione uma ou mais opções da lista.</p>
 
-            <button id="btn-avancar-fluxo-padrao" class="btn" onclick="nextScreen(3)">Avançar 🗓️</button>
-            
-            <div id="lista-outros-votos-tela2" class="historico-votos" style="display: none; margin-top: 20px;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box-tela2"></div>
-            </div>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div class="grid-options" id="grid-comida"></div>
+
+        <div class="input-group" id="campo-outros-comida" style="display: none">
+          <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
+          <input
+            type="text"
+            id="comida-outros-input"
+            class="input-field"
+            placeholder="Ex: Comida Mexicana, Pastel..."
+          />
         </div>
 
-        <div id="screen-3" class="screen">
-            <div class="emoji-header">📅</div>
-            <h2>Quando fica melhor?</h2>
-            <p>Escolha a melhor data e horário para o rolê acontecer.</p>
-            
-            <div class="input-group">
-                <label for="date-input">DATA:</label>
-                <input type="date" id="date-input" class="input-field">
-            </div>
-            <div class="input-group">
-                <label for="time-input">HORÁRIO:</label>
-                <input type="time" id="time-input" class="input-field">
-            </div>
+        <button class="btn" onclick="validateScreen4()">
+          Confirmar Opções 🍕
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
 
-            <button class="btn" onclick="validateScreen3()">Definir Horário 🚀</button>
-            <div class="footer-interact">Interaja para avançar</div>
+      <div id="screen-5" class="screen">
+        <div class="emoji-header" id="emoji-tela5">✨</div>
+        <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
+        <p>Escolha as atividades perfeitas para a ocasião.</p>
+
+        <div class="grid-options" id="grid-atividade"></div>
+
+        <div class="input-group" id="campo-outros-vibe" style="display: none">
+          <label for="vibe-outros-input">OUTRA PROGRAMAÇÃO:</label>
+          <input
+            type="text"
+            id="vibe-outros-input"
+            class="input-field"
+            placeholder="Ex: Boliche, Luau..."
+          />
         </div>
 
-        <div id="screen-4" class="screen">
-            <div class="emoji-header" id="emoji-tela4">🍔</div>
-            <h2 id="titulo-tela4">O que vamos comer?</h2>
-            <p>Selecione uma ou mais opções da lista.</p>
-            
-            <div class="grid-options" id="grid-comida"></div>
+        <button class="btn" onclick="validateScreen5()">
+          Concluir Detalhes 🎸
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
 
-            <div class="input-group" id="campo-outros-comida" style="display: none;">
-                <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
-                <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Comida Mexicana, Pastel...">
-            </div>
+      <div id="screen-6" class="screen">
+        <div class="emoji-header" id="emoji-final">🥳</div>
+        <h2 id="titulo-final">Tudo Combinado!</h2>
+        <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
 
-            <button class="btn" onclick="validateScreen4()">Confirmar Opções 🍕</button>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div class="summary-box">
+          <div class="summary-item">
+            📅 <strong>Data:</strong> <span id="sum-date">--</span>
+          </div>
+          <div class="summary-item">
+            ⏰ <strong>Horário:</strong> <span id="sum-time">--</span>
+          </div>
+          <div class="summary-item">
+            🍽️ <strong>Cardápio:</strong> <span id="sum-food">--</span>
+          </div>
+          <div class="summary-item">
+            ✨ <strong>Vibe:</strong> <span id="sum-activity">--</span>
+          </div>
         </div>
 
-        <div id="screen-5" class="screen">
-            <div class="emoji-header" id="emoji-tela5">✨</div>
-            <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
-            <p>Escolha as atividades perfeitas para a ocasião.</p>
-            
-            <div class="grid-options" id="grid-atividade"></div>
+        <p
+          id="status-texto"
+          style="
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+          "
+        ></p>
 
-            <div class="input-group" id="campo-outros-vibe" style="display: none;">
-                <label for="vibe-outros-input">OUTRA PROGRAMAÇÃO:</label>
-                <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Boliche, Luau...">
-            </div>
-
-            <button class="btn" onclick="validateScreen5()">Concluir Detalhes 🎸</button>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
-
-        <div id="screen-6" class="screen">
-            <div class="emoji-header" id="emoji-final">🥳</div>
-            <h2 id="titulo-final">Tudo Combinado!</h2>
-            <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
-            
-            <div class="summary-box">
-                <div class="summary-item">📅 <strong>Data:</strong> <span id="sum-date">--</span></div>
-                <div class="summary-item">⏰ <strong>Horário:</strong> <span id="sum-time">--</span></div>
-                <div class="summary-item">🍽️ <strong>Cardápio:</strong> <span id="sum-food">--</span></div>
-                <div class="summary-item">✨ <strong>Vibe:</strong> <span id="sum-activity">--</span></div>
-            </div>
-
-            <p id="status-texto" style="font-size: 0.85rem; font-weight: bold; color: var(--primary-color); margin-bottom: 20px;"></p>
-
-            <button class="btn" onclick="criarEventoAgenda()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: white; margin-bottom: 12px; box-shadow: none;">Salvar na Agenda 🗓️</button>
-            <button class="btn" onclick="abrirJanelaWhatsApp()">Enviar via WhatsApp 💬</button>
-        </div>
-
+        <button
+          class="btn"
+          onclick="criarEventoAgenda()"
+          style="
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            margin-bottom: 12px;
+            box-shadow: none;
+          "
+        >
+          Salvar na Agenda 🗓️
+        </button>
+        <button class="btn" onclick="abrirJanelaWhatsApp()">
+          Enviar via WhatsApp 💬
+        </button>
+      </div>
     </div>
 
     <script>
-      // ==========================================
+      // ======================================================
+      // VARIÁVEIS GLOBAIS ADICIONAIS
+      // ======================================================
+
+      let tituloPersonalizado = "";
+
+      // ======================================================
       // TELA INICIAL DO CONVITE INDIVIDUAL
-      // ==========================================
+      // ======================================================
 
       function configurarConviteIndividual() {
         nextScreen(0);
 
         document.getElementById("titulo-dinamico").innerHTML =
-          `${nomeDonoDoLink} te convidou para:<br><br><strong>${tituloPersonalizado || "Um momento especial ✨"}</strong><br><br>Você aceita?`;
+          `${nomeDonoDoLink} te convidou para:<br><br>
+            <strong>${tituloPersonalizado || "Um momento especial ✨"}</strong>
+            <br><br>Você aceita?`;
 
         document.getElementById("subtitulo-dinamico").innerText =
           "Só existe uma resposta correta. 😏";
@@ -475,40 +556,36 @@
         document.getElementById("wrapper-input-nome").style.display = "none";
 
         document.getElementById("container-botoes-tela1").innerHTML = `
-        <button class="btn" onclick="aceitarConvite()">
-            SIM 💖
-        </button>
+            <button class="btn" onclick="aceitarConvite()">
+                SIM 💖
+            </button>
 
-        <button
-            id="btn-fugitivo"
-            class="btn"
-            style="
-                margin-top:12px;
-                background:transparent;
-                border:1px solid rgba(255,255,255,.2);
-                box-shadow:none;
-                position:relative;
-            "
-        >
-            NÃO 😅
-        </button>
-    `;
+            <button
+                id="btn-fugitivo"
+                class="btn"
+                style="
+                    margin-top:12px;
+                    background:transparent;
+                    border:1px solid rgba(255,255,255,.2);
+                    box-shadow:none;
+                    position:relative;
+                "
+            >
+                NÃO 😅
+            </button>
+        `;
 
         iniciarBotaoFugitivo();
       }
 
-      // ==========================================
-      // BOTÃO NÃO FUGITIVO
-      // ==========================================
+      // ======================================================
+      // BOTÃO FUGITIVO
+      // ======================================================
 
       function iniciarBotaoFugitivo() {
         const btn = document.getElementById("btn-fugitivo");
 
         if (!btn) return;
-
-        btn.addEventListener("mouseenter", fugir);
-
-        btn.addEventListener("touchstart", fugir);
 
         function fugir() {
           const x = Math.random() * 180 - 90;
@@ -516,19 +593,22 @@
 
           btn.style.transform = `translate(${x}px, ${y}px)`;
         }
+
+        btn.addEventListener("mouseenter", fugir);
+        btn.addEventListener("touchstart", fugir);
       }
 
-      // ==========================================
+      // ======================================================
       // ACEITAR CONVITE
-      // ==========================================
+      // ======================================================
 
       function aceitarConvite() {
         nextScreen(1);
       }
 
-      // ==========================================
-      // CARREGAMENTO DO CONVITE
-      // ==========================================
+      // ======================================================
+      // CARREGAR CONVITE
+      // ======================================================
 
       if (idConvite) {
         fetch(`/api/convite/${idConvite}`)
@@ -575,8 +655,9 @@
             configurarConviteIndividual();
           });
       }
+
       // ======================================================
-      // ABRIR WHATSAPP
+      // WHATSAPP
       // ======================================================
 
       function abrirJanelaWhatsApp() {
@@ -610,9 +691,6 @@ ${dateSelections.food}
 ${dateSelections.activity}
 `;
 
-        // ===========================
-        // CONVITE INDIVIDUAL
-        // ===========================
         if (configTipoConvite === "individual" && whatsappCriadorLink) {
           const numero = whatsappCriadorLink.replace(/\D/g, "");
 
@@ -624,12 +702,6 @@ ${dateSelections.activity}
           return;
         }
 
-        // ===========================
-        // CONVITE EM GRUPO
-        // ===========================
-        // Deixa a pessoa escolher
-        // para quem enviar (inclusive grupos)
-
         window.open(
           `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`,
           "_blank",
@@ -637,7 +709,7 @@ ${dateSelections.activity}
       }
 
       // ======================================================
-      // SALVAR EVENTO NA AGENDA
+      // SALVAR NA AGENDA
       // ======================================================
 
       function criarEventoAgenda() {
@@ -646,11 +718,11 @@ ${dateSelections.activity}
           return;
         }
 
-        const dataInicio = new Date(
+        const inicio = new Date(
           `${dateSelections.date}T${dateSelections.time}`,
         );
 
-        const dataFim = new Date(dataInicio.getTime() + 3 * 60 * 60 * 1000);
+        const fim = new Date(inicio.getTime() + 3 * 60 * 60 * 1000);
 
         function formatICS(data) {
           return data.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -665,36 +737,35 @@ Vibe:
 ${dateSelections.activity}
 
 Criado por:
-${nomeDonoDoLink}
-`;
+${nomeDonoDoLink}`;
 
         const ics = `BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
 SUMMARY:${tituloEvento}
 DESCRIPTION:${descricao}
-DTSTART:${formatICS(dataInicio)}
-DTEND:${formatICS(dataFim)}
+DTSTART:${formatICS(inicio)}
+DTEND:${formatICS(fim)}
 END:VEVENT
 END:VCALENDAR`;
 
-        const blob = new Blob([ics], { type: "text/calendar" });
+        const blob = new Blob([ics], {
+          type: "text/calendar",
+        });
 
         const url = URL.createObjectURL(blob);
 
         const a = document.createElement("a");
 
         a.href = url;
-
         a.download = "evento.ics";
-
         a.click();
 
         URL.revokeObjectURL(url);
       }
 
       // ======================================================
-      // ENVIAR DADOS PARA O BACKEND
+      // ENVIAR BACKEND
       // ======================================================
 
       function enviarDadosBackend() {
@@ -717,11 +788,8 @@ END:VCALENDAR`;
           ehPropostaBase: ehPrimeiroAcessoGrupo,
 
           date: dateSelections.date,
-
           time: dateSelections.time,
-
           food: dateSelections.food,
-
           activity: dateSelections.activity,
         };
 
@@ -744,12 +812,6 @@ END:VCALENDAR`;
             statusBox.innerText = "⚠️ Não foi possível salvar agora.";
           });
       }
-      // ======================================================
-      // VARIÁVEIS GLOBAIS ADICIONAIS
-      // ======================================================
-
-      // Título personalizado definido pelo criador
-      let tituloPersonalizado = "";
 
       // ======================================================
       // ANIMAÇÃO DE FUNDO
@@ -797,14 +859,12 @@ END:VCALENDAR`;
 
           bg.appendChild(item);
 
-          setTimeout(() => {
-            item.remove();
-          }, 9000);
+          setTimeout(() => item.remove(), 9000);
         }, 900);
       }
 
       // ======================================================
-      // AJUSTES FINAIS DA TELA FINAL
+      // RESUMO FINAL
       // ======================================================
 
       function atualizarResumoFinal() {
@@ -823,30 +883,23 @@ END:VCALENDAR`;
       }
 
       // ======================================================
-      // AJUSTES DE COMPATIBILIDADE
+      // INICIALIZAÇÃO
       // ======================================================
 
-      // Garante que o botão padrão não apareça
-      // em convites de grupo.
-
-      if (configTipoConvite === "grupo") {
-        const btnPadrao = document.getElementById("btn-avancar-fluxo-padrao");
-
-        if (btnPadrao) {
-          btnPadrao.style.display = "none";
-        }
-      }
-
-      // ======================================================
-      // INICIALIZAÇÃO DA PÁGINA
-      // ======================================================
-
-      window.addEventListener("load", () => {
+      window.addEventListener("DOMContentLoaded", () => {
         initCoracoesNoBackground();
+
+        if (configTipoConvite === "grupo") {
+          const btn = document.getElementById("btn-avancar-fluxo-padrao");
+
+          if (btn) {
+            btn.style.display = "none";
+          }
+        }
       });
 
       // ======================================================
-      // DEBUG (REMOVER EM PRODUÇÃO)
+      // DEBUG
       // ======================================================
 
       console.log("================================");
