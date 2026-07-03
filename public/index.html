@@ -1,630 +1,741 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Convite Especial</title>
     <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0f051d 0%, #19062a 100%);
-            --primary-color: #ff2a74;
-            --primary-hover: #e0165c;
-            --secondary-bg: rgba(255, 255, 255, 0.05);
-            --text-color: #ffffff;
-            --text-muted: #b5a4be;
-            --card-bg: rgba(23, 11, 39, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
+      :root {
+        --bg-gradient: linear-gradient(135deg, #0f051d 0%, #19062a 100%);
+        --primary-color: #ff2a74;
+        --primary-hover: #e0165c;
+        --secondary-bg: rgba(255, 255, 255, 0.05);
+        --text-color: #ffffff;
+        --text-muted: #b5a4be;
+        --card-bg: rgba(23, 11, 39, 0.6);
+        --border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        background: var(--bg-gradient);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-x: hidden;
+        position: relative;
+        padding: 20px;
+      }
+
+      #hearts-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .heart-particle {
+        position: absolute;
+        font-size: 20px;
+        pointer-events: none;
+        animation: floatUp linear infinite;
+        opacity: 0.6;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(105vh) rotate(0deg) scale(0.8);
+          opacity: 0;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        10% {
+          opacity: 0.6;
         }
-
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            position: relative;
-            padding: 20px;
+        90% {
+          opacity: 0.6;
         }
-
-        #hearts-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 1;
+        100% {
+          transform: translateY(-10vh) rotate(360deg) scale(1.2);
+          opacity: 0;
         }
+      }
 
-        .heart-particle {
-            position: absolute;
-            font-size: 20px;
-            pointer-events: none;
-            animation: floatUp linear infinite;
-            opacity: 0.6;
+      .container {
+        width: 100%;
+        max-width: 440px;
+        z-index: 2;
+        position: relative;
+      }
+
+      .screen {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 35px 25px;
+        text-align: center;
+        box-shadow:
+          0 20px 40px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        display: none;
+        animation: fadeIn 0.4s ease-out forwards;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px) scale(0.98);
         }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(105vh) rotate(0deg) scale(0.8);
-                opacity: 0;
-            }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            100% {
-                transform: translateY(-10vh) rotate(360deg) scale(1.2);
-                opacity: 0;
-            }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
         }
+      }
 
-        .container {
-            width: 100%;
-            max-width: 440px;
-            z-index: 2;
-            position: relative;
+      .emoji-header {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
         }
-
-        .screen {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 35px 25px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            display: none;
-            animation: fadeIn 0.4s ease-out forwards;
+        50% {
+          transform: scale(1.08);
         }
-
-        .screen.active {
-            display: block;
+        100% {
+          transform: scale(1);
         }
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+      h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.3;
+        letter-spacing: -0.5px;
+      }
 
-        .emoji-header {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            animation: pulse 2s infinite ease-in-out;
-        }
+      p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 25px;
+      }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
-        }
+      .input-group {
+        text-align: left;
+        margin-bottom: 20px;
+      }
+      .input-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+      }
 
-        h2 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            line-height: 1.3;
-            letter-spacing: -0.5px;
-        }
+      .input-field {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 14px 16px;
+        border-radius: 14px;
+        color: white;
+        font-size: 0.95rem;
+        transition: all 0.25s;
+      }
 
-        p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
+      .input-field:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 3px rgba(255, 42, 116, 0.2);
+      }
 
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
+      .btn {
+        width: 100%;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 20px rgba(255, 42, 116, 0.3);
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+      }
 
-        .input-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
+      .btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(255, 42, 116, 0.4);
+      }
 
-        .input-field {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px 16px;
-            border-radius: 14px;
-            color: white;
-            font-size: 0.95rem;
-            transition: all 0.25s;
-        }
+      .grid-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .option-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .option-card:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .option-card.selected {
+        background: rgba(255, 42, 116, 0.1);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 15px rgba(255, 42, 116, 0.15);
+      }
+      .option-emoji {
+        font-size: 1.8rem;
+      }
+      .option-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
 
-        .input-field:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(255, 42, 116, 0.2);
-        }
+      .summary-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 25px;
+        text-align: left;
+      }
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .summary-item:last-child {
+        border-bottom: none;
+      }
+      .summary-item span {
+        color: var(--text-muted);
+        font-weight: 500;
+        text-align: right;
+      }
 
-        .btn {
-            width: 100%;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px 20px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 20px rgba(255, 42, 116, 0.3);
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
+      .historico-votos {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+        text-align: left;
+      }
+      .historico-votos h3 {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .linha-voto {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
 
-        .btn:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(255, 42, 116, 0.4);
-        }
+      .box-sugestao {
+        background: rgba(255, 42, 116, 0.05);
+        border: 1px dashed var(--primary-color);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+        text-align: left;
+      }
+      .votacao-container {
+        margin-bottom: 20px;
+      }
+      .voto-opcao-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+      }
+      .voto-opcao-card:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .voto-opcao-card.selected {
+        border-color: var(--primary-color);
+        background: rgba(255, 42, 116, 0.08);
+      }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .grid-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .option-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .option-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .option-card.selected {
-            background: rgba(255, 42, 116, 0.1);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(255, 42, 116, 0.15);
-        }
-
-        .option-emoji { font-size: 1.8rem; }
-        .option-name { font-size: 0.85rem; font-weight: 600; }
-
-        .summary-box {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .summary-item:last-child { border-bottom: none; }
-        .summary-item span { color: var(--text-muted); font-weight: 500; text-align: right; }
-
-        .historico-votos {
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 15px;
-            text-align: left;
-        }
-
-        .historico-votos h3 {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .linha-voto {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-        }
-
-        .box-sugestao {
-            background: rgba(255, 42, 116, 0.05);
-            border: 1px dashed var(--primary-color);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            text-align: left;
-        }
-
-        .votacao-container { margin-bottom: 20px; }
-
-        .voto-opcao-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .voto-opcao-card:hover { background: rgba(255,255,255,0.06); }
-        .voto-opcao-card.selected { border-color: var(--primary-color); background: rgba(255,42,116,0.08); }
-
-        .footer-interact {
-            margin-top: 20px;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.2);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+      .footer-interact {
+        margin-top: 20px;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.2);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="hearts-bg"></div>
 
     <div class="container">
-        <div id="screen-0" class="screen active">
-            <div class="emoji-header" id="emoji-tela0">👋</div>
-            <h2 id="titulo-dinamico">Carregando...</h2>
-            <p id="subtitulo-dinamico">Aguarde enquanto preparamos os detalhes do convite.</p>
+      <div id="screen-0" class="screen active">
+        <div class="emoji-header" id="emoji-tela0">👋</div>
+        <h2 id="titulo-dinamico">Carregando...</h2>
+        <p id="subtitulo-dinamico">
+          Aguarde enquanto preparamos os detalhes do convite.
+        </p>
 
-            <div class="input-group" id="wrapper-input-nome" style="display: none;">
-                <label for="nome-participante-input">SEU NOME:</label>
-                <input type="text" id="nome-participante-input" class="input-field" placeholder="Escreva seu nome aqui...">
-            </div>
-
-            <div id="container-botoes-tela1"></div>
-
-            <div id="lista-outros-votos" class="historico-votos" style="display: none;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box"></div>
-            </div>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div class="input-group" id="wrapper-input-nome" style="display: none">
+          <label for="nome-participante-input">SEU NOME:</label>
+          <input
+            type="text"
+            id="nome-participante-input"
+            class="input-field"
+            placeholder="Escreva seu nome aqui..."
+          />
         </div>
 
-        <div id="screen-1" class="screen">
-            <div class="emoji-header" id="emoji-tela1">🥺</div>
-            <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
-            <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
-            <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
+        <div id="container-botoes-tela1"></div>
 
-        <div id="screen-2" class="screen">
-            <div class="emoji-header" id="emoji-tela2">🍿💖</div>
-            <h2 id="titulo-tela2">O que você acha?</h2>
-            <div id="box-sugestao-container" class="box-sugestao" style="display: none;"></div>
-            <p id="pergunta-voto-texto">O que você acha da proposta?</p>
-            <div id="wrapper-votacao-grupo" class="votacao-container" style="display: none;"></div>
-            <button id="btn-avancar-fluxo-padrao" class="btn" onclick="nextScreen(3)">Avançar 🗓️</button>
-
-            <div id="lista-outros-votos-tela2" class="historico-votos" style="display: none; margin-top: 20px;">
-                <h3>Respostas do Grupo:</h3>
-                <div id="linhas-votos-box-tela2"></div>
-            </div>
-            <div class="footer-interact">Interaja para avançar</div>
+        <div
+          id="lista-outros-votos"
+          class="historico-votos"
+          style="display: none"
+        >
+          <h3>Respostas do Grupo:</h3>
+          <div id="linhas-votos-box"></div>
         </div>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
 
-        <div id="screen-3" class="screen">
-            <div class="emoji-header">📅</div>
-            <h2>Quando fica melhor?</h2>
-            <p>Escolha a melhor data e horário para o rolê acontecer.</p>
-            <div class="input-group">
-                <label for="date-input">DATA:</label>
-                <input type="date" id="date-input" class="input-field">
-            </div>
-            <div class="input-group">
-                <label for="time-input">HORÁRIO:</label>
-                <input type="time" id="time-input" class="input-field">
-            </div>
-            <button class="btn" onclick="validateScreen3()">Definir Horário 🚀</button>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
+      <div id="screen-1" class="screen">
+        <div class="emoji-header" id="emoji-tela1">🥺</div>
+        <h2 id="titulo-tela1">Você recebeu um convite especial!</h2>
+        <p>Clique abaixo para ver a proposta e confirmar os detalhes.</p>
+        <button class="btn" onclick="nextScreen(2)">Bora ver! 🔥</button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
 
-        <div id="screen-4" class="screen">
-            <div class="emoji-header" id="emoji-tela4">🍔</div>
-            <h2 id="titulo-tela4">O que vamos comer?</h2>
-            <p>Selecione uma ou mais opções da lista.</p>
-            <div class="grid-options" id="grid-comida"></div>
-            <div class="input-group" id="campo-outros-comida" style="display: none;">
-                <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
-                <input type="text" id="comida-outros-input" class="input-field" placeholder="Ex: Comida Mexicana, Pastel...">
-            </div>
-            <button class="btn" onclick="validateScreen4()">Confirmar Opções 🍕</button>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
+      <div id="screen-2" class="screen">
+        <div class="emoji-header" id="emoji-tela2">🍿💖</div>
+        <h2 id="titulo-tela2">O que você acha?</h2>
+        <div
+          id="box-sugestao-container"
+          class="box-sugestao"
+          style="display: none"
+        ></div>
+        <p id="pergunta-voto-texto">O que você acha da proposta?</p>
 
-        <div id="screen-5" class="screen">
-            <div class="emoji-header" id="emoji-tela5">✨</div>
-            <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
-            <p>Escolha as atividades perfeitas para a ocasião.</p>
-            <div class="grid-options" id="grid-atividade"></div>
-            <div class="input-group" id="campo-outros-vibe" style="display: none;">
-                <label for="vibe-outros-input">OUTRA PROGRAMAÇÃO:</label>
-                <input type="text" id="vibe-outros-input" class="input-field" placeholder="Ex: Boliche, Luau...">
-            </div>
-            <button class="btn" onclick="validateScreen5()">Concluir Detalhes 🎸</button>
-            <div class="footer-interact">Interaja para avançar</div>
-        </div>
+        <div
+          id="wrapper-votacao-grupo"
+          class="votacao-container"
+          style="display: none"
+        ></div>
 
-        <div id="screen-6" class="screen">
-            <div class="emoji-header" id="emoji-final">🥳</div>
-            <h2 id="titulo-final">Tudo Combinado!</h2>
-            <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
-            <div class="summary-box">
-                <div class="summary-item">📅 <strong>Data:</strong> <span id="sum-date">--</span></div>
-                <div class="summary-item">⏰ <strong>Horário:</strong> <span id="sum-time">--</span></div>
-                <div class="summary-item">🍽️ <strong>Cardápio:</strong> <span id="sum-food">--</span></div>
-                <div class="summary-item">✨ <strong>Vibe:</strong> <span id="sum-activity">--</span></div>
-            </div>
-            <p id="status-texto" style="font-size: 0.85rem; font-weight: bold; color: var(--primary-color); margin-bottom: 20px;"></p>
-            <button class="btn" onclick="criarEventoAgenda()" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: white; margin-bottom: 12px; box-shadow: none;">Salvar na Agenda 🗓️</button>
-            <button class="btn" onclick="abrirJanelaWhatsApp()">Enviar via WhatsApp 💬</button>
+        <button
+          id="btn-avancar-fluxo-padrao"
+          class="btn"
+          onclick="nextScreen(3)"
+        >
+          Avançar 🗓️
+        </button>
+
+        <div
+          id="lista-outros-votos-tela2"
+          class="historico-votos"
+          style="display: none; margin-top: 20px"
+        >
+          <h3>Respostas do Grupo:</h3>
+          <div id="linhas-votos-box-tela2"></div>
         </div>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-3" class="screen">
+        <div class="emoji-header">📅</div>
+        <h2>Quando fica melhor?</h2>
+        <p>Escolha a melhor data e horário para o rolê acontecer.</p>
+        <div class="input-group">
+          <label for="date-input">DATA:</label>
+          <input type="date" id="date-input" class="input-field" />
+        </div>
+        <div class="input-group">
+          <label for="time-input">HORÁRIO:</label>
+          <input type="time" id="time-input" class="input-field" />
+        </div>
+        <button class="btn" onclick="validateScreen3()">
+          Definir Horário 🚀
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-4" class="screen">
+        <div class="emoji-header" id="emoji-tela4">🍔</div>
+        <h2 id="titulo-tela4">O que vamos comer?</h2>
+        <p>Selecione uma ou mais opções da lista.</p>
+        <div class="grid-options" id="grid-comida"></div>
+        <div class="input-group" id="campo-outros-comida" style="display: none">
+          <label for="comida-outros-input">OUTRA SUGESTÃO:</label>
+          <input
+            type="text"
+            id="comida-outros-input"
+            class="input-field"
+            placeholder="Ex: Comida Mexicana, Pastel..."
+          />
+        </div>
+        <button class="btn" onclick="validateScreen4()">
+          Confirmar Opções 🍕
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-5" class="screen">
+        <div class="emoji-header" id="emoji-tela5">✨</div>
+        <h2 id="titulo-tela5">Qual vai ser a vibe?</h2>
+        <p>Escolha as atividades perfeitas para a ocasião.</p>
+        <div class="grid-options" id="grid-atividade"></div>
+        <div class="input-group" id="campo-outros-vibe" style="display: none">
+          <label for="vibe-outros-input">OUTRA PROGRAMAÇÃO:</label>
+          <input
+            type="text"
+            id="vibe-outros-input"
+            class="input-field"
+            placeholder="Ex: Boliche, Luau..."
+          />
+        </div>
+        <button class="btn" onclick="validateScreen5()">
+          Concluir Detalhes 🎸
+        </button>
+        <div class="footer-interact">Interaja para avançar</div>
+      </div>
+
+      <div id="screen-6" class="screen">
+        <div class="emoji-header" id="emoji-final">🥳</div>
+        <h2 id="titulo-final">Tudo Combinado!</h2>
+        <p id="subtitulo-final">Aqui está o resumo da sua escolha:</p>
+        <div class="summary-box">
+          <div class="summary-item">
+            📅 <strong>Data:</strong> <span id="sum-date">--</span>
+          </div>
+          <div class="summary-item">
+            ⏰ <strong>Horário:</strong> <span id="sum-time">--</span>
+          </div>
+          <div class="summary-item">
+            🍽️ <strong>Cardápio:</strong> <span id="sum-food">--</span>
+          </div>
+          <div class="summary-item">
+            ✨ <strong>Vibe:</strong> <span id="sum-activity">--</span>
+          </div>
+        </div>
+        <p
+          id="status-texto"
+          style="
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+          "
+        ></p>
+        <button
+          class="btn"
+          onclick="criarEventoAgenda()"
+          style="
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            margin-bottom: 12px;
+            box-shadow: none;
+          "
+        >
+          Salvar na Agenda 🗓️
+        </button>
+        <button class="btn" onclick="abrirJanelaWhatsApp()">
+          Enviar via WhatsApp 💬
+        </button>
+      </div>
     </div>
     <script>
-        // BANCO DE DADOS LOCAL DE CARDÁPIOS E ATIVIDADES
-        const OPCOES_COMIDA = {
-            date: [
-                { id: "japones", nome: "Japonês", emoji: "🍣" },
-                { id: "pizza", nome: "Pizza", emoji: "🍕" },
-                { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
-                { id: "italiano", nome: "Massas / Italiano", emoji: "🍝" },
-                { id: "fondue", nome: "Fondue", emoji: "🫕" },
-                { id: "outros", nome: "Outro...", emoji: "❓" }
-            ],
-            role: [
-                { id: "churrasco", nome: "Churrasco", emoji: "🍖" },
-                { id: "pizza", nome: "Pizza", emoji: "🍕" },
-                { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
-                { id: "comidaboteco", nome: "Comida de Boteco", emoji: "🍟" },
-                { id: "outros", nome: "Outro...", emoji: "❓" }
-            ]
-        };
+      const OPCOES_COMIDA = {
+        date: [
+          { id: "japones", nome: "Japonês", emoji: "🍣" },
+          { id: "pizza", nome: "Pizza", emoji: "🍕" },
+          { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
+          { id: "italiano", nome: "Massas / Italiano", emoji: "🍝" },
+          { id: "fondue", nome: "Fondue", emoji: "🫕" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        role: [
+          { id: "churrasco", nome: "Churrasco", emoji: "🍖" },
+          { id: "pizza", nome: "Pizza", emoji: "🍕" },
+          { id: "hamburguer", nome: "Hambúrguer", emoji: "🍔" },
+          { id: "comidaboteco", nome: "Comida de Boteco", emoji: "🍟" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+      };
 
-        const OPCOES_ATIVIDADE = {
-            date: [
-                { id: "cinema", nome: "Cinema", emoji: "🎬" },
-                { id: "netflix", nome: "Filme em Casa", emoji: "🍿" },
-                { id: "jantar", nome: "Restaurante", emoji: "✨" },
-                { id: "passeio", nome: "Passeio ao Ar Livre", emoji: "🌳" },
-                { id: "jogos", nome: "Jogos / Arcade", emoji: "🎮" },
-                { id: "outros", nome: "Outro...", emoji: "❓" }
-            ],
-            role: [
-                { id: "festa", nome: "Festa / Balada", emoji: "🎉" },
-                { id: "barzinho", nome: "Barzinho", emoji: "🍻" },
-                { id: "jogos", nome: "Noite de Jogos", emoji: "🎲" },
-                { id: "resenha", nome: "Resenha em Casa", emoji: "🏡" },
-                { id: "outros", nome: "Outro...", emoji: "❓" }
-            ]
-        };
+      const OPCOES_ATIVIDADE = {
+        date: [
+          { id: "cinema", nome: "Cinema", emoji: "🎬" },
+          { id: "netflix", nome: "Filme em Casa", emoji: "🍿" },
+          { id: "jantar", nome: "Restaurante", emoji: "✨" },
+          { id: "passeio", nome: "Passeio ao Ar Livre", emoji: "🌳" },
+          { id: "jogos", nome: "Jogos / Arcade", emoji: "🎮" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+        role: [
+          { id: "festa", nome: "Festa / Balada", emoji: "🎉" },
+          { id: "barzinho", nome: "Barzinho", emoji: "🍻" },
+          { id: "jogos", nome: "Noite de Jogos", emoji: "🎲" },
+          { id: "resenha", nome: "Resenha em Casa", emoji: "🏡" },
+          { id: "outros", nome: "Outro...", emoji: "❓" },
+        ],
+      };
 
-        // VARIÁVEIS GLOBAIS DE CONTROLE DE FLUXO (Sem declarações duplicadas!)
-        let selectedFoods = [];
-        let selectedActivities = [];
-        let dateSelections = { date: "", time: "", food: "", activity: "" };
+      let selectedFoods = [];
+      let selectedActivities = [];
+      let dateSelections = { date: "", time: "", food: "", activity: "" };
 
-        let tipoOcasiao = "date";
-        let nomeDonoDoLink = "Alguém";
-        let whatsappCriadorLink = "";
-        let configTipoConvite = "individual";
-        let nomeDoParticipanteAtual = "";
-        let propostaPrincipalSalva = null;
-        let ehPrimeiroAcessoGrupo = false;
-        let tituloPersonalizado = "";
+      let tipoOcasiao = "date";
+      let nomeDonoDoLink = "Alguém";
+      let whatsappCriadorLink = "";
+      let configTipoConvite = "individual";
+      let nomeDoParticipanteAtual = "";
+      let propostaPrincipalSalva = null;
+      let tituloPersonalizado = "";
 
-        let conviteId = "";
-        let dadosConvite = null;
-        let nomeVisitante = "";
+      let conviteId = "";
+      let dadosConvite = null;
 
-        // FUNÇÃO DE NAVEGAÇÃO ENTRE TELAS (CORRIGIDA E TESTADA)
-        function nextScreen(proximaFase) {
-            console.log("Navegando para a fase: screen-" + proximaFase);
-            
-            // Remove a classe active de todas as screens
-            const telas = document.querySelectorAll('.screen');
-            telas.forEach(t => t.classList.remove('active'));
+      function nextScreen(proximaFase) {
+        console.log("Navegando para: screen-" + proximaFase);
+        const telas = document.querySelectorAll(".screen");
+        telas.forEach((t) => t.classList.remove("active"));
 
-            // Mostra a tela desejada adicionando a classe active
-            const proximaTela = document.getElementById('screen-' + proximaFase);
-            if (proximaTela) {
-                proximaTela.classList.add('active');
-            } else {
-                console.error("Erro: A tela 'screen-" + proximaFase + "' não existe no HTML.");
-            }
+        const proximaTela = document.getElementById("screen-" + proximaFase);
+        if (proximaTela) {
+          proximaTela.classList.add("active");
+        }
+      }
+
+      function initCoracoesNoBackground() {
+        const bg = document.getElementById("hearts-bg");
+        if (!bg) return;
+        const emojis = ["❤️", "💖", "✨", "💕", "💘"];
+        setInterval(() => {
+          const p = document.createElement("div");
+          p.className = "heart-particle";
+          p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+          p.style.left = Math.random() * 100 + "vw";
+          p.style.animationDuration = Math.random() * 3 + 3 + "s";
+          bg.appendChild(p);
+          setTimeout(() => p.remove(), 6000);
+        }, 400);
+      }
+
+      async function carregarDadosDoConvite() {
+        const params = new URLSearchParams(window.location.search);
+        conviteId = params.get("id");
+
+        if (!conviteId) {
+          console.log("Modo de teste local.");
+          configurarConviteIndividual();
+          return;
         }
 
-        // ANIMAÇÃO DE BACKGROUND
-        function initCoracoesNoBackground() {
-            const bg = document.getElementById("hearts-bg");
-            if (!bg) return;
-            const emojis = ["❤️", "💖", "✨", "💕", "💘"];
-            setInterval(() => {
-                const p = document.createElement("div");
-                p.className = "heart-particle";
-                p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                p.style.left = Math.random() * 100 + "vw";
-                p.style.animationDuration = Math.random() * 3 + 3 + "s";
-                bg.appendChild(p);
-                setTimeout(() => p.remove(), 6000);
-            }, 400);
+        try {
+          const res = await fetch(
+            `https://convite-especial-mx7p.onrender.com/api/convite/${conviteId}`,
+          );
+          if (!res.ok) throw new Error("Falha ao carregar.");
+
+          dadosConvite = await res.json();
+          nomeDonoDoLink = dadosConvite.criador || "Alguém";
+          whatsappCriadorLink = dadosConvite.whatsapp || "";
+          tipoOcasiao = dadosConvite.ocasiao || "date";
+          configTipoConvite = dadosConvite.tipo || "individual";
+          tituloPersonalizado = dadosConvite.tituloPersonalizado || "";
+          propostaPrincipalSalva = dadosConvite.propostaPrincipal || null;
+
+          renderizarGridsDeOpcoes();
+
+          if (configTipoConvite === "grupo") {
+            configurarInterfaceGrupo(dadosConvite.respostas || []);
+          } else {
+            configurarConviteIndividual();
+          }
+        } catch (err) {
+          console.error(err);
+          document.getElementById("titulo-dinamico").innerText =
+            "Erro ao Carregar";
         }
+      }
 
-        // BUSCA DADOS NA API DO RENDER
-        async function carregarDadosDoConvite() {
-            const params = new URLSearchParams(window.location.search);
-            conviteId = params.get("id");
+      function configurarConviteIndividual() {
+        configTipoConvite = "individual";
 
-            if (!conviteId) {
-                console.log("Modo de teste local ativado.");
-                configTipoConvite = "individual";
-                configurarConviteIndividual();
-                return;
-            }
+        // Define cabeçalhos da Tela 0 com nome e ocasião
+        const acaoTexto =
+          tipoOcasiao === "date"
+            ? "um encontro inesquecível"
+            : "um rolê sensacional";
+        document.getElementById("titulo-dinamico").innerHTML =
+          `<strong>${nomeDonoDoLink}</strong> te convidou para ${acaoTexto}! <br><br> ${tituloPersonalizado || "Vamos nessa? ✨"}`;
+        document.getElementById("subtitulo-dinamico").innerText =
+          "Escolha com sabedoria. 😏";
 
-            try {
-                const res = await fetch(`https://convite-especial-mx7p.onrender.com/api/convite/${conviteId}`);
-                if (!res.ok) throw new Error("Falha ao buscar convite.");
-                
-                dadosConvite = await res.json();
-                nomeDonoDoLink = dadosConvite.criador || "Alguém";
-                whatsappCriadorLink = dadosConvite.whatsapp || "";
-                tipoOcasiao = dadosConvite.ocasiao || "date";
-                configTipoConvite = dadosConvite.tipo || "individual";
-                tituloPersonalizado = dadosConvite.tituloPersonalizado || "";
-                propostaPrincipalSalva = dadosConvite.propostaPrincipal || null;
+        document.getElementById("wrapper-input-nome").style.display = "none";
+        document.getElementById("lista-outros-votos").style.display = "none";
+        document.getElementById("lista-outros-votos-tela2").style.display =
+          "none";
+        document.getElementById("wrapper-votacao-grupo").style.display = "none";
 
-                renderizarGridsDeOpcoes();
+        const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
+        if (btnAvancar) btnAvancar.style.display = "block";
 
-                if (configTipoConvite === "grupo") {
-                    configurarInterfaceGrupo(dadosConvite.respostas || []);
-                } else {
-                    configurarConviteIndividual();
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById("titulo-dinamico").innerText = "Erro ao Carregar";
-                document.getElementById("subtitulo-dinamico").innerText = "Não encontramos os dados desse convite.";
-            }
-        }
-
-        // CONFIGURA FLUXO INDIVIDUAL EXCLUSIVO (CORRIGIDO)
-        function configurarConviteIndividual() {
-            console.log("Configurando interface para: INDIVIDUAL");
-            configTipoConvite = "individual";
-
-            document.getElementById("titulo-dinamico").innerHTML = 
-                `${nomeDonoDoLink} te convidou para:<br><br><strong>${tituloPersonalizado || "Um momento especial ✨"}</strong><br><br>Você aceita?`;
-            document.getElementById("subtitulo-dinamico").innerText = "Só existe uma resposta correta. 😏";
-
-            // Oculta tudo que é de grupo de forma agressiva
-            document.getElementById("wrapper-input-nome").style.display = "none";
-            document.getElementById("lista-outros-votos").style.display = "none";
-            document.getElementById("lista-outros-votos-tela2").style.display = "none";
-            document.getElementById("wrapper-votacao-grupo").style.display = "none";
-
-            // Garante visibilidade do botão avançar padrão se o usuário aceitar
-            const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
-            if (btnAvancar) btnAvancar.style.display = "block";
-
-            // Monta botões SIM e o NÃO fugitivo
-            document.getElementById("container-botoes-tela1").innerHTML = `
+        document.getElementById("container-botoes-tela1").innerHTML = `
                 <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
                     <button class="btn" onclick="aceitarConvite()">SIM 💖</button>
                     <button id="btn-fugitivo" class="btn" style="background:transparent; border:1px solid rgba(255,255,255,0.2); box-shadow:none; position:relative;">NÃO 😅</button>
                 </div>
             `;
-            iniciarBotaoFugitivo();
-        }
+        iniciarBotaoFugitivo();
+      }
 
-        // CONFIGURA FLUXO DE GRUPO INTEGRALMENTE (MANTIDO HISTÓRICO ORIGINAL)
-        function configurarInterfaceGrupo(respostas) {
-            console.log("Configurando interface para: GRUPO");
-            configTipoConvite = "grupo";
+      function aceitarConvite() {
+        console.log(
+          "Individual aceito. Alterando Tela 2 com frase divertida e pulando direto.",
+        );
 
-            // Esconde botão individual de avanço imediato na Tela 2 para priorizar a votação
-            const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
-            if (btnAvancar) btnAvancar.style.display = "none";
+        // Aplica os textos divertidos pedidos para a Tela 2 do Individual
+        document.getElementById("emoji-tela2").innerText = "😜💥";
+        document.getElementById("titulo-tela2").innerText = "Você disse sim?!";
+        document.getElementById("pergunta-voto-texto").innerText =
+          "Esperava que você dissesse não... Mas já que aceitou, clica em avançar!";
 
-            document.getElementById("titulo-dinamico").innerHTML = `Participe do evento de <strong>${nomeDonoDoLink}</strong>!`;
-            document.getElementById("subtitulo-dinamico").innerText = "Insira o seu nome abaixo para entrar no grupo e votar nas opções.";
+        // PULA A TELA 1 DIRETO PARA A TELA 2 MODIFICADA!
+        nextScreen(2);
+      }
 
-            document.getElementById("wrapper-input-nome").style.display = "block";
-            document.getElementById("lista-outros-votos").style.display = "block";
-            document.getElementById("lista-outros-votos-tela2").style.display = "block";
-            document.getElementById("wrapper-votacao-grupo").style.display = "block";
+      function configurarInterfaceGrupo(respostas) {
+        configTipoConvite = "grupo";
 
-            document.getElementById("container-botoes-tela1").innerHTML = `
+        const btnAvancar = document.getElementById("btn-avancar-fluxo-padrao");
+        if (btnAvancar) btnAvancar.style.display = "none";
+
+        document.getElementById("titulo-dinamico").innerHTML =
+          `Participe do evento de <strong>${nomeDonoDoLink}</strong>!`;
+        document.getElementById("subtitulo-dinamico").innerText =
+          "Entre com seu nome para votar nas opções com o grupo.";
+
+        document.getElementById("wrapper-input-nome").style.display = "block";
+        document.getElementById("lista-outros-votos").style.display = "block";
+        document.getElementById("lista-outros-votos-tela2").style.display =
+          "block";
+        document.getElementById("wrapper-votacao-grupo").style.display =
+          "block";
+
+        document.getElementById("container-botoes-tela1").innerHTML = `
                 <button class="btn" onclick="validarIngressoGrupo()">Entrar e Ver Propostas 🚀</button>
             `;
 
-            atualizarBoxVotosGrupo(respostas);
-            renderizarLugarDeVotarGrupo();
+        atualizarBoxVotosGrupo(respostas);
+        renderizarLugarDeVotarGrupo();
+      }
+
+      function validarIngressoGrupo() {
+        const inputNome = document.getElementById("nome-participante-input");
+        if (!inputNome || !inputNome.value.trim()) {
+          alert("Por favor, digite o seu nome para continuar!");
+          return;
+        }
+        nomeDoParticipanteAtual = inputNome.value.trim();
+
+        // Grupo passa pela Tela 1 tradicional normalmente
+        nextScreen(1);
+      }
+
+      function atualizarBoxVotosGrupo(respostas) {
+        const box1 = document.getElementById("linhas-votos-box");
+        const box2 = document.getElementById("linhas-votos-box-tela2");
+        if (!box1 || !box2) return;
+
+        if (respostas.length === 0) {
+          const emptyMsg =
+            "<p style='font-size:0.8rem; margin:0;'>Ninguém votou ainda!</p>";
+          box1.innerHTML = emptyMsg;
+          box2.innerHTML = emptyMsg;
+          return;
         }
 
-        function validarIngressoGrupo() {
-            const inputNome = document.getElementById("nome-participante-input");
-            if (!inputNome || !inputNome.value.trim()) {
-                alert("Por favor, digite o seu nome para continuar!");
-                return;
-            }
-            nomeDoParticipanteAtual = inputNome.value.trim();
-            nextScreen(1);
+        let html = "";
+        respostas.forEach((r) => {
+          const status = r.votoConcorda ? "Topou! ✅" : "Recusou ❌";
+          html += `<div class="linha-voto"><strong>${r.nomeParticipante}</strong> <span>${status}</span></div>`;
+        });
+        box1.innerHTML = html;
+        box2.innerHTML = html;
+      }
+
+      function renderizarLugarDeVotarGrupo() {
+        const containerVotacao = document.getElementById(
+          "wrapper-votacao-grupo",
+        );
+        if (!containerVotacao) return;
+
+        if (propostaPrincipalSalva) {
+          document.getElementById("box-sugestao-container").style.display =
+            "block";
+          document.getElementById("box-sugestao-container").innerHTML =
+            `💡 <strong>Proposta de ${nomeDonoDoLink}:</strong> ${propostaPrincipalSalva}`;
         }
 
-        function atualizarBoxVotosGrupo(respostas) {
-            const box1 = document.getElementById("linhas-votos-box");
-            const box2 = document.getElementById("linhas-votos-box-tela2");
-            if (!box1 || !box2) return;
-
-            if (respostas.length === 0) {
-                box1.innerHTML = "<p style='font-size:0.8rem; margin:0;'>Ninguém respondeu ainda. Seja o primeiro!</p>";
-                box2.innerHTML = "<p style='font-size:0.8rem; margin:0;'>Ninguém respondeu ainda. Seja o primeiro!</p>";
-                return;
-            }
-
-            let html = "";
-            respostas.forEach(r => {
-                const status = r.votoConcorda ? "Topou! ✅" : "Recusou ❌";
-                html += `<div class="linha-voto"><strong>${r.nomeParticipante}</strong> <span>${status}</span></div>`;
-            });
-
-            box1.innerHTML = html;
-            box2.innerHTML = html;
-        }
-
-        function renderizarLugarDeVotarGrupo() {
-            const containerVotacao = document.getElementById("wrapper-votacao-grupo");
-            if (!containerVotacao) return;
-
-            if (propostaPrincipalSalva) {
-                document.getElementById("box-sugestao-container").style.display = "block";
-                document.getElementById("box-sugestao-container").innerHTML = `💡 <strong>Proposta do Pedro:</strong> ${propostaPrincipalSalva}`;
-            }
-
-            containerVotacao.innerHTML = `
+        containerVotacao.innerHTML = `
                 <div class="voto-opcao-card" id="voto-grupo-sim" onclick="votarPropostaGrupo(true)">
                     <span>Amei, topo muito! 😍</span>
                     <span id="contagem-sim-badge" style="font-weight:bold; color:var(--primary-color);"></span>
@@ -634,210 +745,240 @@
                     <span id="contagem-nao-badge" style="font-weight:bold; color:var(--text-muted);"></span>
                 </div>
             `;
+        calcularContagemVotosGrupo();
+      }
+
+      async function votarPropostaGrupo(concorda) {
+        document.getElementById("voto-grupo-sim").classList.remove("selected");
+        document.getElementById("voto-grupo-nao").classList.remove("selected");
+
+        if (concorda)
+          document.getElementById("voto-grupo-sim").classList.add("selected");
+        else
+          document.getElementById("voto-grupo-nao").classList.add("selected");
+
+        if (!conviteId) {
+          setTimeout(() => nextScreen(3), 1500);
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `https://convite-especial-mx7p.onrender.com/api/convite/${conviteId}/votar`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                nomeParticipante: nomeDoParticipanteAtual,
+                concorda: concorda,
+              }),
+            },
+          );
+          const dadosAtualizados = await res.json();
+          if (dadosAtualizados && dadosAtualizados.respostas) {
+            atualizarBoxVotosGrupo(dadosAtualizados.respostas);
+            dadosConvite.respostas = dadosAtualizados.respostas;
             calcularContagemVotosGrupo();
+          }
+          setTimeout(() => nextScreen(3), 2000);
+        } catch (err) {
+          console.error(err);
+          nextScreen(3);
+        }
+      }
+
+      function calcularContagemVotosGrupo() {
+        if (!dadosConvite || !dadosConvite.respostas) return;
+        const sim = dadosConvite.respostas.filter((r) => r.votoConcorda).length;
+        const nao = dadosConvite.respostas.filter(
+          (r) => !r.votoConcorda,
+        ).length;
+
+        const bSim = document.getElementById("contagem-sim-badge");
+        const bNao = document.getElementById("contagem-nao-badge");
+        if (bSim) bSim.innerText = sim > 0 ? `(${sim})` : "";
+        if (bNao) bNao.innerText = nao > 0 ? `(${nao})` : "";
+      }
+
+      function iniciarBotaoFugitivo() {
+        const btn = document.getElementById("btn-fugitivo");
+        if (!btn) return;
+        const fugir = () => {
+          const x = Math.random() * 240 - 120;
+          const y = Math.random() * 160 - 80;
+          btn.style.transform = `translate(${x}px, ${y}px)`;
+        };
+        btn.addEventListener("mouseover", fugir);
+        btn.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          fugir();
+        });
+      }
+
+      function renderizarGridsDeOpcoes() {
+        const comidaGrid = document.getElementById("grid-comida");
+        const atividadeGrid = document.getElementById("grid-atividade");
+        if (!comidaGrid || !atividadeGrid) return;
+
+        const listaComidas =
+          OPCOES_COMIDA[tipoOcasiao] || OPCOES_COMIDA["date"];
+        const listaAtividades =
+          OPCOES_ATIVIDADE[tipoOcasiao] || OPCOES_ATIVIDADE["date"];
+
+        if (tipoOcasiao === "role") {
+          document.getElementById("emoji-tela4").innerText = "🍻";
+          document.getElementById("titulo-tela4").innerText =
+            "O que vamos mandar de rango?";
+          document.getElementById("emoji-tela5").innerText = "🎸";
+          document.getElementById("titulo-tela5").innerText =
+            "Qual vai ser a programação?";
         }
 
-        async function votarPropostaGrupo(concorda) {
-            document.getElementById("voto-grupo-sim").classList.remove("selected");
-            document.getElementById("voto-grupo-nao").classList.remove("selected");
-
-            if (concorda) {
-                document.getElementById("voto-grupo-sim").classList.add("selected");
-            } else {
-                document.getElementById("voto-grupo-nao").classList.add("selected");
-            }
-
-            if (!conviteId) {
-                alert("Modo teste: Voto computado localmente!");
-                nextScreen(3);
-                return;
-            }
-
-            try {
-                const res = await fetch(`https://convite-especial-mx7p.onrender.com/api/convite/${conviteId}/votar`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nomeParticipante: nomeDoParticipanteAtual, concorda: concorda })
-                });
-                const dadosAtualizados = await res.json();
-                if (dadosAtualizados && dadosAtualizados.respostas) {
-                    atualizarBoxVotosGrupo(dadosAtualizados.respostas);
-                    dadosConvite.respostas = dadosAtualizados.respostas;
-                    calcularContagemVotosGrupo();
-                }
-                setTimeout(() => nextScreen(3), 6000);
-            } catch (err) {
-                console.error(err);
-                nextScreen(3);
-            }
-        }
-
-        function calcularContagemVotosGrupo() {
-            if (!dadosConvite || !dadosConvite.respostas) return;
-            const sim = dadosConvite.respostas.filter(r => r.votoConcorda).length;
-            const nao = dadosConvite.respostas.filter(r => !r.votoConcorda).length;
-
-            const bSim = document.getElementById("contagem-sim-badge");
-            const bNao = document.getElementById("contagem-nao-badge");
-            if (bSim) bSim.innerText = sim > 0 ? `(${sim})` : "";
-            if (bNao) bNao.innerText = nao > 0 ? `(${nao})` : "";
-        }
-
-        function aceitarConvite() {
-            console.log("Convite individual aceito.");
-            nextScreen(1);
-        }
-
-        // CONTROLADOR DO BOTÃO FUGITIVO
-        function iniciarBotaoFugitivo() {
-            const btn = document.getElementById("btn-fugitivo");
-            if (!btn) return;
-            const fugir = () => {
-                const x = Math.random() * 240 - 120;
-                const y = Math.random() * 160 - 80;
-                btn.style.transform = `translate(${x}px, ${y}px)`;
-            };
-            btn.addEventListener("mouseover", fugir);
-            btn.addEventListener("touchstart", (e) => { e.preventDefault(); fugir(); });
-            btn.addEventListener("click", () => alert("Como você clicou aqui?! 😮 De qualquer forma, o SIM é a escolha certa!"));
-        }
-
-        // RENDERIZAÇÃO DOS ENUMS DE OPÇÕES
-        function renderizarGridsDeOpcoes() {
-            const comidaGrid = document.getElementById("grid-comida");
-            const atividadeGrid = document.getElementById("grid-atividade");
-            if (!comidaGrid || !atividadeGrid) return;
-
-            const listaComidas = OPCOES_COMIDA[tipoOcasiao] || OPCOES_COMIDA["date"];
-            const listaAtividades = OPCOES_ATIVIDADE[tipoOcasiao] || OPCOES_ATIVIDADE["date"];
-
-            // Títulos customizados baseados no tema
-            if (tipoOcasiao === "role") {
-                document.getElementById("emoji-tela4").innerText = "🍻";
-                document.getElementById("titulo-tela4").innerText = "O que vamos mandar de rango?";
-                document.getElementById("emoji-tela5").innerText = "🎸";
-                document.getElementById("titulo-tela5").innerText = "Qual vai ser a programação?";
-            }
-
-            comidaGrid.innerHTML = listaComidas.map(item => `
+        comidaGrid.innerHTML = listaComidas
+          .map(
+            (item) => `
                 <div class="option-card" id="food-${item.id}" onclick="toggleFood('${item.id}', '${item.nome}')">
                     <div class="option-emoji">${item.emoji}</div>
                     <div class="option-name">${item.nome}</div>
                 </div>
-            `).join("");
+            `,
+          )
+          .join("");
 
-            atividadeGrid.innerHTML = listaAtividades.map(item => `
+        atividadeGrid.innerHTML = listaAtividades
+          .map(
+            (item) => `
                 <div class="option-card" id="activity-${item.id}" onclick="toggleActivity('${item.id}', '${item.nome}')">
                     <div class="option-emoji">${item.emoji}</div>
                     <div class="option-name">${item.nome}</div>
                 </div>
-            `).join("");
+            `,
+          )
+          .join("");
+      }
+
+      function toggleFood(id, nome) {
+        const el = document.getElementById(`food-${id}`);
+        if (selectedFoods.includes(nome)) {
+          selectedFoods = selectedFoods.filter((f) => f !== nome);
+          el.classList.remove("selected");
+        } else {
+          selectedFoods.push(nome);
+          el.classList.add("selected");
         }
+        document.getElementById("campo-outros-comida").style.display =
+          selectedFoods.includes("Outro...") ? "block" : "none";
+      }
 
-        function toggleFood(id, nome) {
-            const el = document.getElementById(`food-${id}`);
-            if (selectedFoods.includes(nome)) {
-                selectedFoods = selectedFoods.filter(f => f !== nome);
-                el.classList.remove("selected");
-            } else {
-                selectedFoods.push(nome);
-                el.classList.add("selected");
-            }
-            document.getElementById("campo-outros-comida").style.display = selectedFoods.includes("Outro...") ? "block" : "none";
+      function toggleActivity(id, nome) {
+        const el = document.getElementById(`activity-${id}`);
+        if (selectedActivities.includes(nome)) {
+          selectedActivities = selectedActivities.filter((a) => a !== nome);
+          el.classList.remove("selected");
+        } else {
+          selectedActivities.push(nome);
+          el.classList.add("selected");
         }
+        document.getElementById("campo-outros-vibe").style.display =
+          selectedActivities.includes("Outro...") ? "block" : "none";
+      }
 
-        function toggleActivity(id, nome) {
-            const el = document.getElementById(`activity-${id}`);
-            if (selectedActivities.includes(nome)) {
-                selectedActivities = selectedActivities.filter(a => a !== nome);
-                el.classList.remove("selected");
-            } else {
-                selectedActivities.push(nome);
-                el.classList.add("selected");
-            }
-            document.getElementById("campo-outros-vibe").style.display = selectedActivities.includes("Outro...") ? "block" : "none";
+      function validateScreen3() {
+        const d = document.getElementById("date-input").value;
+        const t = document.getElementById("time-input").value;
+        if (!d || !t) {
+          alert("Escolha uma data e horário válidos! 📅");
+          return;
         }
+        dateSelections.date = d;
+        dateSelections.time = t;
+        nextScreen(4);
+      }
 
-        // VALIDAÇÕES DE TELAS (CORRIGIDAS PARA AVANÇAR SEMPRE PELO NEXTSCREEN)
-        function validateScreen3() {
-            const d = document.getElementById("date-input").value;
-            const t = document.getElementById("time-input").value;
-            if (!d || !t) { alert("Escolha uma data e horário válidos! 📅"); return; }
-            
-            dateSelections.date = d;
-            dateSelections.time = t;
-            nextScreen(4);
+      function validateScreen4() {
+        if (selectedFoods.length === 0) {
+          alert("Selecione pelo menos um rango! 🍕");
+          return;
         }
-
-        function validateScreen4() {
-            if (selectedFoods.length === 0) { alert("Selecione pelo menos um rango! 🍕"); return; }
-            let renderList = [...selectedFoods];
-            if (selectedFoods.includes("Outro...")) {
-                const outroVal = document.getElementById("comida-outros-input").value.trim();
-                if (outroVal) {
-                    renderList = renderList.filter(f => f !== "Outro...");
-                    renderList.push(outroVal);
-                }
-            }
-            dateSelections.food = renderList.join(", ");
-            nextScreen(5);
+        let renderList = [...selectedFoods];
+        if (selectedFoods.includes("Outro...")) {
+          const outroVal = document
+            .getElementById("comida-outros-input")
+            .value.trim();
+          if (outroVal) {
+            renderList = renderList.filter((f) => f !== "Outro...");
+            renderList.push(outroVal);
+          }
         }
+        dateSelections.food = renderList.join(", ");
+        nextScreen(5);
+      }
 
-        function validateScreen5() {
-            if (selectedActivities.length === 0) { alert("Selecione pelo menos uma atividade! 🎸"); return; }
-            let renderList = [...selectedActivities];
-            if (selectedActivities.includes("Outro...")) {
-                const outroVal = document.getElementById("vibe-outros-input").value.trim();
-                if (outroVal) {
-                    renderList = renderList.filter(a => a !== "Outro...");
-                    renderList.push(outroVal);
-                }
-            }
-            dateSelections.activity = renderList.join(", ");
-            montarResumoFinal();
+      function validateScreen5() {
+        if (selectedActivities.length === 0) {
+          alert("Selecione pelo menos uma atividade! 🎸");
+          return;
         }
-
-        function montarResumoFinal() {
-            const [ano, mes, dia] = dateSelections.date.split("-");
-            document.getElementById("sum-date").innerText = `${dia}/${mes}/${ano}`;
-            document.getElementById("sum-time").innerText = dateSelections.time + "h";
-            document.getElementById("sum-food").innerText = dateSelections.food;
-            document.getElementById("sum-activity").innerText = dateSelections.activity;
-
-            if (configTipoConvite === "grupo") {
-                document.getElementById("status-texto").innerText = "Suas escolhas individuais foram unificadas no resumo do grupo!";
-            }
-            nextScreen(6);
+        let renderList = [...selectedActivities];
+        if (selectedActivities.includes("Outro...")) {
+          const outroVal = document
+            .getElementById("vibe-outros-input")
+            .value.trim();
+          if (outroVal) {
+            renderList = renderList.filter((a) => a !== "Outro...");
+            renderList.push(outroVal);
+          }
         }
+        dateSelections.activity = renderList.join(", ");
+        montarResumoFinal();
+      }
 
-        // INTEGRAÇÕES FINAIS (WHATSAPP E AGENDA)
-        function abrirJanelaWhatsApp() {
-            const [ano, mes, dia] = dateSelections.date.split("-");
-            const dFormat = `${dia}/${mes}/${ano}`;
-            
-            let txt = `*Resumo do Convite Combinado!* 🥳\n\n`;
-            if (configTipoConvite === "grupo") txt += `👤 *Participante:* ${nomeDoParticipanteAtual}\n`;
-            txt += `📅 *Data:* ${dFormat}\n`;
-            txt += `⏰ *Horário:* ${dateSelections.time}h\n`;
-            txt += `🍽️ *Para Comer:* ${dateSelections.food}\n`;
-            txt += `✨ *Atividades:* ${dateSelections.activity}`;
+      function montarResumoFinal() {
+        const [ano, mes, dia] = dateSelections.date.split("-");
+        document.getElementById("sum-date").innerText = `${dia}/${mes}/${ano}`;
+        document.getElementById("sum-time").innerText =
+          dateSelections.time + "h";
+        document.getElementById("sum-food").innerText = dateSelections.food;
+        document.getElementById("sum-activity").innerText =
+          dateSelections.activity;
 
-            const url = `https://api.whatsapp.com/send?phone=${whatsappCriadorLink}&text=${encodeURIComponent(txt)}`;
-            window.open(url, "_blank");
+        if (configTipoConvite === "grupo") {
+          document.getElementById("status-texto").innerText =
+            "Respostas unificadas ao painel de votações do grupo!";
         }
+        nextScreen(6);
+      }
 
-        function criarEventoAgenda() {
-            const startD = dateSelections.date.replace(/-/g, "");
-            const startT = dateSelections.time.replace(/:/g, "") + "00";
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(tituloPersonalizado || "Momento Especial")}&dates=${startD}T${startT}/${startD}T${startT}&details=${encodeURIComponent("Cardápio: " + dateSelections.food + "\nVibe: " + dateSelections.activity)}`;
-            window.open(url, "_blank");
-        }
+      function abrirJanelaWhatsApp() {
+        const [ano, mes, dia] = dateSelections.date.split("-");
+        const dFormat = `${dia}/${mes}/${ano}`;
+        let txt = `*Resumo do Convite Combinado!* 🥳\n\n`;
+        if (configTipoConvite === "grupo")
+          txt += `👤 *Participante:* ${nomeDoParticipanteAtual}\n`;
+        txt += `📅 *Data:* ${dFormat}\n`;
+        txt += `⏰ *Horário:* ${dateSelections.time}h\n`;
+        txt += `🍽️ *Para Comer:* ${dateSelections.food}\n`;
+        txt += `✨ *Atividades:* ${dateSelections.activity}`;
 
-        // CORE LOAD: DISPARA PROCESSAMENTO APÓS CARREGAMENTO COMPLETO
-        window.addEventListener("DOMContentLoaded", () => {
-            initCoracoesNoBackground();
-            carregarDadosDoConvite();
-        });
+        window.open(
+          `https://api.whatsapp.com/send?phone=${whatsappCriadorLink}&text=${encodeURIComponent(txt)}`,
+          "_blank",
+        );
+      }
+
+      function criarEventoAgenda() {
+        const startD = dateSelections.date.replace(/-/g, "");
+        const startT = dateSelections.time.replace(/:/g, "") + "00";
+        window.open(
+          `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(tituloPersonalizado || "Momento Especial")}&dates=${startD}T${startT}/${startD}T${startT}&details=${encodeURIComponent("Cardápio: " + dateSelections.food + "\nVibe: " + dateSelections.activity)}`,
+          "_blank",
+        );
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        initCoracoesNoBackground();
+        carregarDadosDoConvite();
+      });
     </script>
-</body>
+  </body>
 </html>
